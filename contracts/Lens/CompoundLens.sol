@@ -5,8 +5,8 @@ import "../CErc20.sol";
 import "../CToken.sol";
 import "../PriceOracle.sol";
 import "../EIP20Interface.sol";
-import "../Governance/GovernorAlpha.sol";
-import "../Governance/Comp.sol";
+// import "../Governance/GovernorAlpha.sol";
+// import "../Governance/Comp.sol";
 
 interface ComptrollerLensInterface {
     function markets(address) external view returns (bool, uint);
@@ -219,7 +219,7 @@ contract CompoundLens {
         uint underlyingPrice;
     }
 
-    function cTokenUnderlyingPrice(CToken cToken) public returns (CTokenUnderlyingPrice memory) {
+    function cTokenUnderlyingPrice(CToken cToken) public view returns (CTokenUnderlyingPrice memory) {
         ComptrollerLensInterface comptroller = ComptrollerLensInterface(address(cToken.comptroller()));
         PriceOracle priceOracle = comptroller.oracle();
 
@@ -262,21 +262,6 @@ contract CompoundLens {
         uint96 votes;
     }
 
-    function getGovReceipts(GovernorAlpha governor, address voter, uint[] memory proposalIds) public view returns (GovReceipt[] memory) {
-        uint proposalCount = proposalIds.length;
-        GovReceipt[] memory res = new GovReceipt[](proposalCount);
-        for (uint i = 0; i < proposalCount; i++) {
-            GovernorAlpha.Receipt memory receipt = governor.getReceipt(proposalIds[i], voter);
-            res[i] = GovReceipt({
-                proposalId: proposalIds[i],
-                hasVoted: receipt.hasVoted,
-                support: receipt.support,
-                votes: receipt.votes
-            });
-        }
-        return res;
-    }
-
     struct GovBravoReceipt {
         uint proposalId;
         bool hasVoted;
@@ -315,57 +300,57 @@ contract CompoundLens {
         bool executed;
     }
 
-    function setProposal(GovProposal memory res, GovernorAlpha governor, uint proposalId) internal view {
-        (
-            ,
-            address proposer,
-            uint eta,
-            uint startBlock,
-            uint endBlock,
-            uint forVotes,
-            uint againstVotes,
-            bool canceled,
-            bool executed
-        ) = governor.proposals(proposalId);
-        res.proposalId = proposalId;
-        res.proposer = proposer;
-        res.eta = eta;
-        res.startBlock = startBlock;
-        res.endBlock = endBlock;
-        res.forVotes = forVotes;
-        res.againstVotes = againstVotes;
-        res.canceled = canceled;
-        res.executed = executed;
-    }
+    // function setProposal(GovProposal memory res, GovernorAlpha governor, uint proposalId) internal view {
+        //     (
+        //         ,
+        //         address proposer,
+        //         uint eta,
+        //         uint startBlock,
+        //         uint endBlock,
+        //         uint forVotes,
+        //         uint againstVotes,
+        //         bool canceled,
+        //         bool executed
+        //     ) = governor.proposals(proposalId);
+        //     res.proposalId = proposalId;
+        //     res.proposer = proposer;
+        //     res.eta = eta;
+        //     res.startBlock = startBlock;
+        //     res.endBlock = endBlock;
+        //     res.forVotes = forVotes;
+        //     res.againstVotes = againstVotes;
+        //     res.canceled = canceled;
+        //     res.executed = executed;
+        // }
 
-    function getGovProposals(GovernorAlpha governor, uint[] calldata proposalIds) external view returns (GovProposal[] memory) {
-        GovProposal[] memory res = new GovProposal[](proposalIds.length);
-        for (uint i = 0; i < proposalIds.length; i++) {
-            (
-                address[] memory targets,
-                uint[] memory values,
-                string[] memory signatures,
-                bytes[] memory calldatas
-            ) = governor.getActions(proposalIds[i]);
-            res[i] = GovProposal({
-                proposalId: 0,
-                proposer: address(0),
-                eta: 0,
-                targets: targets,
-                values: values,
-                signatures: signatures,
-                calldatas: calldatas,
-                startBlock: 0,
-                endBlock: 0,
-                forVotes: 0,
-                againstVotes: 0,
-                canceled: false,
-                executed: false
-            });
-            setProposal(res[i], governor, proposalIds[i]);
-        }
-        return res;
-    }
+    // function getGovProposals(GovernorAlpha governor, uint[] calldata proposalIds) external view returns (GovProposal[] memory) {
+        //     GovProposal[] memory res = new GovProposal[](proposalIds.length);
+        //     for (uint i = 0; i < proposalIds.length; i++) {
+        //         (
+        //             address[] memory targets,
+        //             uint[] memory values,
+        //             string[] memory signatures,
+        //             bytes[] memory calldatas
+        //         ) = governor.getActions(proposalIds[i]);
+        //         res[i] = GovProposal({
+        //             proposalId: 0,
+        //             proposer: address(0),
+        //             eta: 0,
+        //             targets: targets,
+        //             values: values,
+        //             signatures: signatures,
+        //             calldatas: calldatas,
+        //             startBlock: 0,
+        //             endBlock: 0,
+        //             forVotes: 0,
+        //             againstVotes: 0,
+        //             canceled: false,
+        //             executed: false
+        //         });
+        //         setProposal(res[i], governor, proposalIds[i]);
+        //     }
+        //     return res;
+        // }
 
     struct GovBravoProposal {
         uint proposalId;
@@ -435,13 +420,13 @@ contract CompoundLens {
         address delegate;
     }
 
-    function getCompBalanceMetadata(Comp comp, address account) external view returns (CompBalanceMetadata memory) {
-        return CompBalanceMetadata({
-            balance: comp.balanceOf(account),
-            votes: uint256(comp.getCurrentVotes(account)),
-            delegate: comp.delegates(account)
-        });
-    }
+    // function getCompBalanceMetadata(Comp comp, address account) external view returns (CompBalanceMetadata memory) {
+        //     return CompBalanceMetadata({
+        //         balance: comp.balanceOf(account),
+        //         votes: uint256(comp.getCurrentVotes(account)),
+        //         delegate: comp.delegates(account)
+        //     });
+        // }
 
     struct CompBalanceMetadataExt {
         uint balance;
@@ -450,37 +435,37 @@ contract CompoundLens {
         uint allocated;
     }
 
-    function getCompBalanceMetadataExt(Comp comp, ComptrollerLensInterface comptroller, address account) external returns (CompBalanceMetadataExt memory) {
-        uint balance = comp.balanceOf(account);
-        comptroller.claimComp(account);
-        uint newBalance = comp.balanceOf(account);
-        uint accrued = comptroller.compAccrued(account);
-        uint total = add(accrued, newBalance, "sum comp total");
-        uint allocated = sub(total, balance, "sub allocated");
+    // function getCompBalanceMetadataExt(Comp comp, ComptrollerLensInterface comptroller, address account) external returns (CompBalanceMetadataExt memory) {
+        // uint balance = comp.balanceOf(account);
+        // comptroller.claimComp(account);
+        // uint newBalance = comp.balanceOf(account);
+        // uint accrued = comptroller.compAccrued(account);
+        // uint total = add(accrued, newBalance, "sum comp total");
+        // uint allocated = sub(total, balance, "sub allocated");
 
-        return CompBalanceMetadataExt({
-            balance: balance,
-            votes: uint256(comp.getCurrentVotes(account)),
-            delegate: comp.delegates(account),
-            allocated: allocated
-        });
-    }
+        // return CompBalanceMetadataExt({
+        //     balance: balance,
+        //     votes: uint256(comp.getCurrentVotes(account)),
+        //     delegate: comp.delegates(account),
+        //     allocated: allocated
+        // });
+        // }
 
     struct CompVotes {
         uint blockNumber;
         uint votes;
     }
 
-    function getCompVotes(Comp comp, address account, uint32[] calldata blockNumbers) external view returns (CompVotes[] memory) {
-        CompVotes[] memory res = new CompVotes[](blockNumbers.length);
-        for (uint i = 0; i < blockNumbers.length; i++) {
-            res[i] = CompVotes({
-                blockNumber: uint256(blockNumbers[i]),
-                votes: uint256(comp.getPriorVotes(account, blockNumbers[i]))
-            });
-        }
-        return res;
-    }
+    // function getCompVotes(Comp comp, address account, uint32[] calldata blockNumbers) external view returns (CompVotes[] memory) {
+        // CompVotes[] memory res = new CompVotes[](blockNumbers.length);
+        // for (uint i = 0; i < blockNumbers.length; i++) {
+        //     res[i] = CompVotes({
+        //         blockNumber: uint256(blockNumbers[i]),
+        //         votes: uint256(comp.getPriorVotes(account, blockNumbers[i]))
+        //     });
+        // }
+        // return res;
+        // }
 
     function compareStrings(string memory a, string memory b) internal pure returns (bool) {
         return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
