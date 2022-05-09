@@ -1,0 +1,6 @@
+/artifacts
+/cache
+/dist
+/typechain
+/node_modules
+.env
