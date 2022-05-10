@@ -7,7 +7,7 @@ Smart Contracts from Compound Protocol
 
 Scripts
 -------
-Deployment script
+Smart Contract deployment script using **Src** folder
 
 
 Src
