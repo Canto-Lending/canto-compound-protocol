@@ -8,43 +8,43 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
     /*
     TODO: remove all constants related to creating and approving proposals
 
-    /// @notice The name of this contract
-    string public constant name = "Compound Governor Bravo";
+      /// @notice The name of this contract
+      string public constant name = "Compound Governor Bravo";
 
-    /// @notice The minimum setable proposal threshold
-    uint public constant MIN_PROPOSAL_THRESHOLD = 50000e18; // 50,000 Comp
+      /// @notice The minimum setable proposal threshold
+      uint public constant MIN_PROPOSAL_THRESHOLD = 50000e18; // 50,000 Comp
 
-    /// @notice The maximum setable proposal threshold
-    uint public constant MAX_PROPOSAL_THRESHOLD = 100000e18; //100,000 Comp
+      /// @notice The maximum setable proposal threshold
+      uint public constant MAX_PROPOSAL_THRESHOLD = 100000e18; //100,000 Comp
 
-    /// @notice The minimum setable voting period
-    uint public constant MIN_VOTING_PERIOD = 5760; // About 24 hours
+      /// @notice The minimum setable voting period
+      uint public constant MIN_VOTING_PERIOD = 5760; // About 24 hours
 
-    /// @notice The max setable voting period
-    uint public constant MAX_VOTING_PERIOD = 80640; // About 2 weeks
+      /// @notice The max setable voting period
+      uint public constant MAX_VOTING_PERIOD = 80640; // About 2 weeks
 
-    /// @notice The min setable voting delay
-    uint public constant MIN_VOTING_DELAY = 1;
+      /// @notice The min setable voting delay
+      uint public constant MIN_VOTING_DELAY = 1;
 
-    /// @notice The max setable voting delay
-    uint public constant MAX_VOTING_DELAY = 40320; // About 1 week
+      /// @notice The max setable voting delay
+      uint public constant MAX_VOTING_DELAY = 40320; // About 1 week
 
-    /// @notice The number of votes in support of a proposal required in order for a quorum to be reached and for a vote to succeed
-    uint public constant quorumVotes = 400000e18; // 400,000 = 4% of Comp
-    */
+      /// @notice The number of votes in support of a proposal required in order for a quorum to be reached and for a vote to succeed
+      uint public constant quorumVotes = 400000e18; // 400,000 = 4% of Comp
+      */
 
     /// @notice The maximum number of actions that can be included in a proposal
     uint public constant proposalMaxOperations = 10; // 10 actions
     
     // TODO: figure out if we need DOMAIN_TYPEHASH
-    /// @notice The EIP-712 typehash for the contract's domain
-    // bytes32 public constant DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,uint256 chainId,address verifyingContract)");
-    //seo_delete
+      /// @notice The EIP-712 typehash for the contract's domain
+      // bytes32 public constant DOMAIN_TYPEHASH = keccak256("EIP712Domain(string name,uint256 chainId,address verifyingContract)");
+      //seo_delete
 
     // TODO: delete BALLOT_TYPEHASH
-    /// @notice The EIP-712 typehash for the ballot struct used by the contract
-    // bytes32 public constant BALLOT_TYPEHASH = keccak256("Ballot(uint256 proposalId,uint8 support)");
-    // seo_delete
+      /// @notice The EIP-712 typehash for the ballot struct used by the contract
+      // bytes32 public constant BALLOT_TYPEHASH = keccak256("Ballot(uint256 proposalId,uint8 support)");
+      // seo_delete
 
     /**
       * @notice Used to initialize the contract during delegator contructor
@@ -64,11 +64,11 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
         require(canto_ != address(0), "GovernorBravo::initialize: invalid canto address");
         
         /*
-        TODO: remove all checks for voting and proposal thresholds
-        require(votingPeriod_ >= MIN_VOTING_PERIOD && votingPeriod_ <= MAX_VOTING_PERIOD, "GovernorBravo::initialize: invalid voting period");
-        require(votingDelay_ >= MIN_VOTING_DELAY && votingDelay_ <= MAX_VOTING_DELAY, "GovernorBravo::initialize: invalid voting delay");
-        require(proposalThreshold_ >= MIN_PROPOSAL_THRESHOLD && proposalThreshold_ <= MAX_PROPOSAL_THRESHOLD, "GovernorBravo::initialize: invalid proposal threshold");
-        */
+          TODO: remove all checks for voting and proposal thresholds
+          require(votingPeriod_ >= MIN_VOTING_PERIOD && votingPeriod_ <= MAX_VOTING_PERIOD, "GovernorBravo::initialize: invalid voting period");
+          require(votingDelay_ >= MIN_VOTING_DELAY && votingDelay_ <= MAX_VOTING_DELAY, "GovernorBravo::initialize: invalid voting delay");
+          require(proposalThreshold_ >= MIN_PROPOSAL_THRESHOLD && proposalThreshold_ <= MAX_PROPOSAL_THRESHOLD, "GovernorBravo::initialize: invalid proposal threshold");
+          */
 
         timelock = TimelockInterface(timelock_);
         // TODO: replace comp and CompInterface with Canto declaration
@@ -76,11 +76,11 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
         canto = CantoInterface(canto_);
     
         /*
-        TODO: delete these; no need for voting logic
-        votingPeriod = votingPeriod_;
-        votingDelay = votingDelay_;
-        proposalThreshold = proposalThreshold_;
-        */
+          TODO: delete these; no need for voting logic
+          votingPeriod = votingPeriod_;
+          votingDelay = votingDelay_;
+          proposalThreshold = proposalThreshold_;
+          */
     }
 
     /**
@@ -238,16 +238,16 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
         require(proposalCount >= proposalId && proposalId > initialProposalId, "GovernorBravo::state: invalid proposal id");
         Proposal storage proposal = proposals[proposalId];
         // if (proposal.canceled) {
-        //     return ProposalState.Canceled;
-        // } else if (block.number <= proposal.startBlock) {
-        //     return ProposalState.Pending;
-        // } else if (block.number <= proposal.endBlock) {
-        //     return ProposalState.Active;
-        // } else if (proposal.forVotes <= proposal.againstVotes || proposal.forVotes < quorumVotes) {
-        //     return ProposalState.Defeated;
-        // } else if (proposal.eta == 0) {
-        //     return ProposalState.Succeeded;
-        // } else
+          //     return ProposalState.Canceled;
+          // } else if (block.number <= proposal.startBlock) {
+          //     return ProposalState.Pending;
+          // } else if (block.number <= proposal.endBlock) {
+          //     return ProposalState.Active;
+          // } else if (proposal.forVotes <= proposal.againstVotes || proposal.forVotes < quorumVotes) {
+          //     return ProposalState.Defeated;
+          // } else if (proposal.eta == 0) {
+          //     return ProposalState.Succeeded;
+          // } else
         if (proposal.executed) {
             return ProposalState.Executed;
         // TODO: when is the Expired state needed? why add a grace period?
@@ -409,13 +409,13 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
       * @dev Admin only. Sets initial proposal id which initiates the contract, ensuring a continuous proposal id count
       * @param governorAlpha The address for the Governor to continue the proposal id count from
       */
-    function _initiate(address governorAlpha) external {
-        require(msg.sender == admin, "GovernorBravo::_initiate: admin only");
-        require(initialProposalId == 0, "GovernorBravo::_initiate: can only initiate once");
-        proposalCount = GovernorAlpha(governorAlpha).proposalCount();
-        initialProposalId = proposalCount;
-        timelock.acceptAdmin();
-    }
+      function _initiate(address governorAlpha) external {
+          require(msg.sender == admin, "GovernorBravo::_initiate: admin only");
+          require(initialProposalId == 0, "GovernorBravo::_initiate: can only initiate once");
+          proposalCount = GovernorAlpha(governorAlpha).proposalCount();
+          initialProposalId = proposalCount;
+          timelock.acceptAdmin();
+      }
 
     /**
       * @notice Begins transfer of admin rights. The newPendingAdmin must call `_acceptAdmin` to finalize the transfer.

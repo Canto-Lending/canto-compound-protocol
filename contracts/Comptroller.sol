@@ -1371,10 +1371,10 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
 
      //TODO: Modify this function to grant CANTO Tokens 
     function grantCompInternal(address user, uint amount) internal returns (uint) {
-        Comp comp = Comp(getCompAddress());
-        uint compRemaining = comp.balanceOf(address(this));
+        Canto canto = canto(getCompAddress());
+        uint compRemaining = canto.balanceOf(address(this));
         if (amount > 0 && amount <= compRemaining) {
-            comp.transfer(user, amount);
+            canto.transfer(user, amount);
             return 0;
         }
         return amount;
