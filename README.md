@@ -1,5 +1,14 @@
-Compound Protocol
-=================
+Deployment Guide
+================
+```
+yarn or npm install
+npx hardhat run scripts/deploy.ts --network ******
+```
+
+
+
+Folder Guide
+============
 
 Contracts
 ---------
