@@ -6,7 +6,7 @@ import "./PriceOracle.sol";
 import "./ComptrollerInterface.sol";
 import "./ComptrollerStorage.sol";
 import "./Unitroller.sol";
-import "./Governance/Comp.sol";
+// import "./Governance/Comp.sol";
 
 // TODO: need to confirm that g7 is latest comptroller; why are there still commits being made on original Comptroller - https://github.com/compound-finance/compound-protocol/commits/master/contracts/Comptroller.sol
 

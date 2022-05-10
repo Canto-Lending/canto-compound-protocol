@@ -78,15 +78,15 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
 
     // TODO: delete
     /// @notice The delay before voting on a proposal may take place, once proposed, in blocks
-    uint public votingDelay;
+    // uint public votingDelay;
 
     // TODO: delete
     /// @notice The duration of voting on a proposal, in blocks
-    uint public votingPeriod;
+    // uint public votingPeriod;
 
     // TODO: delete
     /// @notice The number of votes required in order for a voter to become a proposer
-    uint public proposalThreshold;
+    // uint public proposalThreshold;
 
     /// @notice Initial proposal id set at become
     uint public initialProposalId;
@@ -99,7 +99,8 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
 
     // TODO: need to replace with Canto EIP-20 Interfance
     /// @notice The address of the Compound governance token
-    CompInterface public comp;
+    CantoInterface public canto;
+    
 
     /// @notice The official record of all proposals ever proposed
     mapping (uint => Proposal) public proposals;
@@ -132,23 +133,23 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
 
         // TODO: delete startBlock
         /// @notice The block at which voting begins: holders must delegate their votes prior to this block
-        uint startBlock;
+        // uint startBlock;
 
         // TODO: delete endBlock
         /// @notice The block at which voting ends: votes must be cast prior to this block
-        uint endBlock;
+        // uint endBlock;
 
         // TODO: delete
         /// @notice Current number of votes in favor of this proposal
-        uint forVotes;
+        // uint forVotes;
         
         // TODO: delete
         /// @notice Current number of votes in opposition to this proposal
-        uint againstVotes;
+        // uint againstVotes;
 
         // TODO: delete
         /// @notice Current number of votes for abstaining for this proposal
-        uint abstainVotes;
+        // uint abstainVotes;
 
         /// @notice Flag marking whether the proposal has been canceled
         bool canceled;
@@ -157,43 +158,45 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
         bool executed;
 
         /// @notice Receipts of ballots for the entire set of voters
-        mapping (address => Receipt) receipts;
+        // mapping (address => Receipt) receipts;
+        //Seo_delete
     }
 
     // TODO: delete Receipt
     /// @notice Ballot receipt record for a voter
-    struct Receipt {
-        /// @notice Whether or not a vote has been cast
-        bool hasVoted;
+    // struct Receipt {
+        //     /// @notice Whether or not a vote has been cast
+        //     bool hasVoted;
 
-        /// @notice Whether or not the voter supports the proposal or abstains
-        uint8 support;
+        //     /// @notice Whether or not the voter supports the proposal or abstains
+        //     uint8 support;
 
-        /// @notice The number of votes the voter had, which were cast
-        uint96 votes;
-    }
+        //     /// @notice The number of votes the voter had, which were cast
+        //     uint96 votes;
+        // }
 
     // TODO: delete PENDING, DEFEATED, Canceled, Active, Succeeded
     /// @notice Possible states that a proposal may be in
     enum ProposalState {
-        Pending,
-        Active,
-        Canceled,
-        Defeated,
-        Succeeded,
+        // Pending,
+        // Active,
+        // Canceled,
+        // Defeated,
+        // Succeeded,
         Queued,
         Expired,
         Executed
     }
+     //Seo_Modified
 }
 // TODO: delete GovernorBravoDelegateStorageV2 and replace all extensions with GovernorBravoDelegateStorageV1
-contract GovernorBravoDelegateStorageV2 is GovernorBravoDelegateStorageV1 {
-    /// @notice Stores the expiration of account whitelist status as a timestamp
-    mapping (address => uint) public whitelistAccountExpirations;
+// contract GovernorBravoDelegateStorageV2 is GovernorBravoDelegateStorageV1 {
+//     /// @notice Stores the expiration of account whitelist status as a timestamp
+//     mapping (address => uint) public whitelistAccountExpirations;
 
-    /// @notice Address which manages whitelisted proposals and whitelist accounts
-    address public whitelistGuardian;
-}
+//     /// @notice Address which manages whitelisted proposals and whitelist accounts
+//     address public whitelistGuardian;
+// }
 
 interface TimelockInterface {
     function delay() external view returns (uint);
@@ -206,7 +209,7 @@ interface TimelockInterface {
 }
 
 // TODO: delete this
-interface CompInterface {
+interface CantoInterface {
     function getPriorVotes(address account, uint blockNumber) external view returns (uint96);
 }
 
