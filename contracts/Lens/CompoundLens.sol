@@ -431,22 +431,22 @@ contract CompoundLens {
 
     struct CompBalanceMetadata {
         uint balance;
-        uint votes;
-        address delegate;
+        // uint votes;
+        // address delegate;
     }
 
     function getCompBalanceMetadata(Comp comp, address account) external view returns (CompBalanceMetadata memory) {
         return CompBalanceMetadata({
-            balance: comp.balanceOf(account),
-            votes: uint256(comp.getCurrentVotes(account)),
-            delegate: comp.delegates(account)
+            balance: comp.balanceOf(account)
+            // votes: uint256(comp.getCurrentVotes(account)),
+            // delegate: comp.delegates(account)
         });
     }
 
     struct CompBalanceMetadataExt {
         uint balance;
-        uint votes;
-        address delegate;
+        // uint votes;
+        // address delegate;
         uint allocated;
     }
 
@@ -460,27 +460,27 @@ contract CompoundLens {
 
         return CompBalanceMetadataExt({
             balance: balance,
-            votes: uint256(comp.getCurrentVotes(account)),
-            delegate: comp.delegates(account),
+            // votes: uint256(comp.getCurrentVotes(account)),
+            // delegate: comp.delegates(account),
             allocated: allocated
         });
     }
 
-    struct CompVotes {
-        uint blockNumber;
-        uint votes;
-    }
+    // struct CompVotes {
+    //     uint blockNumber;
+    //     uint votes;
+    // }
 
-    function getCompVotes(Comp comp, address account, uint32[] calldata blockNumbers) external view returns (CompVotes[] memory) {
-        CompVotes[] memory res = new CompVotes[](blockNumbers.length);
-        for (uint i = 0; i < blockNumbers.length; i++) {
-            res[i] = CompVotes({
-                blockNumber: uint256(blockNumbers[i]),
-                votes: uint256(comp.getPriorVotes(account, blockNumbers[i]))
-            });
-        }
-        return res;
-    }
+    // function getCompVotes(Comp comp, address account, uint32[] calldata blockNumbers) external view returns (CompVotes[] memory) {
+    //     CompVotes[] memory res = new CompVotes[](blockNumbers.length);
+    //     for (uint i = 0; i < blockNumbers.length; i++) {
+    //         res[i] = CompVotes({
+    //             blockNumber: uint256(blockNumbers[i]),
+    //             votes: uint256(comp.getPriorVotes(account, blockNumbers[i]))
+    //         });
+    //     }
+    //     return res;
+    // }
 
     function compareStrings(string memory a, string memory b) internal pure returns (bool) {
         return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
