@@ -125,13 +125,13 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
         // uint endBlock;
 
         /// @notice Current number of votes in favor of this proposal
-        uint forVotes;
+        // uint forVotes;
 
         /// @notice Current number of votes in opposition to this proposal
-        uint againstVotes;
+        // uint againstVotes;
 
         /// @notice Current number of votes for abstaining for this proposal
-        uint abstainVotes;
+        // uint abstainVotes;
 
         /// @notice Flag marking whether the proposal has been canceled
         bool canceled;
@@ -170,10 +170,10 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
 
 contract GovernorBravoDelegateStorageV2 is GovernorBravoDelegateStorageV1 {
     /// @notice Stores the expiration of account whitelist status as a timestamp
-    mapping (address => uint) public whitelistAccountExpirations;
+    // mapping (address => uint) public whitelistAccountExpirations;
 
     /// @notice Address which manages whitelisted proposals and whitelist accounts
-    address public whitelistGuardian;
+    // address public whitelistGuardian;
 }
 
 interface TimelockInterface {
