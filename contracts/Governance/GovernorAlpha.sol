@@ -15,10 +15,10 @@ contract GovernorAlpha {
     function proposalMaxOperations() public pure returns (uint) { return 10; } // 10 actions
 
     /// @notice The delay before voting on a proposal may take place, once proposed
-    function votingDelay() public pure returns (uint) { return 1; } // 1 block
+    // function votingDelay() public pure returns (uint) { return 1; } // 1 block
 
     /// @notice The duration of voting on a proposal, in blocks
-    function votingPeriod() public pure returns (uint) { return 17280; } // ~3 days in blocks (assuming 15s blocks)
+    // function votingPeriod() public pure returns (uint) { return 17280; } // ~3 days in blocks (assuming 15s blocks)
 
     /// @notice The address of the Compound Protocol Timelock
     TimelockInterface public timelock;
@@ -55,16 +55,16 @@ contract GovernorAlpha {
         bytes[] calldatas;
 
         /// @notice The block at which voting begins: holders must delegate their votes prior to this block
-        uint startBlock;
+        // uint startBlock;
 
         /// @notice The block at which voting ends: votes must be cast prior to this block
-        uint endBlock;
+        // uint endBlock;
 
         /// @notice Current number of votes in favor of this proposal
-        uint forVotes;
+        // uint forVotes;
 
         /// @notice Current number of votes in opposition to this proposal
-        uint againstVotes;
+        // uint againstVotes;
 
         /// @notice Flag marking whether the proposal has been canceled
         bool canceled;
@@ -228,12 +228,12 @@ contract GovernorAlpha {
         Proposal storage proposal = proposals[proposalId];
         if (proposal.canceled) {
             return ProposalState.Canceled;
-        } else if (block.number <= proposal.startBlock) {
-            return ProposalState.Pending;
-        } else if (block.number <= proposal.endBlock) {
-            return ProposalState.Active;
-        } else if (proposal.forVotes <= proposal.againstVotes || proposal.forVotes < quorumVotes()) {
-            return ProposalState.Defeated;
+        // } else if (block.number <= proposal.startBlock) {
+        //     return ProposalState.Pending;
+        // } else if (block.number <= proposal.endBlock) {
+        //     return ProposalState.Active;
+        // } else if (proposal.forVotes <= proposal.againstVotes || proposal.forVotes < quorumVotes()) {
+        //     return ProposalState.Defeated;
         } else if (proposal.eta == 0) {
             return ProposalState.Succeeded;
         } else if (proposal.executed) {

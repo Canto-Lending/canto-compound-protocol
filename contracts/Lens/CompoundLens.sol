@@ -31,11 +31,11 @@ interface GovernorBravoInterface {
         uint id;
         address proposer;
         uint eta;
-        uint startBlock;
-        uint endBlock;
-        uint forVotes;
-        uint againstVotes;
-        uint abstainVotes;
+        // uint startBlock;
+        // uint endBlock;
+        // uint forVotes;
+        // uint againstVotes;
+        // uint abstainVotes;
         bool canceled;
         bool executed;
     }
@@ -307,10 +307,10 @@ contract CompoundLens {
         uint[] values;
         string[] signatures;
         bytes[] calldatas;
-        uint startBlock;
-        uint endBlock;
-        uint forVotes;
-        uint againstVotes;
+        // uint startBlock;
+        // uint endBlock;
+        // uint forVotes;
+        // uint againstVotes;
         bool canceled;
         bool executed;
     }
@@ -320,20 +320,20 @@ contract CompoundLens {
             ,
             address proposer,
             uint eta,
-            uint startBlock,
-            uint endBlock,
-            uint forVotes,
-            uint againstVotes,
+            // uint startBlock,
+            // uint endBlock,
+            // uint forVotes,
+            // uint againstVotes,
             bool canceled,
             bool executed
         ) = governor.proposals(proposalId);
         res.proposalId = proposalId;
         res.proposer = proposer;
         res.eta = eta;
-        res.startBlock = startBlock;
-        res.endBlock = endBlock;
-        res.forVotes = forVotes;
-        res.againstVotes = againstVotes;
+        // res.startBlock = startBlock;
+        // res.endBlock = endBlock;
+        // res.forVotes = forVotes;
+        // res.againstVotes = againstVotes;
         res.canceled = canceled;
         res.executed = executed;
     }
@@ -355,10 +355,10 @@ contract CompoundLens {
                 values: values,
                 signatures: signatures,
                 calldatas: calldatas,
-                startBlock: 0,
-                endBlock: 0,
-                forVotes: 0,
-                againstVotes: 0,
+                // startBlock: 0,
+                // endBlock: 0,
+                // forVotes: 0,
+                // againstVotes: 0,
                 canceled: false,
                 executed: false
             });
@@ -375,11 +375,11 @@ contract CompoundLens {
         uint[] values;
         string[] signatures;
         bytes[] calldatas;
-        uint startBlock;
-        uint endBlock;
-        uint forVotes;
-        uint againstVotes;
-        uint abstainVotes;
+        // uint startBlock;
+        // uint endBlock;
+        // uint forVotes;
+        // uint againstVotes;
+        // uint abstainVotes;
         bool canceled;
         bool executed;
     }
@@ -390,11 +390,11 @@ contract CompoundLens {
         res.proposalId = proposalId;
         res.proposer = p.proposer;
         res.eta = p.eta;
-        res.startBlock = p.startBlock;
-        res.endBlock = p.endBlock;
-        res.forVotes = p.forVotes;
-        res.againstVotes = p.againstVotes;
-        res.abstainVotes = p.abstainVotes;
+        // res.startBlock = p.startBlock;
+        // res.endBlock = p.endBlock;
+        // res.forVotes = p.forVotes;
+        // res.againstVotes = p.againstVotes;
+        // res.abstainVotes = p.abstainVotes;
         res.canceled = p.canceled;
         res.executed = p.executed;
     }
@@ -416,11 +416,11 @@ contract CompoundLens {
                 values: values,
                 signatures: signatures,
                 calldatas: calldatas,
-                startBlock: 0,
-                endBlock: 0,
-                forVotes: 0,
-                againstVotes: 0,
-                abstainVotes: 0,
+                // startBlock: 0,
+                // endBlock: 0,
+                // forVotes: 0,
+                // againstVotes: 0,
+                // abstainVotes: 0,
                 canceled: false,
                 executed: false
             });
