@@ -48,7 +48,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
     /**
       * @notice Used to initialize the contract during delegator contructor
       * @param timelock_ The address of the Timelock
-      * @param canto_ The address of the COMP token
+      * @param canto_ The address of the CANTO token
               * 
       */
     function initialize(address timelock_, address canto_) public {
@@ -56,16 +56,16 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
         require(msg.sender == admin, "GovernorBravo::initialize: admin only");
         require(timelock_ != address(0), "GovernorBravo::initialize: invalid timelock address");
 
-        // TODO: replace comp initialization with canto initialization 
+        // TODO: replace canto initialization with canto initialization 
         // seo_modified
-        require(canto_ != address(0), "GovernorBravo::initialize: invalid comp address");
+        require(canto_ != address(0), "GovernorBravo::initialize: invalid cnato  address");
         
         // require(votingPeriod_ >= MIN_VOTING_PERIOD && votingPeriod_ <= MAX_VOTING_PERIOD, "GovernorBravo::initialize: invalid voting period");
         // require(votingDelay_ >= MIN_VOTING_DELAY && votingDelay_ <= MAX_VOTING_DELAY, "GovernorBravo::initialize: invalid voting delay");
         // require(proposalThreshold_ >= MIN_PROPOSAL_THRESHOLD && proposalThreshold_ <= MAX_PROPOSAL_THRESHOLD, "GovernorBravo::initialize: invalid proposal threshold");
 
         timelock = TimelockInterface(timelock_);
-        // TODO: replace comp and CompInterface with Canto declaration
+        // TODO: replace canto and CompInterface with Canto declaration
         canto = CantoInterface(canto_);
     
         /*

@@ -66,9 +66,9 @@ contract CompoundLens {
     }
 
     function getCompSpeeds(ComptrollerLensInterface comptroller, CToken cToken) internal returns (uint, uint) {
-        // Getting comp speeds is gnarly due to not every network having the
-        // split comp speeds from Proposal 62 and other networks don't even
-        // have comp speeds.
+        // Getting canto speeds is gnarly due to not every network having the
+        // split canto speeds from Proposal 62 and other networks don't even
+        // have canto speeds.
         uint compSupplySpeed = 0;
         (bool compSupplySpeedSuccess, bytes memory compSupplySpeedReturnData) =
             address(comptroller).call(
@@ -93,7 +93,7 @@ contract CompoundLens {
             compBorrowSpeed = abi.decode(compBorrowSpeedReturnData, (uint));
         }
 
-        // If the split comp speeds call doesn't work, try the  oldest non-spit version.
+        // If the split canto speeds call doesn't work, try the  oldest non-spit version.
         if (!compSupplySpeedSuccess || !compBorrowSpeedSuccess) {
             (bool compSpeedSuccess, bytes memory compSpeedReturnData) =
             address(comptroller).call(
@@ -462,7 +462,7 @@ contract CompoundLens {
         comptroller.claimComp(account);
         uint newBalance = canto.balanceOf(account);
         uint accrued = comptroller.compAccrued(account);
-        uint total = add(accrued, newBalance, "sum comp total");
+        uint total = add(accrued, newBalance, "sum canto total");
         uint allocated = sub(total, balance, "sub allocated");
 
         return CompBalanceMetadataExt({
@@ -480,7 +480,7 @@ contract CompoundLens {
     // }
 
   // TODO: delete
-    // function getCompVotes(Comp comp, address account, uint32[] calldata blockNumbers) external view returns (CompVotes[] memory) {
+    // function getCompVotes(canto canto, address account, uint32[] calldata blockNumbers) external view returns (CompVotes[] memory) {
     //     CompVotes[] memory res = new CompVotes[](blockNumbers.length);
     //     for (uint i = 0; i < blockNumbers.length; i++) {
     //         res[i] = CompVotes({
