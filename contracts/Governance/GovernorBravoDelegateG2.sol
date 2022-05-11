@@ -220,10 +220,10 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
       * @param voter The address of the voter
       * @return The voting receipt
       */
+      /*
     function getReceipt(uint proposalId, address voter) external view returns (Receipt memory) {
         return proposals[proposalId].receipts[voter];
-    }
-
+    } */ 
     /**
       * @notice Gets the state of a proposal
       * @param proposalId The id of the proposal
@@ -236,13 +236,14 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
         Proposal storage proposal = proposals[proposalId];
         if (proposal.canceled) {
             return ProposalState.Canceled;
-        } else if (block.number <= proposal.startBlock) {
-            return ProposalState.Pending;
-        } else if (block.number <= proposal.endBlock) {
-            return ProposalState.Active;
-        } else if (proposal.forVotes <= proposal.againstVotes || proposal.forVotes < quorumVotes) {
-            return ProposalState.Defeated;
-        } else if (proposal.eta == 0) {
+        //} else if (block.number <= proposal.startBlock) {
+          //  return ProposalState.Pending;
+        //} else if (block.number <= proposal.endBlock) {
+          //  return ProposalState.Active;
+        //} else if (proposal.forVotes <= proposal.againstVotes || proposal.forVotes < quorumVotes) {
+          //  return ProposalState.Defeated;
+        }
+         else if (proposal.eta == 0) {
             return ProposalState.Succeeded;
         } else if (proposal.executed) {
             return ProposalState.Executed;
@@ -260,10 +261,11 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
       * @param proposalId The id of the proposal to vote on
       * @param support The support value for the vote. 0=against, 1=for, 2=abstain
       */
+      /*
     function castVote(uint proposalId, uint8 support) external {
         emit VoteCast(msg.sender, proposalId, support, castVoteInternal(msg.sender, proposalId, support), "");
     }
-
+    */
     // TODO: delete castVoteWithReason
     /**
       * @notice Cast a vote for a proposal with a reason
@@ -271,15 +273,17 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
       * @param support The support value for the vote. 0=against, 1=for, 2=abstain
       * @param reason The reason given for the vote by the voter
       */
+      /*
     function castVoteWithReason(uint proposalId, uint8 support, string calldata reason) external {
         emit VoteCast(msg.sender, proposalId, support, castVoteInternal(msg.sender, proposalId, support), reason);
-    }
+    }*/
 
     // TODO: delete castVoteBySig
     /**
       * @notice Cast a vote for a proposal by signature
       * @dev External function that accepts EIP-712 signatures for voting on proposals.
       */
+      /*
     function castVoteBySig(uint proposalId, uint8 support, uint8 v, bytes32 r, bytes32 s) external {
         bytes32 domainSeparator = keccak256(abi.encode(DOMAIN_TYPEHASH, keccak256(bytes(name)), getChainIdInternal(), address(this)));
         bytes32 structHash = keccak256(abi.encode(BALLOT_TYPEHASH, proposalId, support));
@@ -287,7 +291,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
         address signatory = ecrecover(digest, v, r, s);
         require(signatory != address(0), "GovernorBravo::castVoteBySig: invalid signature");
         emit VoteCast(signatory, proposalId, support, castVoteInternal(signatory, proposalId, support), "");
-    }
+    }*/
 
     // TODO: delete castVoteInternal
     /**
@@ -297,6 +301,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
       * @param support The support value for the vote. 0=against, 1=for, 2=abstain
       * @return The number of votes cast
       */
+      /*
     function castVoteInternal(address voter, uint proposalId, uint8 support) internal returns (uint96) {
         require(state(proposalId) == ProposalState.Active, "GovernorBravo::castVoteInternal: voting is closed");
         require(support <= 2, "GovernorBravo::castVoteInternal: invalid vote type");
@@ -318,7 +323,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
         receipt.votes = votes;
 
         return votes;
-    }
+    }*/
     
     // TODO: delete isWhitelisted
     /**
@@ -326,15 +331,17 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
      * @param account Account to check white list status of
      * @return If the account is whitelisted
      */
+     /*
     function isWhitelisted(address account) public view returns (bool) {
         return (whitelistAccountExpirations[account] > now);
-    }
+    }*/
 
     // TODO: delete _setVotingDelay
     /**
       * @notice Admin function for setting the voting delay
       * @param newVotingDelay new voting delay, in blocks
       */
+      /*
     function _setVotingDelay(ui0nt newVotingDelay) external {
         require(msg.sender == admin, "GovernorBravo::_setVotingDelay: admin only");
         require(newVotingDelay >= MIN_VOTING_DELAY && newVotingDelay <= MAX_VOTING_DELAY, "GovernorBravo::_setVotingDelay: invalid voting delay");
@@ -342,13 +349,14 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
         votingDelay = newVotingDelay;
 
         emit VotingDelaySet(oldVotingDelay,votingDelay);
-    }
+    }*/
 
     // TODO: delete _setVotingPeriod
     /**
       * @notice Admin function for setting the voting period
       * @param newVotingPeriod new voting period, in blocks
       */
+      /*
     function _setVotingPeriod(uint newVotingPeriod) external {
         require(msg.sender == admin, "GovernorBravo::_setVotingPeriod: admin only");
         require(newVotingPeriod >= MIN_VOTING_PERIOD && newVotingPeriod <= MAX_VOTING_PERIOD, "GovernorBravo::_setVotingPeriod: invalid voting period");
@@ -356,7 +364,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
         votingPeriod = newVotingPeriod;
 
         emit VotingPeriodSet(oldVotingPeriod, votingPeriod);
-    }
+    }*/
 
     // TODO: delete _setProposalThreshold
     /**
@@ -364,6 +372,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
       * @dev newProposalThreshold must be greater than the hardcoded min
       * @param newProposalThreshold new proposal threshold
       */
+      /*
     function _setProposalThreshold(uint newProposalThreshold) external {
         require(msg.sender == admin, "GovernorBravo::_setProposalThreshold: admin only");
         require(newProposalThreshold >= MIN_PROPOSAL_THRESHOLD && newProposalThreshold <= MAX_PROPOSAL_THRESHOLD, "GovernorBravo::_setProposalThreshold: invalid proposal threshold");
@@ -371,7 +380,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
         proposalThreshold = newProposalThreshold;
 
         emit ProposalThresholdSet(oldProposalThreshold, proposalThreshold);
-    }
+    }*/
 
     // TODO: delete _setWhitelistAccountExpiration
     /**
@@ -379,27 +388,29 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV1, GovernorBravoE
      * @param account Account address to set whitelist expiration for
      * @param expiration Expiration for account whitelist status as timestamp (if now < expiration, whitelisted)
      */
+     /*
     function _setWhitelistAccountExpiration(address account, uint expiration) external {
         require(msg.sender == admin || msg.sender == whitelistGuardian, "GovernorBravo::_setWhitelistAccountExpiration: admin only");
         whitelistAccountExpirations[account] = expiration;
 
         emit WhitelistAccountExpirationSet(account, expiration);
-    }
+    }*/
 
     // TODO: delete _setWhitelistGuardian
     /**
      * @notice Admin function for setting the whitelistGuardian. WhitelistGuardian can cancel proposals from whitelisted addresses
      * @param account Account to set whitelistGuardian to (0x0 to remove whitelistGuardian)
      */
+     /*
      function _setWhitelistGuardian(address account) external {
         require(msg.sender == admin, "GovernorBravo::_setWhitelistGuardian: admin only");
         address oldGuardian = whitelistGuardian;
         whitelistGuardian = account;
 
         emit WhitelistGuardianSet(oldGuardian, whitelistGuardian);
-     }
+     }*/
 
-    // TODO: delete _initiate
+    // TODO: figure out if we need this 
     /**
       * @notice Initiate the GovernorBravo contract
       * @dev Admin only. Sets initial proposal id which initiates the contract, ensuring a continuous proposal id count
