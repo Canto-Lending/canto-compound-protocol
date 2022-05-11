@@ -6,7 +6,7 @@ import "./PriceOracle.sol";
 import "./ComptrollerInterface.sol";
 import "./ComptrollerStorage.sol";
 import "./Unitroller.sol";
-import "./Governance/Comp.sol";
+import "./Governance/Canto.sol";
 
 // TODO: need to confirm that g7 is latest comptroller; why are there still commits being made on original Comptroller - https://github.com/compound-finance/compound-protocol/commits/master/contracts/Comptroller.sol
 
@@ -1259,10 +1259,10 @@ contract ComptrollerG7 is ComptrollerV5Storage, ComptrollerInterface, Comptrolle
      * @return The amount of COMP which was NOT transferred to the user
      */
     function grantCompInternal(address user, uint amount) internal returns (uint) {
-        Comp comp = Comp(getCompAddress());
-        uint compRemaining = comp.balanceOf(address(this));
+        Canto canto = Canto(getCantoAddress());
+        uint compRemaining = canto.balanceOf(address(this));
         if (amount > 0 && amount <= compRemaining) {
-            comp.transfer(user, amount);
+            canto.transfer(user, amount);
             return 0;
         }
         return amount;
@@ -1332,7 +1332,7 @@ contract ComptrollerG7 is ComptrollerV5Storage, ComptrollerInterface, Comptrolle
      * @notice Return the address of the COMP token
      * @return The address of COMP
      */
-    function getCompAddress() public view returns (address) {
+    function getCantoAddress() public view returns (address) {
         return 0xc00e94Cb662C3520282E6f5717214004A7f26888;
     }
 }

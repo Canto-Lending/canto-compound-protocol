@@ -24,7 +24,7 @@ contract GovernorAlpha {
     TimelockInterface public timelock;
 
     /// @notice The address of the Compound governance token
-    CompInterface public comp;
+    CantoInterface public canto;
 
     /// @notice The address of the Governor Guardian
     address public guardian;
@@ -127,9 +127,9 @@ contract GovernorAlpha {
     /// @notice An event emitted when a proposal has been executed in the Timelock
     // event ProposalExecuted(uint id);
 
-    constructor(address timelock_, address comp_, address guardian_) public {
+    constructor(address timelock_, address canto_, address guardian_) public {
         timelock = TimelockInterface(timelock_);
-        comp = CompInterface(comp_);
+        canto = CantoInterface(canto_);
         guardian = guardian_;
     }
 
@@ -204,7 +204,7 @@ contract GovernorAlpha {
         require(state != ProposalState.Executed, "GovernorAlpha::cancel: cannot cancel executed proposal");
 
         Proposal storage proposal = proposals[proposalId];
-        require(msg.sender == guardian || comp.getPriorVotes(proposal.proposer, sub256(block.number, 1)) < proposalThreshold(), "GovernorAlpha::cancel: proposer above threshold");
+        require(msg.sender == guardian || canto.getPriorVotes(proposal.proposer, sub256(block.number, 1)) < proposalThreshold(), "GovernorAlpha::cancel: proposer above threshold");
 
         proposal.canceled = true;
         for (uint i = 0; i < proposal.targets.length; i++) {
@@ -326,6 +326,6 @@ interface TimelockInterface {
     function executeTransaction(address target, uint value, string calldata signature, bytes calldata data, uint eta) external payable returns (bytes memory);
 }
 
-interface CompInterface {
+interface CantoInterface {
     function getPriorVotes(address account, uint blockNumber) external view returns (uint96);
 }

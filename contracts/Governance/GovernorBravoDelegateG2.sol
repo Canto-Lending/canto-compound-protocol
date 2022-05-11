@@ -11,10 +11,10 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
       string public constant name = "Compound Governor Bravo";
 
       /// @notice The minimum setable proposal threshold
-      uint public constant MIN_PROPOSAL_THRESHOLD = 50000e18; // 50,000 Comp
+      uint public constant MIN_PROPOSAL_THRESHOLD = 50000e18; // 50,000 c
 
       /// @notice The maximum setable proposal threshold
-      uint public constant MAX_PROPOSAL_THRESHOLD = 100000e18; //100,000 Comp
+      uint public constant MAX_PROPOSAL_THRESHOLD = 100000e18; //100,000 c
 
       /// @notice The minimum setable voting period
       uint public constant MIN_VOTING_PERIOD = 5760; // About 24 hours
@@ -29,7 +29,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
       uint public constant MAX_VOTING_DELAY = 40320; // About 1 week
 
       /// @notice The number of votes in support of a proposal required in order for a quorum to be reached and for a vote to succeed
-      uint public constant quorumVotes = 400000e18; // 400,000 = 4% of Comp
+      uint public constant quorumVotes = 400000e18; // 400,000 = 4% of c
       */
 
     /// @notice The maximum number of actions that can be included in a proposal
@@ -48,25 +48,25 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
     /**
       * @notice Used to initialize the contract during delegator contructor
       * @param timelock_ The address of the Timelock
-      * @param comp_ The address of the COMP token
+      * @param canto_ The address of the COMP token
               * 
       */
-    function initialize(address timelock_, address comp_) public {
+    function initialize(address timelock_, address canto_) public {
         require(address(timelock) == address(0), "GovernorBravo::initialize: can only initialize once");
         require(msg.sender == admin, "GovernorBravo::initialize: admin only");
         require(timelock_ != address(0), "GovernorBravo::initialize: invalid timelock address");
 
         // TODO: replace comp initialization with canto initialization 
         // seo_modified
-        require(comp_ != address(0), "GovernorBravo::initialize: invalid comp address");
+        require(canto_ != address(0), "GovernorBravo::initialize: invalid comp address");
         
         // require(votingPeriod_ >= MIN_VOTING_PERIOD && votingPeriod_ <= MAX_VOTING_PERIOD, "GovernorBravo::initialize: invalid voting period");
         // require(votingDelay_ >= MIN_VOTING_DELAY && votingDelay_ <= MAX_VOTING_DELAY, "GovernorBravo::initialize: invalid voting delay");
         // require(proposalThreshold_ >= MIN_PROPOSAL_THRESHOLD && proposalThreshold_ <= MAX_PROPOSAL_THRESHOLD, "GovernorBravo::initialize: invalid proposal threshold");
 
         timelock = TimelockInterface(timelock_);
-// TODO: replace comp and CompInterface with Canto declaration
-        comp = CompInterface(comp_);
+        // TODO: replace comp and CompInterface with Canto declaration
+        canto = CantoInterface(canto_);
     
         /*
           TODO: delete these; no need for voting logic

@@ -6,7 +6,7 @@ import "../CToken.sol";
 import "../PriceOracle.sol";
 import "../EIP20Interface.sol";
 import "../Governance/GovernorAlpha.sol";
-import "../Governance/Comp.sol";
+import "../Governance/Canto.sol";
 
 interface ComptrollerLensInterface {
     function markets(address) external view returns (bool, uint);
@@ -442,9 +442,9 @@ contract CompoundLens {
         // address delegate;
     }
 
-    function getCompBalanceMetadata(Comp comp, address account) external view returns (CompBalanceMetadata memory) {
+    function getCompBalanceMetadata(Canto canto, address account) external view returns (CompBalanceMetadata memory) {
         return CompBalanceMetadata({
-            balance: comp.balanceOf(account)
+            balance: canto.balanceOf(account)
             // votes: uint256(comp.getCurrentVotes(account)),
             // delegate: comp.delegates(account)
         });
@@ -457,10 +457,10 @@ contract CompoundLens {
         uint allocated;
     }
 
-    function getCompBalanceMetadataExt(Comp comp, ComptrollerLensInterface comptroller, address account) external returns (CompBalanceMetadataExt memory) {
-        uint balance = comp.balanceOf(account);
+    function getCompBalanceMetadataExt(Canto canto, ComptrollerLensInterface comptroller, address account) external returns (CompBalanceMetadataExt memory) {
+        uint balance = canto.balanceOf(account);
         comptroller.claimComp(account);
-        uint newBalance = comp.balanceOf(account);
+        uint newBalance = canto.balanceOf(account);
         uint accrued = comptroller.compAccrued(account);
         uint total = add(accrued, newBalance, "sum comp total");
         uint allocated = sub(total, balance, "sub allocated");

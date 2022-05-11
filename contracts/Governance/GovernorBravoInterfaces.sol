@@ -99,7 +99,7 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
 
     // TODO: need to replace with Canto EIP-20 Interfance
     /// @notice The address of the Compound governance token
-    CompInterface public comp;
+    CantoInterface public canto;
 
     /// @notice The official record of all proposals ever proposed
     mapping (uint => Proposal) public proposals;
@@ -206,7 +206,7 @@ interface TimelockInterface {
 }
 
 // TODO: delete this
-interface CompInterface {
+interface CantoInterface {
     function getPriorVotes(address account, uint blockNumber) external view returns (uint96);
 }
 
