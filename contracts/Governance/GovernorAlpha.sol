@@ -113,10 +113,10 @@ contract GovernorAlpha {
     bytes32 public constant BALLOT_TYPEHASH = keccak256("Ballot(uint256 proposalId,bool support)");
 
     /// @notice An event emitted when a new proposal is created
-    event ProposalCreated(uint id, address proposer, address[] targets, uint[] values, string[] signatures, bytes[] calldatas, uint startBlock, uint endBlock, string description);
+    // event ProposalCreated(uint id, address proposer, address[] targets, uint[] values, string[] signatures, bytes[] calldatas, uint startBlock, uint endBlock, string description);
 
     /// @notice An event emitted when a vote has been cast on a proposal
-    event VoteCast(address voter, uint proposalId, bool support, uint votes);
+    // event VoteCast(address voter, uint proposalId, bool support, uint votes);
 
     /// @notice An event emitted when a proposal has been canceled
     event ProposalCanceled(uint id);
@@ -125,7 +125,7 @@ contract GovernorAlpha {
     event ProposalQueued(uint id, uint eta);
 
     /// @notice An event emitted when a proposal has been executed in the Timelock
-    event ProposalExecuted(uint id);
+    // event ProposalExecuted(uint id);
 
     constructor(address timelock_, address comp_, address guardian_) public {
         timelock = TimelockInterface(timelock_);
@@ -133,45 +133,45 @@ contract GovernorAlpha {
         guardian = guardian_;
     }
 
-    function propose(address[] memory targets, uint[] memory values, string[] memory signatures, bytes[] memory calldatas, string memory description) public returns (uint) {
-        require(comp.getPriorVotes(msg.sender, sub256(block.number, 1)) > proposalThreshold(), "GovernorAlpha::propose: proposer votes below proposal threshold");
-        require(targets.length == values.length && targets.length == signatures.length && targets.length == calldatas.length, "GovernorAlpha::propose: proposal function information arity mismatch");
-        require(targets.length != 0, "GovernorAlpha::propose: must provide actions");
-        require(targets.length <= proposalMaxOperations(), "GovernorAlpha::propose: too many actions");
+        // function propose(address[] memory targets, uint[] memory values, string[] memory signatures, bytes[] memory calldatas, string memory description) public returns (uint) {
+        //     require(comp.getPriorVotes(msg.sender, sub256(block.number, 1)) > proposalThreshold(), "GovernorAlpha::propose: proposer votes below proposal threshold");
+        //     require(targets.length == values.length && targets.length == signatures.length && targets.length == calldatas.length, "GovernorAlpha::propose: proposal function information arity mismatch");
+        //     require(targets.length != 0, "GovernorAlpha::propose: must provide actions");
+        //     require(targets.length <= proposalMaxOperations(), "GovernorAlpha::propose: too many actions");
 
-        uint latestProposalId = latestProposalIds[msg.sender];
-        if (latestProposalId != 0) {
-          ProposalState proposersLatestProposalState = state(latestProposalId);
-          require(proposersLatestProposalState != ProposalState.Active, "GovernorAlpha::propose: one live proposal per proposer, found an already active proposal");
-          require(proposersLatestProposalState != ProposalState.Pending, "GovernorAlpha::propose: one live proposal per proposer, found an already pending proposal");
-        }
+        //     uint latestProposalId = latestProposalIds[msg.sender];
+        //     if (latestProposalId != 0) {
+        //       ProposalState proposersLatestProposalState = state(latestProposalId);
+        //       require(proposersLatestProposalState != ProposalState.Active, "GovernorAlpha::propose: one live proposal per proposer, found an already active proposal");
+        //       require(proposersLatestProposalState != ProposalState.Pending, "GovernorAlpha::propose: one live proposal per proposer, found an already pending proposal");
+        //     }
 
-        uint startBlock = add256(block.number, votingDelay());
-        uint endBlock = add256(startBlock, votingPeriod());
+        //     uint startBlock = add256(block.number, votingDelay());
+        //     uint endBlock = add256(startBlock, votingPeriod());
 
-        proposalCount++;
-        Proposal memory newProposal = Proposal({
-            id: proposalCount,
-            proposer: msg.sender,
-            eta: 0,
-            targets: targets,
-            values: values,
-            signatures: signatures,
-            calldatas: calldatas,
-            startBlock: startBlock,
-            endBlock: endBlock,
-            forVotes: 0,
-            againstVotes: 0,
-            canceled: false,
-            executed: false
-        });
+        //     proposalCount++;
+        //     Proposal memory newProposal = Proposal({
+        //         id: proposalCount,
+        //         proposer: msg.sender,
+        //         eta: 0,
+        //         targets: targets,
+        //         values: values,
+        //         signatures: signatures,
+        //         calldatas: calldatas,
+        //         startBlock: startBlock,
+        //         endBlock: endBlock,
+        //         forVotes: 0,
+        //         againstVotes: 0,
+        //         canceled: false,
+        //         executed: false
+        //     });
 
-        proposals[newProposal.id] = newProposal;
-        latestProposalIds[newProposal.proposer] = newProposal.id;
+        //     proposals[newProposal.id] = newProposal;
+        //     latestProposalIds[newProposal.proposer] = newProposal.id;
 
-        emit ProposalCreated(newProposal.id, msg.sender, targets, values, signatures, calldatas, startBlock, endBlock, description);
-        return newProposal.id;
-    }
+        //     emit ProposalCreated(newProposal.id, msg.sender, targets, values, signatures, calldatas, startBlock, endBlock, description);
+        //     return newProposal.id;
+        // }
 
     function queue(uint proposalId) public {
         require(state(proposalId) == ProposalState.Succeeded, "GovernorAlpha::queue: proposal can only be queued if it is succeeded");
@@ -189,15 +189,15 @@ contract GovernorAlpha {
         timelock.queueTransaction(target, value, signature, data, eta);
     }
 
-    function execute(uint proposalId) public payable {
-        require(state(proposalId) == ProposalState.Queued, "GovernorAlpha::execute: proposal can only be executed if it is queued");
-        Proposal storage proposal = proposals[proposalId];
-        proposal.executed = true;
-        for (uint i = 0; i < proposal.targets.length; i++) {
-            timelock.executeTransaction.value(proposal.values[i])(proposal.targets[i], proposal.values[i], proposal.signatures[i], proposal.calldatas[i], proposal.eta);
-        }
-        emit ProposalExecuted(proposalId);
-    }
+        // function execute(uint proposalId) public payable {
+        //     require(state(proposalId) == ProposalState.Queued, "GovernorAlpha::execute: proposal can only be executed if it is queued");
+        //     Proposal storage proposal = proposals[proposalId];
+        //     proposal.executed = true;
+        //     for (uint i = 0; i < proposal.targets.length; i++) {
+        //         timelock.executeTransaction.value(proposal.values[i])(proposal.targets[i], proposal.values[i], proposal.signatures[i], proposal.calldatas[i], proposal.eta);
+        //     }
+        //     emit ProposalExecuted(proposalId);
+        // }
 
     function cancel(uint proposalId) public {
         ProposalState state = state(proposalId);
@@ -245,38 +245,38 @@ contract GovernorAlpha {
         }
     }
 
-    function castVote(uint proposalId, bool support) public {
-        return _castVote(msg.sender, proposalId, support);
-    }
+        // function castVote(uint proposalId, bool support) public {
+        //     return _castVote(msg.sender, proposalId, support);
+        // }
 
-    function castVoteBySig(uint proposalId, bool support, uint8 v, bytes32 r, bytes32 s) public {
-        bytes32 domainSeparator = keccak256(abi.encode(DOMAIN_TYPEHASH, keccak256(bytes(name)), getChainId(), address(this)));
-        bytes32 structHash = keccak256(abi.encode(BALLOT_TYPEHASH, proposalId, support));
-        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", domainSeparator, structHash));
-        address signatory = ecrecover(digest, v, r, s);
-        require(signatory != address(0), "GovernorAlpha::castVoteBySig: invalid signature");
-        return _castVote(signatory, proposalId, support);
-    }
+        // function castVoteBySig(uint proposalId, bool support, uint8 v, bytes32 r, bytes32 s) public {
+        //     bytes32 domainSeparator = keccak256(abi.encode(DOMAIN_TYPEHASH, keccak256(bytes(name)), getChainId(), address(this)));
+        //     bytes32 structHash = keccak256(abi.encode(BALLOT_TYPEHASH, proposalId, support));
+        //     bytes32 digest = keccak256(abi.encodePacked("\x19\x01", domainSeparator, structHash));
+        //     address signatory = ecrecover(digest, v, r, s);
+        //     require(signatory != address(0), "GovernorAlpha::castVoteBySig: invalid signature");
+        //     return _castVote(signatory, proposalId, support);
+        // }
 
-    function _castVote(address voter, uint proposalId, bool support) internal {
-        require(state(proposalId) == ProposalState.Active, "GovernorAlpha::_castVote: voting is closed");
-        Proposal storage proposal = proposals[proposalId];
-        Receipt storage receipt = proposal.receipts[voter];
-        require(receipt.hasVoted == false, "GovernorAlpha::_castVote: voter already voted");
-        uint96 votes = comp.getPriorVotes(voter, proposal.startBlock);
+        // function _castVote(address voter, uint proposalId, bool support) internal {
+        //     require(state(proposalId) == ProposalState.Active, "GovernorAlpha::_castVote: voting is closed");
+        //     Proposal storage proposal = proposals[proposalId];
+        //     Receipt storage receipt = proposal.receipts[voter];
+        //     require(receipt.hasVoted == false, "GovernorAlpha::_castVote: voter already voted");
+        //     uint96 votes = comp.getPriorVotes(voter, proposal.startBlock);
 
-        if (support) {
-            proposal.forVotes = add256(proposal.forVotes, votes);
-        } else {
-            proposal.againstVotes = add256(proposal.againstVotes, votes);
-        }
+        //     if (support) {
+        //         proposal.forVotes = add256(proposal.forVotes, votes);
+        //     } else {
+        //         proposal.againstVotes = add256(proposal.againstVotes, votes);
+        //     }
 
-        receipt.hasVoted = true;
-        receipt.support = support;
-        receipt.votes = votes;
+        //     receipt.hasVoted = true;
+        //     receipt.support = support;
+        //     receipt.votes = votes;
 
-        emit VoteCast(voter, proposalId, support, votes);
-    }
+        //     emit VoteCast(voter, proposalId, support, votes);
+        // }
 
     function __acceptAdmin() public {
         require(msg.sender == guardian, "GovernorAlpha::__acceptAdmin: sender must be gov guardian");
