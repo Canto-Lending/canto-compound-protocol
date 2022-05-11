@@ -140,28 +140,28 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
         bool executed;
 
         /// @notice Receipts of ballots for the entire set of voters
-        mapping (address => Receipt) receipts;
+        // mapping (address => Receipt) receipts;
     }
 
     /// @notice Ballot receipt record for a voter
-    struct Receipt {
-        /// @notice Whether or not a vote has been cast
-        bool hasVoted;
+        // struct Receipt {
+        //     /// @notice Whether or not a vote has been cast
+        //     bool hasVoted;
 
-        /// @notice Whether or not the voter supports the proposal or abstains
-        uint8 support;
+        //     /// @notice Whether or not the voter supports the proposal or abstains
+        //     uint8 support;
 
-        /// @notice The number of votes the voter had, which were cast
-        uint96 votes;
-    }
+        //     /// @notice The number of votes the voter had, which were cast
+        //     uint96 votes;
+        // }
 
     /// @notice Possible states that a proposal may be in
     enum ProposalState {
-        Pending,
-        Active,
-        Canceled,
-        Defeated,
-        Succeeded,
+        // Pending,
+        // Active,
+        // Canceled,
+        // Defeated,
+        // Succeeded,
         Queued,
         Expired,
         Executed

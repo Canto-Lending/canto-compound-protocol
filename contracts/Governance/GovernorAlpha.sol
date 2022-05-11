@@ -73,28 +73,28 @@ contract GovernorAlpha {
         bool executed;
 
         /// @notice Receipts of ballots for the entire set of voters
-        mapping (address => Receipt) receipts;
+        // mapping (address => Receipt) receipts;
     }
 
     /// @notice Ballot receipt record for a voter
-    struct Receipt {
-        /// @notice Whether or not a vote has been cast
-        bool hasVoted;
+        // struct Receipt {
+        //     /// @notice Whether or not a vote has been cast
+        //     bool hasVoted;
 
-        /// @notice Whether or not the voter supports the proposal
-        bool support;
+        //     /// @notice Whether or not the voter supports the proposal
+        //     bool support;
 
-        /// @notice The number of votes the voter had, which were cast
-        uint96 votes;
-    }
+        //     /// @notice The number of votes the voter had, which were cast
+        //     uint96 votes;
+        // }
 
     /// @notice Possible states that a proposal may be in
     enum ProposalState {
-        Pending,
-        Active,
-        Canceled,
-        Defeated,
-        Succeeded,
+        // Pending,
+        // Active,
+        // Canceled,
+        // Defeated,
+        // Succeeded,
         Queued,
         Expired,
         Executed
@@ -174,7 +174,7 @@ contract GovernorAlpha {
         // }
 
     function queue(uint proposalId) public {
-        require(state(proposalId) == ProposalState.Succeeded, "GovernorAlpha::queue: proposal can only be queued if it is succeeded");
+        // require(state(proposalId) == ProposalState.Succeeded, "GovernorAlpha::queue: proposal can only be queued if it is succeeded");
         Proposal storage proposal = proposals[proposalId];
         uint eta = add256(block.timestamp, timelock.delay());
         for (uint i = 0; i < proposal.targets.length; i++) {
@@ -219,23 +219,23 @@ contract GovernorAlpha {
         return (p.targets, p.values, p.signatures, p.calldatas);
     }
 
-    function getReceipt(uint proposalId, address voter) public view returns (Receipt memory) {
-        return proposals[proposalId].receipts[voter];
-    }
+    // function getReceipt(uint proposalId, address voter) public view returns (Receipt memory) {
+    //     return proposals[proposalId].receipts[voter];
+    // }
 
     function state(uint proposalId) public view returns (ProposalState) {
         require(proposalCount >= proposalId && proposalId > 0, "GovernorAlpha::state: invalid proposal id");
         Proposal storage proposal = proposals[proposalId];
         if (proposal.canceled) {
-            return ProposalState.Canceled;
+            return ProposalState.Expired;
         // } else if (block.number <= proposal.startBlock) {
         //     return ProposalState.Pending;
         // } else if (block.number <= proposal.endBlock) {
         //     return ProposalState.Active;
         // } else if (proposal.forVotes <= proposal.againstVotes || proposal.forVotes < quorumVotes()) {
         //     return ProposalState.Defeated;
-        } else if (proposal.eta == 0) {
-            return ProposalState.Succeeded;
+        // } else if (proposal.eta == 0) {
+        //     return ProposalState.Succeeded;
         } else if (proposal.executed) {
             return ProposalState.Executed;
         } else if (block.timestamp >= add256(proposal.eta, timelock.GRACE_PERIOD())) {

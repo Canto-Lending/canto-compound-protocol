@@ -119,7 +119,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
       * @param proposalId The id of the proposal to queue
       */
     function queue(uint proposalId) external {
-        require(state(proposalId) == ProposalState.Succeeded, "GovernorBravo::queue: proposal can only be queued if it is succeeded");
+        // require(state(proposalId) == ProposalState.Succeeded, "GovernorBravo::queue: proposal can only be queued if it is succeeded");
         Proposal storage proposal = proposals[proposalId];
         uint eta = add256(block.timestamp, timelock.delay());
         for (uint i = 0; i < proposal.targets.length; i++) {
@@ -194,9 +194,9 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
       * @param voter The address of the voter
       * @return The voting receipt
       */
-    function getReceipt(uint proposalId, address voter) external view returns (Receipt memory) {
-        return proposals[proposalId].receipts[voter];
-    }
+    // function getReceipt(uint proposalId, address voter) external view returns (Receipt memory) {
+    //     return proposals[proposalId].receipts[voter];
+    // }
 
     /**
       * @notice Gets the state of a proposal
@@ -207,15 +207,15 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
         require(proposalCount >= proposalId && proposalId > initialProposalId, "GovernorBravo::state: invalid proposal id");
         Proposal storage proposal = proposals[proposalId];
         if (proposal.canceled) {
-            return ProposalState.Canceled;
+            return ProposalState.Expired;
         // } else if (block.number <= proposal.startBlock) {
         //     return ProposalState.Pending;
         // } else if (block.number <= proposal.endBlock) {
         //     return ProposalState.Active;
         // } else if (proposal.forVotes <= proposal.againstVotes || proposal.forVotes < quorumVotes) {
         //     return ProposalState.Defeated;
-        } else if (proposal.eta == 0) {
-            return ProposalState.Succeeded;
+        // } else if (proposal.eta == 0) {
+        //     return ProposalState.Succeeded;
         } else if (proposal.executed) {
             return ProposalState.Executed;
         } else if (block.timestamp >= add256(proposal.eta, timelock.GRACE_PERIOD())) {
