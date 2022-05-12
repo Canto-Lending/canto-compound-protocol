@@ -1,5 +1,6 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { Overrides } from 'ethers';
+import { text } from 'stream/consumers';
 
 import {
   BaseJumpRateModelV2,
@@ -58,16 +59,21 @@ export async function deployCompoundV2(
   overrides?: Overrides
 ): Promise<CompoundV2> {
   const comptroller = await deployComptroller(deployer, overrides);
+  await comptroller.deployed();
   console.log('#1 Comptroller Deployed at: ', comptroller.address);
+  
 
   const priceOracle = await deployPriceOracle(deployer, overrides);
+  await priceOracle.deployed();
   console.log('#2 PriceOracle Deployed at: ', priceOracle.address);
 
-  await comptroller._setPriceOracle(priceOracle.address);
+  const tx = await comptroller._setPriceOracle(priceOracle.address);
+  await tx.wait();
   console.log('#3 comptroller._setPriceOracle Done');
 
   const interestRateModelArgs = Object.values(INTEREST_RATE_MODEL);
   const interestRateModels = await deployInterestRateModels(interestRateModelArgs, deployer);
+  // await interestRateModels.deployed();
   console.log('#4 interestRateModels Deployed ');
   for (const item of interestRateModelArgs) {
     console.log(`${item.name} (${getTypeFromId(item.type)}) deployed at : `, interestRateModels[item.name].address);
@@ -81,6 +87,7 @@ export async function deployCompoundV2(
     deployer,
     overrides
   );
+  // await cTokenLikes.deployed();
 
   cTokenLikes.map((_ctoken, index) => {
     console.log(`#5-${index + 1} CTokens Deployed at: ', ${_ctoken.address}`);

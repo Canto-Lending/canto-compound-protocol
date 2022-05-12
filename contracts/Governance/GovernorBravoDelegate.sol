@@ -154,6 +154,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
       */
     function cancel(uint proposalId) external {
         // TODO: only admin can cancel contracts; change logic here accordingly
+        //@seo: admin checking
         require(msg.sender == admin, "GovernorBravo::_setVotingDelay: admin only");
         require(state(proposalId) != ProposalState.Executed, "GovernorBravo::cancel: cannot cancel executed proposal");
 

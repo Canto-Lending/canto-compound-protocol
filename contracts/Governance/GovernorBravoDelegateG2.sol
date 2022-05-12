@@ -57,7 +57,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
         require(timelock_ != address(0), "GovernorBravo::initialize: invalid timelock address");
 
         // TODO: replace canto initialization with canto initialization 
-        // seo_modified
+        //@seo: make canto
         require(canto_ != address(0), "GovernorBravo::initialize: invalid cnato  address");
         
         // require(votingPeriod_ >= MIN_VOTING_PERIOD && votingPeriod_ <= MAX_VOTING_PERIOD, "GovernorBravo::initialize: invalid voting period");
@@ -66,6 +66,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
 
         timelock = TimelockInterface(timelock_);
         // TODO: replace canto and CompInterface with Canto declaration
+        //@seo: canto interface is introduced
         canto = CantoInterface(canto_);
     
         /*
@@ -173,6 +174,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
       */
     function cancel(uint proposalId) external {
         // TODO: only admin can cancel contracts; change logic here accordingly
+        //@seo: admin checking
         require(msg.sender == admin, "GovernorBravo::_setVotingDelay: admin only");
         require(state(proposalId) != ProposalState.Executed, "GovernorBravo::cancel: cannot cancel executed proposal");
 
@@ -227,6 +229,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
     function state(uint proposalId) public view returns (ProposalState) {
         // TODO: remove all logic related to proposal voting from here
         // TODO: delete PENDING, DEFEATED, Canceled, Active, Succeeded state logic
+        //@seo: remains 3 status only. cancel and expired have to be discuss
         require(proposalCount >= proposalId && proposalId > initialProposalId, "GovernorBravo::state: invalid proposal id");
         Proposal storage proposal = proposals[proposalId];
         if (proposal.canceled) {

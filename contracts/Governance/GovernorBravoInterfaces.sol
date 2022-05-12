@@ -174,6 +174,7 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
         // }
 
     // TODO: delete PENDING, DEFEATED, Canceled, Active, Succeeded
+    //@seo: delete only 5 status
     /// @notice Possible states that a proposal may be in
     enum ProposalState {
         // Pending,
@@ -187,6 +188,7 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
     }
 }
 // TODO: delete GovernorBravoDelegateStorageV2 and replace all extensions with GovernorBravoDelegateStorageV1
+//@seo: not deleted only whitelist and guardian is added so, do not need delete
 contract GovernorBravoDelegateStorageV2 is GovernorBravoDelegateStorageV1 {
     /// @notice Stores the expiration of account whitelist status as a timestamp
     // mapping (address => uint) public whitelistAccountExpirations;
@@ -206,6 +208,7 @@ interface TimelockInterface {
 }
 
 // TODO: delete this
+//@seo: change into canto instead of Compinterface
 interface CantoInterface {
     function getPriorVotes(address account, uint blockNumber) external view returns (uint96);
 }
