@@ -13,7 +13,8 @@
   "exclude": ["dist", "node_modules"],
   "include": [
     "./test",
-    "./src"
+    "./src", 
+    "./scripts"
   ],
   "files": [
     "./hardhat.config.ts"

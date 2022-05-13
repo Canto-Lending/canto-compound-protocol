@@ -7,10 +7,10 @@ import '@typechain/hardhat';
 module.exports = {
   networks: {
     hardhat: {
-      allowUnlimitedContractSize: true,
-      forking:{
-        url: "https://eth-mainnet.alchemyapi.io/v2/<key>",
-      }
+      allowUnlimitedContractSize: true
+      //forking:{
+        //url: "https://eth-mainnet.alchemyapi.io/v2/<key>",
+      //}
     },
     rinkeby: {
       url: process.env.ROPSTEN_URL || '',
@@ -25,8 +25,8 @@ module.exports = {
       accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     tevmos: {
-      url: process.env.EVMOS_URL || '',
-      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      url: "http://localhost:8545",
+      accounts: ["def483eeea63ff0d8dd5f0956bfa9226cd236bcf79a3ab50be509106bbc04727"],
     },
   },
   typechain: {

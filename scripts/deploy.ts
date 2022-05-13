@@ -33,10 +33,10 @@ async function main() {
   const { cETH: cEth, cUNI: cUni } = cTokens;
 
   const uniAmount = parseUnits('100', 18).toString();
-  await uni.mint(userA.address, uniAmount);
-  await uni.connect(userA).approve(cUni.address, uniAmount);
-  await cUni.connect(userA).mint(parseUnits('25', 18).toString());
-  await cEth.connect(userA).mint({
+  await uni.mint(deployer.address, uniAmount);
+  await uni.connect(deployer).approve(cUni.address, uniAmount);
+  await cUni.connect(deployer).mint(parseUnits('25', 18).toString());
+  await cEth.connect(deployer).mint({
     value: parseUnits('2', 18).toString(),
   });
 }
