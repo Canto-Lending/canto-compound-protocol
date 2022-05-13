@@ -8,9 +8,9 @@ module.exports = {
   networks: {
     hardhat: {
       allowUnlimitedContractSize: true,
-      // forking:{
-      //   url: "https://eth-mainnet.alchemyapi.io/v2/<key>",
-      // }
+      forking:{
+        url: "https://eth-mainnet.alchemyapi.io/v2/<key>",
+      }
     },
     rinkeby: {
       url: process.env.ROPSTEN_URL || '',
