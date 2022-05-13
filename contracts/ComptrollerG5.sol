@@ -7,7 +7,7 @@ import "./PriceOracle.sol";
 import "./ComptrollerInterface.sol";
 import "./ComptrollerStorage.sol";
 import "./Unitroller.sol";
-import "./Governance/Comp.sol";
+import "./Governance/Canto.sol";
 
 /**
  * @title Compound's Comptroller Contract
@@ -1287,10 +1287,10 @@ contract ComptrollerG5 is ComptrollerV4Storage, ComptrollerInterface, Comptrolle
      */
     function transferComp(address user, uint userAccrued, uint threshold) internal returns (uint) {
         if (userAccrued >= threshold && userAccrued > 0) {
-            Comp comp = Comp(getCompAddress());
-            uint compRemaining = comp.balanceOf(address(this));
+            Canto canto = Canto(getCantoAddress());
+            uint compRemaining = canto.balanceOf(address(this));
             if (userAccrued <= compRemaining) {
-                comp.transfer(user, userAccrued);
+                canto.transfer(user, userAccrued);
                 return 0;
             }
         }
@@ -1429,7 +1429,7 @@ contract ComptrollerG5 is ComptrollerV4Storage, ComptrollerInterface, Comptrolle
      * @notice Return the address of the COMP token
      * @return The address of COMP
      */
-    function getCompAddress() public view returns (address) {
+    function getCantoAddress() public view returns (address) {
         return 0xc00e94Cb662C3520282E6f5717214004A7f26888;
     }
 }

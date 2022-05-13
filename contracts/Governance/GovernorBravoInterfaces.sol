@@ -4,9 +4,8 @@ pragma experimental ABIEncoderV2;
 
 contract GovernorBravoEvents {
     // TODO: delete
-    /*
     /// @notice An event emitted when a new proposal is created
-    event ProposalCreated(uint id, address proposer, address[] targets, uint[] values, string[] signatures, bytes[] calldatas, uint startBlock, uint endBlock, string description);
+    // event ProposalCreated(uint id, address proposer, address[] targets, uint[] values, string[] signatures, bytes[] calldatas, uint startBlock, uint endBlock, string description);
 
     // TODO: delete
     /// @notice An event emitted when a vote has been cast on a proposal
@@ -15,30 +14,32 @@ contract GovernorBravoEvents {
     /// @param support Support value for the vote. 0=against, 1=for, 2=abstain
     /// @param votes Number of votes which were cast by the voter
     /// @param reason The reason given for the vote by the voter
-    event VoteCast(address indexed voter, uint proposalId, uint8 support, uint votes, string reason);
+    // event VoteCast(address indexed voter, uint proposalId, uint8 support, uint votes, string reason);
+
     /// @notice An event emitted when a proposal has been canceled
-    event ProposalCanceled(uint id);*/
+    event ProposalCanceled(uint id);
 
     /// @notice An event emitted when a proposal has been queued in the Timelock
     event ProposalQueued(uint id, uint eta);
 
+    // TODO: delete
     /// @notice An event emitted when a proposal has been executed in the Timelock
-    event ProposalExecuted(uint id);
+    // event ProposalExecuted(uint id);
 
     // TODO: delete
     /// @notice An event emitted when the voting delay is set
-    //event VotingDelaySet(uint oldVotingDelay, uint newVotingDelay);
+    // event VotingDelaySet(uint oldVotingDelay, uint newVotingDelay);
 
     // TODO: delete
     /// @notice An event emitted when the voting period is set
-    //event VotingPeriodSet(uint oldVotingPeriod, uint newVotingPeriod);
+    // event VotingPeriodSet(uint oldVotingPeriod, uint newVotingPeriod);
 
     /// @notice Emitted when implementation is changed
     event NewImplementation(address oldImplementation, address newImplementation);
 
     // TODO: delete
     /// @notice Emitted when proposal threshold is set
-    //event ProposalThresholdSet(uint oldProposalThreshold, uint newProposalThreshold);
+    // event ProposalThresholdSet(uint oldProposalThreshold, uint newProposalThreshold);
 
     /// @notice Emitted when pendingAdmin is changed
     event NewPendingAdmin(address oldPendingAdmin, address newPendingAdmin);
@@ -48,11 +49,11 @@ contract GovernorBravoEvents {
 
     // TODO: delete
     /// @notice Emitted when whitelist account expiration is set
-    //event WhitelistAccountExpirationSet(address account, uint expiration);
+    // event WhitelistAccountExpirationSet(address account, uint expiration);
 
     // TODO: delete
     /// @notice Emitted when the whitelistGuardian is set
-    //event WhitelistGuardianSet(address oldGuardian, address newGuardian);
+    // event WhitelistGuardianSet(address oldGuardian, address newGuardian);
 }
 
 contract GovernorBravoDelegatorStorage {
@@ -77,15 +78,15 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
 
     // TODO: delete
     /// @notice The delay before voting on a proposal may take place, once proposed, in blocks
-    //uint public votingDelay;
+    // uint public votingDelay;
 
     // TODO: delete
     /// @notice The duration of voting on a proposal, in blocks
-    //uint public votingPeriod;
+    // uint public votingPeriod;
 
     // TODO: delete
     /// @notice The number of votes required in order for a voter to become a proposer
-    //uint public proposalThreshold;
+    // uint public proposalThreshold;
 
     /// @notice Initial proposal id set at become
     uint public initialProposalId;
@@ -98,12 +99,11 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
 
     // TODO: need to replace with Canto EIP-20 Interfance
     /// @notice The address of the Compound governance token
-    CompInterface public comp;
+    CantoInterface public canto;
 
     /// @notice The official record of all proposals ever proposed
     mapping (uint => Proposal) public proposals;
 
-    //TODO: Delete this. Don't think we need this but double check first. 
     /// @notice The latest proposal for each proposer
     mapping (address => uint) public latestProposalIds;
 
@@ -132,23 +132,23 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
 
         // TODO: delete startBlock
         /// @notice The block at which voting begins: holders must delegate their votes prior to this block
-        //uint startBlock;
+            // uint startBlock;
 
         // TODO: delete endBlock
         /// @notice The block at which voting ends: votes must be cast prior to this block
-        //uint endBlock;
+        // uint endBlock;
 
         // TODO: delete
         /// @notice Current number of votes in favor of this proposal
-        //uint forVotes;
+        // uint forVotes;
         
         // TODO: delete
         /// @notice Current number of votes in opposition to this proposal
-        //uint againstVotes;
+        // uint againstVotes;
 
         // TODO: delete
         /// @notice Current number of votes for abstaining for this proposal
-        //uint abstainVotes;
+        // uint abstainVotes;
 
         /// @notice Flag marking whether the proposal has been canceled
         bool canceled;
@@ -157,44 +157,45 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
         bool executed;
 
         /// @notice Receipts of ballots for the entire set of voters
-        //mapping (address => Receipt) receipts;
+        // mapping (address => Receipt) receipts;
     }
 
     // TODO: delete Receipt
     /// @notice Ballot receipt record for a voter
-    /*
-    struct Receipt {
-        /// @notice Whether or not a vote has been cast
-        bool hasVoted;
+        // struct Receipt {
+        //     /// @notice Whether or not a vote has been cast
+        //     bool hasVoted;
 
-        /// @notice Whether or not the voter supports the proposal or abstains
-        uint8 support;
+        //     /// @notice Whether or not the voter supports the proposal or abstains
+        //     uint8 support;
 
-        /// @notice The number of votes the voter had, which were cast
-        uint96 votes;
-    }
-*/
+        //     /// @notice The number of votes the voter had, which were cast
+        //     uint96 votes;
+        // }
+
     // TODO: delete PENDING, DEFEATED, Canceled, Active, Succeeded
+    //@seo: delete only 5 status
     /// @notice Possible states that a proposal may be in
     enum ProposalState {
-        //Pending, //TODO: Remove this 
-        //Active, //TODO: Remove this 
-        Canceled,
-        //Defeated,//TODO: Remove this 
-        Succeeded,
+        // Pending,
+        // Active,
+        // Canceled,
+        // Defeated,
+        // Succeeded,
         Queued,
         Expired,
         Executed
     }
 }
 // TODO: delete GovernorBravoDelegateStorageV2 and replace all extensions with GovernorBravoDelegateStorageV1
-/*contract GovernorBravoDelegateStorageV2 is GovernorBravoDelegateStorageV1 {
+//@seo: not deleted only whitelist and guardian is added so, do not need delete
+contract GovernorBravoDelegateStorageV2 is GovernorBravoDelegateStorageV1 {
     /// @notice Stores the expiration of account whitelist status as a timestamp
-    mapping (address => uint) public whitelistAccountExpirations;
+    // mapping (address => uint) public whitelistAccountExpirations;
 
     /// @notice Address which manages whitelisted proposals and whitelist accounts
-    address public whitelistGuardian;
-}*/
+    // address public whitelistGuardian;
+}
 
 interface TimelockInterface {
     function delay() external view returns (uint);
@@ -207,10 +208,11 @@ interface TimelockInterface {
 }
 
 // TODO: delete this
-/*interface CompInterface {
+//@seo: change into canto instead of Compinterface
+interface CantoInterface {
     function getPriorVotes(address account, uint blockNumber) external view returns (uint96);
 }
-*/
+
 interface GovernorAlpha {
     /// @notice The total number of proposals
     function proposalCount() external returns (uint);
