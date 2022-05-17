@@ -1,4 +1,4 @@
-pragma solidity ^0.5.16;
+pragma solidity >= 0.5.16;
 pragma experimental ABIEncoderV2;
 
 
@@ -99,7 +99,7 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
 
     // TODO: need to replace with Canto EIP-20 Interfance
     /// @notice The address of the Compound governance token
-    CantoInterface public canto;
+    //CantoInterface public canto;
 
     /// @notice The official record of all proposals ever proposed
     mapping (uint => Proposal) public proposals;
@@ -176,12 +176,13 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
     // TODO: delete PENDING, DEFEATED, Canceled, Active, Succeeded
     //@seo: delete only 5 status
     /// @notice Possible states that a proposal may be in
+    //removed states below:
+    // Pending,
+    // Active,
+    // Canceled,
+    // Defeated,
+    // Succeeded,
     enum ProposalState {
-        // Pending,
-        // Active,
-        // Canceled,
-        // Defeated,
-        // Succeeded,
         Queued,
         Expired,
         Executed
@@ -209,9 +210,9 @@ interface TimelockInterface {
 
 // TODO: delete this
 //@seo: change into canto instead of Compinterface
-interface CantoInterface {
+/*interface CantoInterface {
     function getPriorVotes(address account, uint blockNumber) external view returns (uint96);
-}
+}*/
 
 interface GovernorAlpha {
     /// @notice The total number of proposals

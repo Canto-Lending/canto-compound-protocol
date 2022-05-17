@@ -1,4 +1,4 @@
-pragma solidity ^0.5.16;
+pragma solidity >= 0.5.16;
 pragma experimental ABIEncoderV2;
 
 import "./GovernorBravoInterfaces.sol";
@@ -67,7 +67,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
         timelock = TimelockInterface(timelock_);
         // TODO: replace canto and CompInterface with Canto declaration
         //@seo: canto interface is introduced
-        canto = CantoInterface(canto_);
+        //canto = CantoInterface(canto_);
     
         /*
           TODO: delete these; no need for voting logic
@@ -200,7 +200,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
         emit ProposalCanceled(proposalId);
     }
 
-    /**
+    /*
       * @notice Gets actions of a proposal
       * @param proposalId the id of the proposal
       * @return Targets, values, signatures, and calldatas of the proposal actions
