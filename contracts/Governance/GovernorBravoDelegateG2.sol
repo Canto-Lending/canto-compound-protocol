@@ -58,10 +58,10 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
 
         // TODO: replace canto initialization with canto initialization 
         //@seo: make canto
-        require(canto_ != address(0), "GovernorBravo::initialize: invalid cnato  address");
+        //require(canto_ != address(0), "GovernorBravo::initialize: invalid cnato  address");
         
         // require(votingPeriod_ >= MIN_VOTING_PERIOD && votingPeriod_ <= MAX_VOTING_PERIOD, "GovernorBravo::initialize: invalid voting period");
-        // require(votingDelay_ >= MIN_VOTING_DELAY && votingDelay_ <= MAX_VOTING_DELAY, "GovernorBravo::initialize: invalid voting delay");
+        // require(votingDelay_ >= MIN _VOTING_DELAY && votingDelay_ <= MAX_VOTING_DELAY, "GovernorBravo::initialize: invalid voting delay");
         // require(proposalThreshold_ >= MIN_PROPOSAL_THRESHOLD && proposalThreshold_ <= MAX_PROPOSAL_THRESHOLD, "GovernorBravo::initialize: invalid proposal threshold");
 
         timelock = TimelockInterface(timelock_);
@@ -138,8 +138,9 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
       */
     function queue(uint proposalId) external {
         // require(state(proposalId) == ProposalState.Succeeded, "GovernorBravo::queue: proposal can only be queued if it is succeeded");
-        
-        Proposal storage proposal = proposals[proposalId];
+
+        Proposal storage proposal = getProposal(proposalId); 
+        //Proposal storage proposal = proposals[proposalId];
         // TODO: need to look into definition of timelock delay - make sure it meets our requirements
         uint eta = add256(block.timestamp, timelock.delay());
         for (uint i = 0; i < proposal.targets.length; i++) {
