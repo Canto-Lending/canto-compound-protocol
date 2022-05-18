@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: MIT
+
+// TODO: delete this file; Canto is native token for this chain
+
 pragma solidity >= 0.5.16;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";

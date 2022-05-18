@@ -1,4 +1,4 @@
-pragma solidity >= 0.5.16;
+pragma solidity ^0.5.16;
 
 import "./CToken.sol";
 import "./ErrorReporter.sol";
@@ -6,7 +6,7 @@ import "./PriceOracle.sol";
 import "./ComptrollerInterface.sol";
 import "./ComptrollerStorage.sol";
 import "./Unitroller.sol";
-import "./Governance/Canto.sol";
+// import "./Governance/Canto.sol";
 
 /**
  * @title Compound's Comptroller Contract
@@ -1371,10 +1371,11 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
 
      //TODO: Modify this function to grant CANTO Tokens 
     function grantCompInternal(address user, uint amount) internal returns (uint) {
-        Canto canto = Canto(getCantoAddress());
-        uint compRemaining = canto.balanceOf(address(this));
+        // Canto canto = Canto(getCantoAddress());
+        uint compRemaining = address(this).balance; // canto.balanceOf(address(this));
         if (amount > 0 && amount <= compRemaining) {
-            canto.transfer(user, amount);
+            // canto.transfer(user, amount);
+            payable(user).transfer(amount);
             return 0;
         }
         return amount;
@@ -1464,7 +1465,6 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
      * @return The address of COMP
      */
      //TODO: Edit this to the address of the contract with CANTO Tokens 
-     //@seo: make canto instead of Comp
     function getCantoAddress() public view returns (address) {
         return 0xc00e94Cb662C3520282E6f5717214004A7f26888;
     }

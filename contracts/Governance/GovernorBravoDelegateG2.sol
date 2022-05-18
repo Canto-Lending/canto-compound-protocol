@@ -51,6 +51,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
       * @param canto_ The address of the CANTO token
               * 
       */
+    // TODO: remove canto address and initialization from here since canto is native token
     function initialize(address timelock_, address canto_) public {
         require(address(timelock) == address(0), "GovernorBravo::initialize: can only initialize once");
         require(msg.sender == admin, "GovernorBravo::initialize: admin only");
@@ -139,6 +140,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
     function queue(uint proposalId) external {
         // require(state(proposalId) == ProposalState.Succeeded, "GovernorBravo::queue: proposal can only be queued if it is succeeded");
 
+        // TODO: where is getProposal defined?? also need to replace all proposals[proposalId] calls elsewhere in this file
         Proposal storage proposal = getProposal(proposalId); 
         //Proposal storage proposal = proposals[proposalId];
         // TODO: need to look into definition of timelock delay - make sure it meets our requirements
@@ -398,7 +400,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
         //     emit WhitelistGuardianSet(oldGuardian, whitelistGuardian);
         // }
 
-    // TODO: delete _initiate
+    // TODO: delete _initiate; don't think we need this right?
     /**
       * @notice Initiate the GovernorBravo contract
       * @dev Admin only. Sets initial proposal id which initiates the contract, ensuring a continuous proposal id count

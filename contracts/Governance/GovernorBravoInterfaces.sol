@@ -97,7 +97,7 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
     /// @notice The address of the Compound Protocol Timelock
     TimelockInterface public timelock;
 
-    // TODO: need to replace with Canto EIP-20 Interfance
+    // TODO: delete this; canto is the native token
     /// @notice The address of the Compound governance token
     //CantoInterface public canto;
 
@@ -208,7 +208,7 @@ interface TimelockInterface {
     function executeTransaction(address target, uint value, string calldata signature, bytes calldata data, uint eta) external payable returns (bytes memory);
 }
 
-// TODO: delete this
+// TODO: delete this; canto is the native token
 //@seo: change into canto instead of Compinterface
 /*interface CantoInterface {
     function getPriorVotes(address account, uint blockNumber) external view returns (uint96);
