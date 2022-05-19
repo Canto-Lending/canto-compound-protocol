@@ -8,6 +8,8 @@ pragma solidity ^0.5.16;
  */
 contract Reservoir {
 
+  event ReceivedTokens(address from, uint amount);
+
   /// @notice The block number when the Reservoir started (immutable)
   uint public dripStart;
 
@@ -15,7 +17,7 @@ contract Reservoir {
   uint public dripRate;
 
   /// @notice Reference to token to drip (immutable)
-  EIP20Interface public token;
+  // EIP20Interface public token;
 
   /// @notice Target to receive dripped tokens (immutable)
   address public target;
@@ -26,15 +28,19 @@ contract Reservoir {
   /**
     * @notice Constructs a Reservoir
     * @param dripRate_ Numer of tokens per block to drip
-    * @param token_ The token to drip
     * @param target_ The recipient of dripped tokens
     */
-  constructor(uint dripRate_, EIP20Interface token_, address target_) public {
+  constructor(uint dripRate_, address target_) public {
     dripStart = block.number;
     dripRate = dripRate_;
-    token = token_;
     target = target_;
     dripped = 0;
+  }
+
+  // TODO: confirm this allows reservoir to receive canto
+  // Accept any incoming amount
+  receive () external payable { 
+     emit ReceivedTokens(msg.sender, msg.value);
   }
 
   /**
@@ -44,8 +50,8 @@ contract Reservoir {
     */
   function drip() public returns (uint) {
     // First, read storage into memory
-    EIP20Interface token_ = token;
-    uint reservoirBalance_ = token_.balanceOf(address(this)); // TODO: Verify this is a static call
+    // EIP20Interface token_ = token;
+    uint reservoirBalance_ = address(this).balance; // TODO: Verify this is a static call
     uint dripRate_ = dripRate;
     uint dripStart_ = dripStart;
     uint dripped_ = dripped;
@@ -60,7 +66,8 @@ contract Reservoir {
 
     // Finally, write new `dripped` value and transfer tokens to target
     dripped = drippedNext_;
-    token_.transfer(target_, toDrip_);
+    // token_.transfer(target_, toDrip_);
+    payable(target_).transfer(toDrip_);
 
     return toDrip_;
   }
@@ -97,4 +104,4 @@ contract Reservoir {
   }
 }
 
-import "./EIP20Interface.sol";
+// import "./EIP20Interface.sol";
