@@ -52,7 +52,8 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
               * 
       */
     // TODO: remove canto address and initialization from here since canto is native token
-    function initialize(address timelock_, address canto_) public {
+    //, address canto_
+    function initialize(address timelock_) public {
         require(address(timelock) == address(0), "GovernorBravo::initialize: can only initialize once");
         require(msg.sender == admin, "GovernorBravo::initialize: admin only");
         require(timelock_ != address(0), "GovernorBravo::initialize: invalid timelock address");
