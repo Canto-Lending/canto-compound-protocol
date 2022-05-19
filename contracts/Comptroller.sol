@@ -1465,7 +1465,10 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
      * @return The address of COMP
      */
      //TODO: Edit this to the address of the contract with CANTO Tokens 
-    function getCantoAddress() public view returns (address) {
-        return 0xc00e94Cb662C3520282E6f5717214004A7f26888;
-    }
+
+     //@seo: make canto instead of Comp
+    //function getCantoAddress() public view returns (address) {
+      //  return 0xc00e94Cb662C3520282E6f5717214004A7f26888;
+    //}
+
 }
