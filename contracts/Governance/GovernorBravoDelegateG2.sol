@@ -48,8 +48,6 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
     /**
       * @notice Used to initialize the contract during delegator contructor
       * @param timelock_ The address of the Timelock
-      * @param canto_ The address of the CANTO token
-              * 
       */
     // TODO: remove canto address and initialization from here since canto is native token
     //, address canto_
@@ -141,15 +139,14 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
     function queue(uint proposalId) external {
         // require(state(proposalId) == ProposalState.Succeeded, "GovernorBravo::queue: proposal can only be queued if it is succeeded");
 
-        // TODO: where is getProposal defined?? also need to replace all proposals[proposalId] calls elsewhere in this file
-        Proposal storage proposal = getProposal(proposalId); 
+        // TODO: add proper queue logic once we have figure out a solution for fetching proposals
         //Proposal storage proposal = proposals[proposalId];
         // TODO: need to look into definition of timelock delay - make sure it meets our requirements
         uint eta = add256(block.timestamp, timelock.delay());
-        for (uint i = 0; i < proposal.targets.length; i++) {
-            queueOrRevertInternal(proposal.targets[i], proposal.values[i], proposal.signatures[i], proposal.calldatas[i], eta);
-        }
-        proposal.eta = eta;
+        // for (uint i = 0; i < proposal.targets.length; i++) {
+        //     queueOrRevertInternal(proposal.targets[i], proposal.values[i], proposal.signatures[i], proposal.calldatas[i], eta);
+        // }
+        // proposal.eta = eta;
         emit ProposalQueued(proposalId, eta);
     }
 
@@ -181,8 +178,9 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
         //@seo: admin checking
         require(msg.sender == admin, "GovernorBravo::_setVotingDelay: admin only");
         require(state(proposalId) != ProposalState.Executed, "GovernorBravo::cancel: cannot cancel executed proposal");
-
-        Proposal storage proposal = proposals[proposalId];
+        
+        // TODO: add logic to properly cancel proposal once unified governance is solved
+        // Proposal storage proposal = proposals[proposalId];
 
         // Proposer can cancel
             // if(msg.sender != proposal.proposer) {
@@ -196,23 +194,24 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
             //     }
             // }
         
-        proposal.canceled = true;
-        for (uint i = 0; i < proposal.targets.length; i++) {
-            timelock.cancelTransaction(proposal.targets[i], proposal.values[i], proposal.signatures[i], proposal.calldatas[i], proposal.eta);
-        }
+        // proposal.canceled = true;
+        // for (uint i = 0; i < proposal.targets.length; i++) {
+        //     timelock.cancelTransaction(proposal.targets[i], proposal.values[i], proposal.signatures[i], proposal.calldatas[i], proposal.eta);
+        // }
 
         emit ProposalCanceled(proposalId);
     }
 
+    // TODO: bring getActions back once unified governance solution is solved
     /*
       * @notice Gets actions of a proposal
       * @param proposalId the id of the proposal
       * @return Targets, values, signatures, and calldatas of the proposal actions
       */
-    function getActions(uint proposalId) external view returns (address[] memory targets, uint[] memory values, string[] memory signatures, bytes[] memory calldatas) {
-        Proposal storage p = proposals[proposalId];
-        return (p.targets, p.values, p.signatures, p.calldatas);
-    }
+    // function getActions(uint proposalId) external view returns (address[] memory targets, uint[] memory values, string[] memory signatures, bytes[] memory calldatas) {
+    //     Proposal storage p = proposals[proposalId];
+    //     return (p.targets, p.values, p.signatures, p.calldatas);
+    // }
 
     // TODO: delete getReceipt
     /**
@@ -233,27 +232,29 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
     function state(uint proposalId) public view returns (ProposalState) {
         // TODO: remove all logic related to proposal voting from here
         // TODO: delete PENDING, DEFEATED, Canceled, Active, Succeeded state logic
-        //@seo: remains 3 status only. cancel and expired have to be discuss
         require(proposalCount >= proposalId && proposalId > initialProposalId, "GovernorBravo::state: invalid proposal id");
-        Proposal storage proposal = proposals[proposalId];
-        if (proposal.canceled) {
-            return ProposalState.Expired;
-          // } else if (block.number <= proposal.startBlock) {
-          //     return ProposalState.Pending;
-          // } else if (block.number <= proposal.endBlock) {
-          //     return ProposalState.Active;
-          // } else if (proposal.forVotes <= proposal.againstVotes || proposal.forVotes < quorumVotes) {
-          //     return ProposalState.Defeated;
-          // } else if (proposal.eta == 0) {
-          //     return ProposalState.Succeeded;
-        } else if (proposal.executed) {
-            return ProposalState.Executed;
-        // TODO: when is the Expired state needed? why add a grace period?
-        } else if (block.timestamp >= add256(proposal.eta, timelock.GRACE_PERIOD())) {
-            return ProposalState.Expired;
-        } else {
-            return ProposalState.Queued;
-        }
+        return ProposalState.Expired;
+
+        // TODO: add proper logic for fetching proposals after unified governance is solved
+        // Proposal storage proposal = proposals[proposalId];
+        // if (proposal.canceled) {
+        //     return ProposalState.Expired;
+        //   // } else if (block.number <= proposal.startBlock) {
+        //   //     return ProposalState.Pending;
+        //   // } else if (block.number <= proposal.endBlock) {
+        //   //     return ProposalState.Active;
+        //   // } else if (proposal.forVotes <= proposal.againstVotes || proposal.forVotes < quorumVotes) {
+        //   //     return ProposalState.Defeated;
+        //   // } else if (proposal.eta == 0) {
+        //   //     return ProposalState.Succeeded;
+        // } else if (proposal.executed) {
+        //     return ProposalState.Executed;
+        // // TODO: when is the Expired state needed? why add a grace period?
+        // } else if (block.timestamp >= add256(proposal.eta, timelock.GRACE_PERIOD())) {
+        //     return ProposalState.Expired;
+        // } else {
+        //     return ProposalState.Queued;
+        // }
     }
 
     // TODO: delete castVote
