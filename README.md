@@ -30,7 +30,7 @@ enum.ts / Enum Variables that has been used from the deployemtn script
 interfaces.ts / Variable interfaces that have been used for the params
 
 
-deployment and test guid;  seo
+deployment and test guide 
 1. yarn or npm install
 2. if you going to deploy onto local,
  npx hardhat run script/deploy.ts 
