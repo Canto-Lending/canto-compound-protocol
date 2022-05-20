@@ -155,21 +155,21 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
         timelock.queueTransaction(target, value, signature, data, eta);
     }
 
-    /**
+     
       * @notice Executes a queued proposal if eta has passed
       * @param proposalId The id of the proposal to execute
       */
-        // function execute(uint proposalId) external payable {
-        //     require(state(proposalId) == ProposalState.Queued, "GovernorBravo::execute: proposal can only be executed if it is queued");
-        //     Proposal storage proposal = proposals[proposalId];
-        //     proposal.executed = true;
-        //     for (uint i = 0; i < proposal.targets.length; i++) {
-        //         timelock.executeTransaction.value(proposal.values[i])(proposal.targets[i], proposal.values[i], proposal.signatures[i], proposal.calldatas[i], proposal.eta);
-        //     }
-        //     emit ProposalExecuted(proposalId);
-        // }
+    function execute(uint proposalId) external payable {
+        require(state(proposalId) == ProposalState.Queued, "GovernorBravo::execute: proposal can only be executed if it is queued");
+        Proposal storage proposal = proposals[proposalId];
+        proposal.executed = true;
+        for (uint i = 0; i < proposal.targets.length; i++) {
+            timelock.executeTransaction.value(proposal.values[i])(proposal.targets[i], proposal.values[i], proposal.signatures[i], proposal.calldatas[i], proposal.eta);
+        }
+        emit ProposalExecuted(proposalId);
+    }
 
-    /**
+    /
       * @notice Cancels a proposal only if sender is the proposer, or proposer delegates dropped below proposal threshold
       * @param proposalId The id of the proposal to cancel
       */
