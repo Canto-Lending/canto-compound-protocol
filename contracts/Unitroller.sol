@@ -9,6 +9,8 @@ import "./ComptrollerStorage.sol";
  */
 contract Unitroller is UnitrollerAdminStorage, ComptrollerErrorReporter {
 
+    event ReceivedTokens(address from, uint amount);
+
     /**
       * @notice Emitted when pendingComptrollerImplementation is changed
       */
@@ -133,6 +135,10 @@ contract Unitroller is UnitrollerAdminStorage, ComptrollerErrorReporter {
      * or forwards reverts.
      */
     function () payable external {
+        if (msg.value > 0) { 
+          emit ReceivedTokens(msg.sender, msg.value);
+        }
+
         // delegate all other functions to current implementation
         (bool success, ) = comptrollerImplementation.delegatecall(msg.data);
 

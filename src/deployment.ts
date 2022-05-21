@@ -14,6 +14,10 @@ import {
   CEther__factory,
   Comptroller,
   Comptroller__factory,
+  Unitroller,
+  Unitroller__factory,
+  Reservoir, 
+  Reservoir__factory,
   JumpRateModelV2__factory,
   LegacyJumpRateModelV2__factory,
   SimplePriceOracle,
@@ -53,17 +57,34 @@ function getTypeFromId(id: number) {
   }
 }
 
+// Deployment order: comptroller -> unitroller -> reservoir -> price oracle -> ctokens
 export async function deployCompoundV2(
   underlying: CTokenDeployArg[],
   deployer: SignerWithAddress,
   overrides?: Overrides
 ): Promise<CompoundV2> {
+
   const comptroller = await deployComptroller(deployer, overrides);
   await comptroller.deployed();
   console.log('#1 Comptroller Deployed at: ', comptroller.address);
-  
 
-  const priceOracle = await deployPriceOracle(deployer, overrides);
+  const unitroller = await deployUnitroller(deployer, overrides);
+  await unitroller.deployed();
+  console.log("Unitroller Deployed At: ", unitroller.address);
+
+  const setPendingImpTx = await unitroller._setPendingImplementation(comptroller.address, overrides);
+  await setPendingImpTx.wait();
+  console.log("Set unitroller implementation to :", comptroller.address);
+
+  const acceptImpTx = await unitroller.connect(comptroller.signer)._acceptImplementation(overrides);
+  await acceptImpTx.wait();
+  console.log("Accepted Unitroller implementation for: ", comptroller.address);
+
+  const reservoir = await deployReservoir(deployer, unitroller.address, overrides);
+  await reservoir.deployed();
+  console.log("Reservoir Deployed At: ", reservoir.address);
+
+ const priceOracle = await deployPriceOracle(deployer, overrides);
   await priceOracle.deployed();
   console.log('#2 PriceOracle Deployed at: ', priceOracle.address);
 
@@ -107,7 +128,7 @@ export async function deployCompoundV2(
 }
 
 async function deployCTokens(
-  config: CTokenDeployArg[],
+  deployArgs: CTokenDeployArg[],
   irm: InterestRateModels,
   priceOracle: SimplePriceOracle,
   comptroller: Comptroller,
@@ -115,7 +136,8 @@ async function deployCTokens(
   overrides?: Overrides
 ): Promise<CTokenLike[]> {
   const cTokens: CTokenLike[] = [];
-  for (const u of config) {
+  for (const u of deployArgs) {
+    console.log('Starting token deployment for: ', u);
     const cTokenConf = CTOKEN[u.cToken];
     const cTokenArgs = cTokenConf.args as CTokenArgs;
     cTokenArgs.comptroller = comptroller.address;
@@ -127,11 +149,13 @@ async function deployCTokens(
     }
     const cToken =
       cTokenConf.type === CTokenType.CEther
-        ? await deployCEth(cTokenArgs, deployer, overrides)
+        ? await deployCEther(cTokenArgs, deployer, overrides)
         : await deployCToken(cTokenArgs, deployer, overrides);
 
+    // ? anything else needed for comptroller to support cToken? currently only calling support market and setCollateralFactor
     await comptroller._supportMarket(cToken.address, overrides);
 
+    // TODO: remove constant price in simple price oracle and add constnat underlyingPrices for each token
     if (cTokenConf.type === CTokenType.CEther) {
       await priceOracle.setDirectPrice(cToken.address, u.underlyingPrice || 0, overrides);
     } else {
@@ -152,10 +176,26 @@ export async function deployCToken(
   deployer: SignerWithAddress,
   overrides?: Overrides
 ): Promise<CTokenLike> {
+  console.log('Starting CToken deployment for: ', args);
   if ('implementation' in args) {
     return deployCErc20Delegator(args as CErc20DelegatorArgs, deployer, overrides);
   }
   return deployCErc20Immutable(args, deployer, overrides);
+}
+
+export async function deployReservoir(
+  deployer: SignerWithAddress,
+  target_: string,
+  overrides?: Overrides
+): Promise<Reservoir> {
+  return new Reservoir__factory(deployer).deploy("6944444444000000", target_, overrides);
+}
+
+export async function deployUnitroller(
+  deployer: SignerWithAddress,
+  overrides?: Overrides
+): Promise<Unitroller> {
+  return new Unitroller__factory(deployer).deploy(overrides);
 }
 
 export async function deployComptroller(
@@ -245,11 +285,12 @@ export async function deployPriceOracle(
   return new SimplePriceOracle__factory(deployer).deploy(overrides);
 }
 
-export async function deployCEth(
+export async function deployCEther(
   args: CEthArgs,
   deployer: SignerWithAddress,
   overrides?: Overrides
 ): Promise<CEther> {
+  console.log('Starting CEther deployment for: ', args);
   return new CEther__factory(deployer).deploy(
     args.comptroller,
     args.interestRateModel,

@@ -8,4 +8,5 @@ export enum CTokenType {
   CErc20Delegator,
   CErc20,
   CEther,
+  CCanto,
 }

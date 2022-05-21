@@ -12,6 +12,10 @@ module.exports = {
         url: "https://eth-mainnet.alchemyapi.io/v2/<key>",
       }
     },
+    cantolocal: { 
+      url: process.env.LOCAL_NET || '',
+      accounts: [process.env.LOCAL_NET_PRIVATE_KEY]
+    },
     rinkeby: {
       url: process.env.ROPSTEN_URL || '',
       // initialBaseFeePerGas: 100,
@@ -25,8 +29,8 @@ module.exports = {
       accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     tevmos: {
-      url: process.env.EVMOS_URL || '',
-      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      url: 'https://testnet.canto-testnet.com/evm/rpc',
+      accounts: process.env.TEVMOS_PRIVATE_KEY ? [process.env.TEVMOS_PRIVATE_KEY] : [],
     },
   },
   typechain: {

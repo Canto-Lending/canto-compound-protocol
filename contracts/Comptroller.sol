@@ -73,6 +73,8 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
     /// @notice Emitted when CANTO receivable for a user has been updated.
     event CompReceivableUpdated(address indexed user, uint oldCompReceivable, uint newCompReceivable);
 
+    event ReceivedTokens(address from, uint amount);
+
     /// @notice The initial CANTO index for a market
     uint224 public constant compInitialIndex = 1e36;
 
