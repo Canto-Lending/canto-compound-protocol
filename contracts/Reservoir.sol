@@ -20,7 +20,7 @@ contract Reservoir {
   // EIP20Interface public token;
 
   /// @notice Target to receive dripped tokens (immutable)
-  address public target;
+  address payable public target;
 
   /// @notice Amount that has already been dripped
   uint public dripped;
@@ -30,7 +30,7 @@ contract Reservoir {
     * @param dripRate_ Numer of tokens per block to drip
     * @param target_ The recipient of dripped tokens
     */
-  constructor(uint dripRate_, address target_) public {
+  constructor(uint dripRate_, address payable target_) public {
     dripStart = block.number;
     dripRate = dripRate_;
     target = target_;
@@ -39,9 +39,10 @@ contract Reservoir {
 
   // TODO: confirm this allows reservoir to receive canto
   // Accept any incoming amount
-  receive () external payable { 
+  function () external payable { 
      emit ReceivedTokens(msg.sender, msg.value);
   }
+
 
   /**
     * @notice Drips the maximum amount of tokens to match the drip rate since inception
@@ -55,7 +56,7 @@ contract Reservoir {
     uint dripRate_ = dripRate;
     uint dripStart_ = dripStart;
     uint dripped_ = dripped;
-    address target_ = target;
+    address payable target_ = target;
     uint blockNumber_ = block.number;
 
     // Next, calculate intermediate values
@@ -67,7 +68,7 @@ contract Reservoir {
     // Finally, write new `dripped` value and transfer tokens to target
     dripped = drippedNext_;
     // token_.transfer(target_, toDrip_);
-    payable(target_).transfer(toDrip_);
+    target_.transfer(toDrip_);
 
     return toDrip_;
   }

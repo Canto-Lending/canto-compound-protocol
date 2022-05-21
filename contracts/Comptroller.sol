@@ -6,6 +6,7 @@ import "./PriceOracle.sol";
 import "./ComptrollerInterface.sol";
 import "./ComptrollerStorage.sol";
 import "./Unitroller.sol";
+import './SafeMath.s
 // import "./Governance/Canto.sol";
 
 /**
@@ -1357,7 +1358,8 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
             }
         }
         for (uint j = 0; j < holders.length; j++) {
-            compAccrued[holders[j]] = grantCompInternal(holders[j], compAccrued[holders[j]]);
+            address payable currHolder = address(uint160(holders[j]));
+            compAccrued[holders[j]] = grantCompInternal(currHolder, compAccrued[holders[j]]);
         }
     }
 
@@ -1370,12 +1372,12 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
      */
 
      //TODO: Modify this function to grant CANTO Tokens 
-    function grantCompInternal(address user, uint amount) internal returns (uint) {
+    function grantCompInternal(address payable user, uint amount) internal returns (uint) {
         // Canto canto = Canto(getCantoAddress());
         uint compRemaining = address(this).balance; // canto.balanceOf(address(this));
         if (amount > 0 && amount <= compRemaining) {
             // canto.transfer(user, amount);
-            payable(user).transfer(amount);
+            user.transfer(amount);
             return 0;
         }
         return amount;
@@ -1389,7 +1391,7 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
      * @param recipient The address of the recipient to transfer CANTO to
      * @param amount The amount of CANTO to (possibly) transfer
      */
-    function _grantComp(address recipient, uint amount) public {
+    function _grantComp(address payable recipient, uint amount) public {
         require(adminOrInitializing(), "only admin can grant CANTO");
         uint amountLeft = grantCompInternal(recipient, amount);
         require(amountLeft == 0, "insufficient CANTO for grant");
