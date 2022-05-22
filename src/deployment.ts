@@ -1,7 +1,5 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { Overrides } from 'ethers';
-import { text } from 'stream/consumers';
-
 import {
   BaseJumpRateModelV2,
   CErc20Delegate,
@@ -25,9 +23,15 @@ import {
   WhitePaperInterestRateModel,
   WhitePaperInterestRateModel__factory,
 } from '../typechain';
-
-import { CTOKEN, INTEREST_RATE_MODEL } from './configs';
-import { CTokenType, InterestRateModelType } from './enums';
+import { 
+  CTOKEN,
+  INTEREST_RATE_MODEL,
+  RESERVOIR_DRIP_RATE
+} from './configs';
+import { 
+  CTokenType,
+  InterestRateModelType
+} from './enums';
 import {
   CErc20Args,
   CErc20DelegatorArgs,
@@ -44,20 +48,19 @@ import {
   WhitePaperInterestRateModelArgs,
 } from './interfaces';
 
-function getTypeFromId(id: number) {
-  switch(id) {
-    case InterestRateModelType.WhitePaperInterestRateModel:
-      return "WhitePaperInterestRateModel";
-    case InterestRateModelType.JumpRateModelV2:
-      return "JumpRateModelV2";
-    case InterestRateModelType.LegacyJumpRateModelV2:
-      return "LegacyJumpRateModelV2";
-    default:
-      break;
-  }
-}
+// function getTypeFromId(id: number) {
+//   switch(id) {
+//     case InterestRateModelType.WhitePaperInterestRateModel:
+//       return "WhitePaperInterestRateModel";
+//     case InterestRateModelType.JumpRateModelV2:
+//       return "JumpRateModelV2";
+//     case InterestRateModelType.LegacyJumpRateModelV2:
+//       return "LegacyJumpRateModelV2";
+//     default:
+//       break;
+//   }
+// }
 
-// Deployment order: comptroller -> unitroller -> reservoir -> price oracle -> ctokens
 export async function deployCompoundV2(
   underlying: CTokenDeployArg[],
   deployer: SignerWithAddress,
@@ -70,37 +73,39 @@ export async function deployCompoundV2(
 
   const unitroller = await deployUnitroller(deployer, overrides);
   await unitroller.deployed();
-  console.log("Unitroller Deployed At: ", unitroller.address);
+  console.log("#2 Unitroller Deployed At: ", unitroller.address);
 
   const setPendingImpTx = await unitroller._setPendingImplementation(comptroller.address, overrides);
   await setPendingImpTx.wait();
-  console.log("Set unitroller implementation to :", comptroller.address);
+  console.log("#3 Set unitroller implementation to :", comptroller.address);
 
   const acceptImpTx = await unitroller.connect(comptroller.signer)._acceptImplementation(overrides);
   await acceptImpTx.wait();
-  console.log("Accepted Unitroller implementation for: ", comptroller.address);
+  console.log("#4 Accepted Unitroller implementation for: ", comptroller.address);
 
   const reservoir = await deployReservoir(deployer, unitroller.address, overrides);
   await reservoir.deployed();
-  console.log("Reservoir Deployed At: ", reservoir.address);
+  console.log("#5 Reservoir Deployed At: ", reservoir.address);
 
  const priceOracle = await deployPriceOracle(deployer, overrides);
   await priceOracle.deployed();
-  console.log('#2 PriceOracle Deployed at: ', priceOracle.address);
+  console.log('#6 PriceOracle Deployed at: ', priceOracle.address);
 
   const tx = await comptroller._setPriceOracle(priceOracle.address);
   await tx.wait();
-  console.log('#3 comptroller._setPriceOracle Done');
+  console.log('#7 Set Comptroller Price Oracle to: ', priceOracle.address);
 
+  console.log('Starting to deploy Interest Rate Models');
   const interestRateModelArgs = Object.values(INTEREST_RATE_MODEL);
   const interestRateModels = await deployInterestRateModels(interestRateModelArgs, deployer);
-  // await interestRateModels.deployed();
-  console.log('#4 interestRateModels Deployed ');
-  for (const item of interestRateModelArgs) {
-    console.log(`${item.name} (${getTypeFromId(item.type)}) deployed at : `, interestRateModels[item.name].address);
+  for (let [modelName, model] of Object.entries(interestRateModels)) {
+    await model.deployed();
+    console.log(`${modelName} deployed at: `, model.address);
   }
+  console.log('#8 All Interest Rate Models Deployed');
 
-  const cTokenLikes = await deployCTokens(
+  console.log("Starting to deploy CTokens");
+  const cTokenLikes = await deployAllCTokens(
     underlying,
     interestRateModels,
     priceOracle,
@@ -108,11 +113,7 @@ export async function deployCompoundV2(
     deployer,
     overrides
   );
-  // await cTokenLikes.deployed();
-
-  cTokenLikes.map((_ctoken, index) => {
-    console.log(`#5-${index + 1} CTokens Deployed at: ', ${_ctoken.address}`);
-  });
+  console.log("#9 All CTokens deployed");
 
   const cTokens = new CTokens();
   underlying.forEach((u, idx) => {
@@ -127,7 +128,7 @@ export async function deployCompoundV2(
   };
 }
 
-async function deployCTokens(
+async function deployAllCTokens(
   deployArgs: CTokenDeployArg[],
   irm: InterestRateModels,
   priceOracle: SimplePriceOracle,
@@ -137,7 +138,6 @@ async function deployCTokens(
 ): Promise<CTokenLike[]> {
   const cTokens: CTokenLike[] = [];
   for (const u of deployArgs) {
-    console.log('Starting token deployment for: ', u);
     const cTokenConf = CTOKEN[u.cToken];
     const cTokenArgs = cTokenConf.args as CTokenArgs;
     cTokenArgs.comptroller = comptroller.address;
@@ -151,11 +151,12 @@ async function deployCTokens(
       cTokenConf.type === CTokenType.CEther
         ? await deployCEther(cTokenArgs, deployer, overrides)
         : await deployCToken(cTokenArgs, deployer, overrides);
+    
+    await cToken.deployed()
+    console.log(`Deployed ${await cToken.name()} to: `, cToken.address);
 
-    // ? anything else needed for comptroller to support cToken? currently only calling support market and setCollateralFactor
     await comptroller._supportMarket(cToken.address, overrides);
 
-    // TODO: remove constant price in simple price oracle and add constnat underlyingPrices for each token
     if (cTokenConf.type === CTokenType.CEther) {
       await priceOracle.setDirectPrice(cToken.address, u.underlyingPrice || 0, overrides);
     } else {
@@ -176,7 +177,6 @@ export async function deployCToken(
   deployer: SignerWithAddress,
   overrides?: Overrides
 ): Promise<CTokenLike> {
-  console.log('Starting CToken deployment for: ', args);
   if ('implementation' in args) {
     return deployCErc20Delegator(args as CErc20DelegatorArgs, deployer, overrides);
   }
@@ -188,7 +188,7 @@ export async function deployReservoir(
   target_: string,
   overrides?: Overrides
 ): Promise<Reservoir> {
-  return new Reservoir__factory(deployer).deploy("6944444444000000", target_, overrides);
+  return new Reservoir__factory(deployer).deploy(RESERVOIR_DRIP_RATE, target_, overrides);
 }
 
 export async function deployUnitroller(
@@ -290,7 +290,6 @@ export async function deployCEther(
   deployer: SignerWithAddress,
   overrides?: Overrides
 ): Promise<CEther> {
-  console.log('Starting CEther deployment for: ', args);
   return new CEther__factory(deployer).deploy(
     args.comptroller,
     args.interestRateModel,

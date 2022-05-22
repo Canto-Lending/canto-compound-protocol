@@ -13,25 +13,13 @@ module.exports = {
       }
     },
     cantolocal: { 
-      url: process.env.LOCAL_NET || '',
-      accounts: [process.env.LOCAL_NET_PRIVATE_KEY]
+      url:'http://localhost:8545',
+      accounts: process.env.LOCAL_NET_PRIVATE_KEY ? [process.env.LOCAL_NET_PRIVATE_KEY] : []
     },
-    rinkeby: {
-      url: process.env.ROPSTEN_URL || '',
-      // initialBaseFeePerGas: 100,
-      gasPrice: 3000000000,
-      // minGasPrice: ethers.utils.parseUnits("50", "gwei").toString(),
-      // blockGasLimit: 15000000,
-      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
-    },
-    ropsten: {
-      url: process.env.ROPSTEN_URL || '',
-      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
-    },
-    tevmos: {
-      url: 'https://testnet.canto-testnet.com/evm/rpc',
-      accounts: process.env.TEVMOS_PRIVATE_KEY ? [process.env.TEVMOS_PRIVATE_KEY] : [],
-    },
+    acanto: { 
+      url: 'http://18.234.233.162:8545/',
+      accounts: process.env.ACANTO_LIVENET_PRIVATE_KEY ? [process.env.ACANTO_LIVENET_PRIVATE_KEY] : [],
+    }
   },
   typechain: {
     outDir: 'typechain',

@@ -7,11 +7,9 @@ contract SimplePriceOracle is PriceOracle {
     mapping(address => uint) prices;
     event PricePosted(address asset, uint previousPriceMantissa, uint requestedPriceMantissa, uint newPriceMantissa);
     
-    // TODO: probably need to modify "cETH" logic below
     function _getUnderlyingAddress(CToken cToken) private view returns (address) {
         address asset;
         if (compareStrings(cToken.symbol(), "cCANTO")) {
-            // TODO: change this to cCANTO address?
             asset = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
         } else {
             asset = address(CErc20(address(cToken)).underlying());
@@ -20,9 +18,7 @@ contract SimplePriceOracle is PriceOracle {
     }
 
     function getUnderlyingPrice(CToken cToken) public view returns (uint) {
-        // TODO: add accurate prices later when oracle is ready
-        // return prices[_getUnderlyingAddress(cToken)];
-        return 1;
+        return prices[_getUnderlyingAddress(cToken)];
     }
 
     function setUnderlyingPrice(CToken cToken, uint underlyingPriceMantissa) public {

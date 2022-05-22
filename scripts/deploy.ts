@@ -1,7 +1,8 @@
-import { formatUnits, parseUnits } from 'ethers/lib/utils';
 import { ethers } from 'hardhat';
-
-import { CTokenDeployArg, deployCompoundV2 } from '../src';
+import {
+  CTokenDeployArg,
+  deployCompoundV2
+} from '../src';
 
 async function main() {
   const [deployer] = await ethers.getSigners();
@@ -9,19 +10,19 @@ async function main() {
   const cTokenDeployArgs: CTokenDeployArg[] = [
     {
       cToken: 'cFIJI',
-      underlying: "0x55B715d06eeED0943EA0F77Cf80501Ab650c71fb",
+      underlying: "0x382166cC4BDd149038FCF0AC7CA5ACfd89dB8366",
       underlyingPrice: '25022748000000000000',
       collateralFactor: '800000000000000000',
     },
     {
       cToken: 'cEVIAN',
-      underlying: "0x906b2d727f5eAbceE0822AF75D2075760DD99Bc7",
+      underlying: "0x785B9De1933f7d076A6CcBf7A0C29f9A73ce422c",
       underlyingPrice: '25022748000000000000',
       collateralFactor: '800000000000000000',
     },
     {
       cToken: 'cAQUA',
-      underlying: "0x90Aa61FeC065E7E086835C211c7E69419ac7Dd2d",
+      underlying: "0x5c87cFe3610a465FF27298301ab06E8Fd384199A",
       underlyingPrice: '25022748000000000000',
       collateralFactor: '800000000000000000', 
     },
@@ -32,8 +33,9 @@ async function main() {
     },
   ];
 
-  const { cTokens, comptroller, priceOracle, interestRateModels } = await deployCompoundV2(cTokenDeployArgs, deployer, { gasLimit: 8_000_000 });
-  const { cCanto: cCanto, cFiji: cFiji, cEvian: cEvian, cAquafina: cAquafina } = cTokens;
+  await deployCompoundV2(cTokenDeployArgs, deployer, { gasLimit: 8_000_000 });
+  // const { cTokens, comptroller, priceOracle, interestRateModels } = await deployCompoundV2(cTokenDeployArgs, deployer, { gasLimit: 8_000_000 });
+  // const { cCanto: cCanto, cFiji: cFiji, cEvian: cEvian, cAquafina: cAquafina } = cTokens;
 }
 
 main().catch(console.error);
