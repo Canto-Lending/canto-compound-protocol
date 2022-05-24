@@ -151,7 +151,7 @@ async function makeCToken(opts = {}) {
       break;
 
     case 'cdai':
-      cDaiMaker  = await deploy('CDaiDelegateMakerHarness');
+      cDaiMaker = await deploy('CDaiDelegateMakerHarness');
       underlying = cDaiMaker;
       cDelegatee = await deploy('CDaiDelegateHarness');
       cDelegator = await deploy('CErc20Delegator',
@@ -170,7 +170,7 @@ async function makeCToken(opts = {}) {
       );
       cToken = await saddle.getContractAt('CDaiDelegateHarness', cDelegator._address);
       break;
-    
+
     case 'ccomp':
       underlying = await deploy('Comp', [opts.compHolder || root]);
       cDelegatee = await deploy('CErc20DelegateHarness');
@@ -211,7 +211,7 @@ async function makeCToken(opts = {}) {
       );
       cToken = await saddle.getContractAt('CErc20DelegateHarness', cDelegator._address);
       break;
-      
+
   }
 
   if (opts.supportMarket) {
