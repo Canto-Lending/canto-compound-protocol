@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 import '@nomiclabs/hardhat-ethers';
+import '@nomiclabs/hardhat-waffle';
 import '@thenextblock/hardhat-erc20';
 import '@typechain/hardhat';
 
@@ -8,19 +9,19 @@ module.exports = {
   networks: {
     hardhat: {
       allowUnlimitedContractSize: true,
-      forking:{
+      forking: {
         url: "https://eth-mainnet.alchemyapi.io/v2/<key>",
       }
     },
-    cantolocal: { 
-      url:'http://localhost:8545',
+    cantolocal: {
+      url: 'http://localhost:8545',
       accounts: process.env.LOCAL_NET_PRIVATE_KEY ? [process.env.LOCAL_NET_PRIVATE_KEY] : []
     },
-    acanto: { 
+    acanto: {
       url: 'http://18.234.233.162:8545/',
       accounts: process.env.ACANTO_LIVENET_PRIVATE_KEY ? [process.env.ACANTO_LIVENET_PRIVATE_KEY] : [],
     },
-    acantov2: { 
+    acantov2: {
       url: 'http://104.131.11.57:8545',
       accounts: process.env.ACANTO_V2_LIVENET_PRIVATE_KEY ? [process.env.ACANTO_V2_LIVENET_PRIVATE_KEY] : [],
     }
