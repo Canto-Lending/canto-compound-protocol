@@ -33,19 +33,19 @@ async function main() {
         { 
             name: "FIJI",
             symbol: "FIJI",
-            decimals: 18,
+            decimals: 1,
             initialSupply: 100000
         },
         { 
             name: "AQUA",
             symbol: "AQUA",
-            decimals: 18,
+            decimals: 1,
             initialSupply: 100000
         },
         { 
             name: "EVIAN",
             symbol: "EVIAN",
-            decimals: 18,
+            decimals: 1,
             initialSupply: 100000
         }
     ];

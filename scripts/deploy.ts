@@ -10,19 +10,19 @@ async function main() {
   const cTokenDeployArgs: CTokenDeployArg[] = [
     {
       cToken: 'cFIJI',
-      underlying: "0x382166cC4BDd149038FCF0AC7CA5ACfd89dB8366",
+      underlying: "0xef6e65Fdd4220124342994307D0D6abc74F06F97",
       underlyingPrice: '25022748000000000000',
       collateralFactor: '800000000000000000',
     },
     {
       cToken: 'cEVIAN',
-      underlying: "0x785B9De1933f7d076A6CcBf7A0C29f9A73ce422c",
+      underlying: "0x82826C958b707ddE322A422f8c61E583556E225D",
       underlyingPrice: '25022748000000000000',
       collateralFactor: '800000000000000000',
     },
     {
       cToken: 'cAQUA',
-      underlying: "0x5c87cFe3610a465FF27298301ab06E8Fd384199A",
+      underlying: "0x33292AB53c1958356F819e436189A20C3be42B66",
       underlyingPrice: '25022748000000000000',
       collateralFactor: '800000000000000000', 
     },

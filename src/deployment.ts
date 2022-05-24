@@ -75,25 +75,25 @@ export async function deployCompoundV2(
   await unitroller.deployed();
   console.log("#2 Unitroller Deployed At: ", unitroller.address);
 
-  const setPendingImpTx = await unitroller._setPendingImplementation(comptroller.address, overrides);
-  await setPendingImpTx.wait();
-  console.log("#3 Set unitroller implementation to :", comptroller.address);
+  // const setPendingImpTx = await unitroller._setPendingImplementation(comptroller.address, overrides);
+  // await setPendingImpTx.wait();
+  // console.log("#3 Set unitroller implementation to :", comptroller.address);
 
-  const acceptImpTx = await unitroller.connect(comptroller.signer)._acceptImplementation(overrides);
-  await acceptImpTx.wait();
-  console.log("#4 Accepted Unitroller implementation for: ", comptroller.address);
+  // const acceptImpTx = await unitroller.connect(comptroller.signer)._acceptImplementation(overrides);
+  // await acceptImpTx.wait();
+  // console.log("#4 Accepted Unitroller implementation for: ", comptroller.address);
 
-  const reservoir = await deployReservoir(deployer, unitroller.address, overrides);
-  await reservoir.deployed();
-  console.log("#5 Reservoir Deployed At: ", reservoir.address);
+  // const reservoir = await deployReservoir(deployer, comptroller.address, overrides);
+  // await reservoir.deployed();
+  // console.log("#5 Reservoir Deployed At: ", reservoir.address);
 
  const priceOracle = await deployPriceOracle(deployer, overrides);
   await priceOracle.deployed();
   console.log('#6 PriceOracle Deployed at: ', priceOracle.address);
 
-  const tx = await comptroller._setPriceOracle(priceOracle.address);
-  await tx.wait();
-  console.log('#7 Set Comptroller Price Oracle to: ', priceOracle.address);
+  // const tx = await comptroller._setPriceOracle(priceOracle.address);
+  // await tx.wait();
+  // console.log('#7 Set Comptroller Price Oracle to: ', priceOracle.address);
 
   console.log('Starting to deploy Interest Rate Models');
   const interestRateModelArgs = Object.values(INTEREST_RATE_MODEL);
@@ -104,27 +104,27 @@ export async function deployCompoundV2(
   }
   console.log('#8 All Interest Rate Models Deployed');
 
-  console.log("Starting to deploy CTokens");
-  const cTokenLikes = await deployAllCTokens(
-    underlying,
-    interestRateModels,
-    priceOracle,
-    comptroller,
-    deployer,
-    overrides
-  );
-  console.log("#9 All CTokens deployed");
+  // console.log("Starting to deploy CTokens");
+  // const cTokenLikes = await deployAllCTokens(
+  //   underlying,
+  //   interestRateModels,
+  //   priceOracle,
+  //   comptroller,
+  //   deployer,
+  //   overrides
+  // );
+  // console.log("#9 All CTokens deployed");
 
-  const cTokens = new CTokens();
-  underlying.forEach((u, idx) => {
-    cTokens[u.cToken] = cTokenLikes[idx];
-  });
+  // const cTokens = new CTokens();
+  // underlying.forEach((u, idx) => {
+  //   cTokens[u.cToken] = cTokenLikes[idx];
+  // });
 
   return {
-    comptroller,
+    // comptroller,
     priceOracle,
     interestRateModels,
-    cTokens,
+    // cTokens,
   };
 }
 
@@ -195,6 +195,7 @@ export async function deployUnitroller(
   deployer: SignerWithAddress,
   overrides?: Overrides
 ): Promise<Unitroller> {
+  console.log('deployUnitroller');
   return new Unitroller__factory(deployer).deploy(overrides);
 }
 

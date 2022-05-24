@@ -14,10 +14,10 @@ import {
 import { CTokenType, InterestRateModelType } from './enums';
 
 export interface CompoundV2 {
-  readonly comptroller: Comptroller;
+  // readonly comptroller: Comptroller;
   readonly priceOracle: SimplePriceOracle;
   readonly interestRateModels: InterestRateModels;
-  readonly cTokens: CTokens;
+  // readonly cTokens: CTokens;
 }
 
 export interface InterestRateModels {

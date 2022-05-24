@@ -19,6 +19,10 @@ module.exports = {
     acanto: { 
       url: 'http://18.234.233.162:8545/',
       accounts: process.env.ACANTO_LIVENET_PRIVATE_KEY ? [process.env.ACANTO_LIVENET_PRIVATE_KEY] : [],
+    },
+    acantov2: { 
+      url: 'http://104.131.11.57:8545',
+      accounts: process.env.ACANTO_V2_LIVENET_PRIVATE_KEY ? [process.env.ACANTO_V2_LIVENET_PRIVATE_KEY] : [],
     }
   },
   typechain: {
