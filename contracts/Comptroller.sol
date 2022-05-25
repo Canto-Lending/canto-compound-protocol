@@ -1,6 +1,7 @@
 pragma solidity ^0.5.16;
 
 import "./CToken.sol";
+import "./EIP20Interface.sol";
 import "./ErrorReporter.sol";
 import "./PriceOracle.sol";
 import "./ComptrollerInterface.sol";
@@ -1369,10 +1370,10 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
      * @return The amount of COMP which was NOT transferred to the user
      */
     function grantCompInternal(address user, uint amount) internal returns (uint) {
-        Comp comp = Comp(getCompAddress());
-        uint compRemaining = comp.balanceOf(address(this));
-        if (amount > 0 && amount <= compRemaining) {
-            comp.transfer(user, amount);
+        EIP20Interface wrappedCanto = EIP20Interface(getCompAddress());
+        uint wrappedCantoRemaining = wrappedCanto.balanceOf(address(this));
+        if (amount > 0 && amount <= wrappedCantoRemaining) {
+            wrappedCanto.transfer(user, amount);
             return 0;
         }
         return amount;
@@ -1457,6 +1458,7 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
         return block.number;
     }
 
+    // TODO: change this to Wrapped Canto Address
     /**
      * @notice Return the address of the COMP token
      * @return The address of COMP
