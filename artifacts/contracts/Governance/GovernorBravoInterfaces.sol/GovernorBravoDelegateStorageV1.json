@@ -1,0 +1,163 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "GovernorBravoDelegateStorageV1",
+  "sourceName": "contracts/Governance/GovernorBravoInterfaces.sol",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "admin",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "implementation",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "initialProposalId",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "latestProposalIds",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "pendingAdmin",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "proposalCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "proposals",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "proposer",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "eta",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "canceled",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "executed",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "timelock",
+      "outputs": [
+        {
+          "internalType": "contract TimelockInterface",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b50610348806100206000396000f3fe608060405234801561001057600080fd5b50600436106100885760003560e01c8063d33219b41161005b578063d33219b4146100f7578063da35c6641461010c578063f851a44014610114578063fc4eee421461011c57610088565b8063013cf08b1461008d57806317977c61146100ba57806326782247146100da5780635c60da1b146100ef575b600080fd5b6100a061009b3660046101fd565b610124565b6040516100b195949392919061026f565b60405180910390f35b6100cd6100c83660046101d7565b610161565b6040516100b19190610261565b6100e2610173565b6040516100b19190610245565b6100e2610182565b6100ff610191565b6040516100b19190610253565b6100cd6101a0565b6100e26101a6565b6100cd6101b5565b600660205260009081526040902080546001820154600283015460079093015491926001600160a01b039091169160ff8082169161010090041685565b60076020526000908152604090205481565b6001546001600160a01b031681565b6002546001600160a01b031681565b6005546001600160a01b031681565b60045481565b6000546001600160a01b031681565b60035481565b80356101c6816102e5565b92915050565b80356101c6816102fc565b6000602082840312156101e957600080fd5b60006101f584846101bb565b949350505050565b60006020828403121561020f57600080fd5b60006101f584846101cc565b610224816102bb565b82525050565b610224816102c6565b610224816102da565b610224816102d7565b602081016101c6828461021b565b602081016101c68284610233565b602081016101c6828461023c565b60a0810161027d828861023c565b61028a602083018761021b565b610297604083018661023c565b6102a4606083018561022a565b6102b1608083018461022a565b9695505050505050565b60006101c6826102cb565b151590565b6001600160a01b031690565b90565b60006101c6826102bb565b6102ee816102bb565b81146102f957600080fd5b50565b6102ee816102d756fea365627a7a723158201f57df320708aa1977dd1aa11ecf7509ed661fe633539747401ce3c97e6b49296c6578706572696d656e74616cf564736f6c63430005100040",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100885760003560e01c8063d33219b41161005b578063d33219b4146100f7578063da35c6641461010c578063f851a44014610114578063fc4eee421461011c57610088565b8063013cf08b1461008d57806317977c61146100ba57806326782247146100da5780635c60da1b146100ef575b600080fd5b6100a061009b3660046101fd565b610124565b6040516100b195949392919061026f565b60405180910390f35b6100cd6100c83660046101d7565b610161565b6040516100b19190610261565b6100e2610173565b6040516100b19190610245565b6100e2610182565b6100ff610191565b6040516100b19190610253565b6100cd6101a0565b6100e26101a6565b6100cd6101b5565b600660205260009081526040902080546001820154600283015460079093015491926001600160a01b039091169160ff8082169161010090041685565b60076020526000908152604090205481565b6001546001600160a01b031681565b6002546001600160a01b031681565b6005546001600160a01b031681565b60045481565b6000546001600160a01b031681565b60035481565b80356101c6816102e5565b92915050565b80356101c6816102fc565b6000602082840312156101e957600080fd5b60006101f584846101bb565b949350505050565b60006020828403121561020f57600080fd5b60006101f584846101cc565b610224816102bb565b82525050565b610224816102c6565b610224816102da565b610224816102d7565b602081016101c6828461021b565b602081016101c68284610233565b602081016101c6828461023c565b60a0810161027d828861023c565b61028a602083018761021b565b610297604083018661023c565b6102a4606083018561022a565b6102b1608083018461022a565b9695505050505050565b60006101c6826102cb565b151590565b6001600160a01b031690565b90565b60006101c6826102bb565b6102ee816102bb565b81146102f957600080fd5b50565b6102ee816102d756fea365627a7a723158201f57df320708aa1977dd1aa11ecf7509ed661fe633539747401ce3c97e6b49296c6578706572696d656e74616cf564736f6c63430005100040",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
