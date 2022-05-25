@@ -22,26 +22,17 @@ interface ComptrollerLensInterface {
 }
 
 interface GovernorBravoInterface {
-    struct Receipt {
-        bool hasVoted;
-        uint8 support;
-        uint96 votes;
-    }
+
     struct Proposal {
         uint id;
+        // TODO: may need to remove proposer
         address proposer;
         uint eta;
-        uint startBlock;
-        uint endBlock;
-        uint forVotes;
-        uint againstVotes;
-        uint abstainVotes;
         bool canceled;
         bool executed;
     }
     function getActions(uint proposalId) external view returns (address[] memory targets, uint[] memory values, string[] memory signatures, bytes[] memory calldatas);
     function proposals(uint proposalId) external view returns (Proposal memory);
-    function getReceipt(uint proposalId, address voter) external view returns (Receipt memory);
 }
 
 contract CompoundLens {
@@ -255,62 +246,15 @@ contract CompoundLens {
         });
     }
 
-    struct GovReceipt {
-        uint proposalId;
-        bool hasVoted;
-        bool support;
-        uint96 votes;
-    }
-
-    function getGovReceipts(GovernorAlpha governor, address voter, uint[] memory proposalIds) public view returns (GovReceipt[] memory) {
-        uint proposalCount = proposalIds.length;
-        GovReceipt[] memory res = new GovReceipt[](proposalCount);
-        for (uint i = 0; i < proposalCount; i++) {
-            GovernorAlpha.Receipt memory receipt = governor.getReceipt(proposalIds[i], voter);
-            res[i] = GovReceipt({
-                proposalId: proposalIds[i],
-                hasVoted: receipt.hasVoted,
-                support: receipt.support,
-                votes: receipt.votes
-            });
-        }
-        return res;
-    }
-
-    struct GovBravoReceipt {
-        uint proposalId;
-        bool hasVoted;
-        uint8 support;
-        uint96 votes;
-    }
-
-    function getGovBravoReceipts(GovernorBravoInterface governor, address voter, uint[] memory proposalIds) public view returns (GovBravoReceipt[] memory) {
-        uint proposalCount = proposalIds.length;
-        GovBravoReceipt[] memory res = new GovBravoReceipt[](proposalCount);
-        for (uint i = 0; i < proposalCount; i++) {
-            GovernorBravoInterface.Receipt memory receipt = governor.getReceipt(proposalIds[i], voter);
-            res[i] = GovBravoReceipt({
-                proposalId: proposalIds[i],
-                hasVoted: receipt.hasVoted,
-                support: receipt.support,
-                votes: receipt.votes
-            });
-        }
-        return res;
-    }
-
     struct GovProposal {
         uint proposalId;
+        // TODO: may need to remove proposer
         address proposer;
         uint eta;
         address[] targets;
         uint[] values;
         string[] signatures;
         bytes[] calldatas;
-        uint startBlock;
-        uint endBlock;
-        uint forVotes;
-        uint againstVotes;
         bool canceled;
         bool executed;
     }
@@ -369,6 +313,7 @@ contract CompoundLens {
 
     struct GovBravoProposal {
         uint proposalId;
+        // TODO: May need to remove proposer
         address proposer;
         uint eta;
         address[] targets;
@@ -429,72 +374,7 @@ contract CompoundLens {
         return res;
     }
 
-    struct CompBalanceMetadata {
-        uint balance;
-        uint votes;
-        address delegate;
-    }
-
-    function getCompBalanceMetadata(Comp comp, address account) external view returns (CompBalanceMetadata memory) {
-        return CompBalanceMetadata({
-            balance: comp.balanceOf(account),
-            votes: uint256(comp.getCurrentVotes(account)),
-            delegate: comp.delegates(account)
-        });
-    }
-
-    struct CompBalanceMetadataExt {
-        uint balance;
-        uint votes;
-        address delegate;
-        uint allocated;
-    }
-
-    function getCompBalanceMetadataExt(Comp comp, ComptrollerLensInterface comptroller, address account) external returns (CompBalanceMetadataExt memory) {
-        uint balance = comp.balanceOf(account);
-        comptroller.claimComp(account);
-        uint newBalance = comp.balanceOf(account);
-        uint accrued = comptroller.compAccrued(account);
-        uint total = add(accrued, newBalance, "sum comp total");
-        uint allocated = sub(total, balance, "sub allocated");
-
-        return CompBalanceMetadataExt({
-            balance: balance,
-            votes: uint256(comp.getCurrentVotes(account)),
-            delegate: comp.delegates(account),
-            allocated: allocated
-        });
-    }
-
-    struct CompVotes {
-        uint blockNumber;
-        uint votes;
-    }
-
-    function getCompVotes(Comp comp, address account, uint32[] calldata blockNumbers) external view returns (CompVotes[] memory) {
-        CompVotes[] memory res = new CompVotes[](blockNumbers.length);
-        for (uint i = 0; i < blockNumbers.length; i++) {
-            res[i] = CompVotes({
-                blockNumber: uint256(blockNumbers[i]),
-                votes: uint256(comp.getPriorVotes(account, blockNumbers[i]))
-            });
-        }
-        return res;
-    }
-
     function compareStrings(string memory a, string memory b) internal pure returns (bool) {
         return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
-    }
-
-    function add(uint a, uint b, string memory errorMessage) internal pure returns (uint) {
-        uint c = a + b;
-        require(c >= a, errorMessage);
-        return c;
-    }
-
-    function sub(uint a, uint b, string memory errorMessage) internal pure returns (uint) {
-        require(b <= a, errorMessage);
-        uint c = a - b;
-        return c;
     }
 }
