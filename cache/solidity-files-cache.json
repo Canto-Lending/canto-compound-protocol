@@ -1253,8 +1253,8 @@
       ]
     },
     "/home/nikhil/practice/blockchain/canto-compound-protocol/contracts/Governance/GovernorBravoDelegateG2.sol": {
-      "lastModificationDate": 1653506102604,
-      "contentHash": "a13af00e9a82ee9d418b33b472f4692a",
+      "lastModificationDate": 1653533499193,
+      "contentHash": "d360f76afbc315da3e788709edc8722d",
       "sourceName": "contracts/Governance/GovernorBravoDelegateG2.sol",
       "solcConfig": {
         "version": "0.5.16",
@@ -1286,11 +1286,12 @@
         "^0.5.16"
       ],
       "artifacts": [
-        "GovernorBravoDelegate"
+        "GovernorBravoDelegate",
+        "UnigovInterface"
       ]
     },
     "/home/nikhil/practice/blockchain/canto-compound-protocol/contracts/Governance/GovernorBravoInterfaces.sol": {
-      "lastModificationDate": 1653506102604,
+      "lastModificationDate": 1653532497515,
       "contentHash": "0490cc811561f659b0d5b32d79cc896f",
       "sourceName": "contracts/Governance/GovernorBravoInterfaces.sol",
       "solcConfig": {
@@ -1330,7 +1331,7 @@
       ]
     },
     "/home/nikhil/practice/blockchain/canto-compound-protocol/contracts/Governance/GovernorBravoDelegator.sol": {
-      "lastModificationDate": 1653506091800,
+      "lastModificationDate": 1653532469400,
       "contentHash": "1c3012bdb09f2feaa8125d0ec817143a",
       "sourceName": "contracts/Governance/GovernorBravoDelegator.sol",
       "solcConfig": {
