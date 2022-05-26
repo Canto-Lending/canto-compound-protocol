@@ -5,7 +5,7 @@ Unitroller Deploy
 PriceOracle Deploy Fixed 1.0
 PriceOracleProxy Deploy Admin (PriceOracle Address) (Address Zero) (Address Zero) (Address Zero) (Address Zero) (Address Zero)
 ----g2
-ComptrollerImpl Deploy ScenarioG2 ComptrollerScenG2
+ComptrollerImpl Deploy Scenario ComptrollerScenG2
 Unitroller SetPendingImpl ComptrollerScenG2
 ComptrollerImpl ComptrollerScenG2 BecomeG2
 --list some tokens
