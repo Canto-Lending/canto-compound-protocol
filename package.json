@@ -29,7 +29,9 @@
   },
   "dependencies": {
     "@nomiclabs/hardhat-waffle": "^2.0.3",
-    "eth-saddle": "^0.1.21"
+    "esbuild": "^0.14.39",
+    "eth-saddle": "^0.1.21",
+    "nvm": "^0.0.4"
   },
   "resolutions": {
     "scrypt.js": "https://registry.npmjs.org/@compound-finance/ethereumjs-wallet/-/ethereumjs-wallet-0.6.3.tgz",

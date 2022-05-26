@@ -1,0 +1,113 @@
+yarn run v1.22.19
+$ ./script/test
+Getting scenario packages...
+[1/4] Resolving packages...
+[2/4] Fetching packages...
+[1/4] Resolving packages...
+[2/4] Fetching packages...
+[3/4] Linking dependencies...
+[4/4] Building fresh packages...
+success Saved lockfile.
+$ yarn build && yarn build:browser
+$ rm -rf dist && babel --out-dir=dist src --copy-files
+src/ASTBuilder.js -> dist/ASTBuilder.js
+src/ErrorListener.js -> dist/ErrorListener.js
+src/antlr4/BufferedTokenStream.js -> dist/antlr4/BufferedTokenStream.js
+src/antlr4/CharStreams.js -> dist/antlr4/CharStreams.js
+src/antlr4/CommonTokenFactory.js -> dist/antlr4/CommonTokenFactory.js
+src/antlr4/CommonTokenStream.js -> dist/antlr4/CommonTokenStream.js
+src/antlr4/FileStream.js -> dist/antlr4/FileStream.js
+src/antlr4/InputStream.js -> dist/antlr4/InputStream.js
+src/antlr4/IntervalSet.js -> dist/antlr4/IntervalSet.js
+src/antlr4/LL1Analyzer.js -> dist/antlr4/LL1Analyzer.js
+src/antlr4/Lexer.js -> dist/antlr4/Lexer.js
+src/antlr4/Parser.js -> dist/antlr4/Parser.js
+src/antlr4/ParserRuleContext.js -> dist/antlr4/ParserRuleContext.js
+src/antlr4/PredictionContext.js -> dist/antlr4/PredictionContext.js
+src/antlr4/Recognizer.js -> dist/antlr4/Recognizer.js
+src/antlr4/RuleContext.js -> dist/antlr4/RuleContext.js
+src/antlr4/Token.js -> dist/antlr4/Token.js
+src/antlr4/Utils.js -> dist/antlr4/Utils.js
+src/antlr4/atn/ATN.js -> dist/antlr4/atn/ATN.js
+src/antlr4/atn/ATNConfig.js -> dist/antlr4/atn/ATNConfig.js
+src/antlr4/atn/ATNConfigSet.js -> dist/antlr4/atn/ATNConfigSet.js
+src/antlr4/atn/ATNDeserializationOptions.js -> dist/antlr4/atn/ATNDeserializationOptions.js
+src/antlr4/atn/ATNDeserializer.js -> dist/antlr4/atn/ATNDeserializer.js
+src/antlr4/atn/ATNSimulator.js -> dist/antlr4/atn/ATNSimulator.js
+src/antlr4/atn/ATNState.js -> dist/antlr4/atn/ATNState.js
+src/antlr4/atn/ATNType.js -> dist/antlr4/atn/ATNType.js
+src/antlr4/atn/LexerATNSimulator.js -> dist/antlr4/atn/LexerATNSimulator.js
+src/antlr4/atn/LexerAction.js -> dist/antlr4/atn/LexerAction.js
+src/antlr4/atn/LexerActionExecutor.js -> dist/antlr4/atn/LexerActionExecutor.js
+src/antlr4/atn/ParserATNSimulator.js -> dist/antlr4/atn/ParserATNSimulator.js
+src/antlr4/atn/PredictionMode.js -> dist/antlr4/atn/PredictionMode.js
+src/antlr4/atn/SemanticContext.js -> dist/antlr4/atn/SemanticContext.js
+src/antlr4/atn/Transition.js -> dist/antlr4/atn/Transition.js
+src/antlr4/atn/index.js -> dist/antlr4/atn/index.js
+src/antlr4/dfa/DFA.js -> dist/antlr4/dfa/DFA.js
+src/antlr4/dfa/DFASerializer.js -> dist/antlr4/dfa/DFASerializer.js
+src/antlr4/dfa/DFAState.js -> dist/antlr4/dfa/DFAState.js
+src/antlr4/dfa/index.js -> dist/antlr4/dfa/index.js
+src/antlr4/error/DiagnosticErrorListener.js -> dist/antlr4/error/DiagnosticErrorListener.js
+src/antlr4/error/ErrorListener.js -> dist/antlr4/error/ErrorListener.js
+src/antlr4/error/ErrorStrategy.js -> dist/antlr4/error/ErrorStrategy.js
+src/antlr4/error/Errors.js -> dist/antlr4/error/Errors.js
+src/antlr4/error/index.js -> dist/antlr4/error/index.js
+src/antlr4/index.js -> dist/antlr4/index.js
+src/antlr4/polyfills/codepointat.js -> dist/antlr4/polyfills/codepointat.js
+src/antlr4/polyfills/fromcodepoint.js -> dist/antlr4/polyfills/fromcodepoint.js
+src/antlr4/tree/Tree.js -> dist/antlr4/tree/Tree.js
+src/antlr4/tree/Trees.js -> dist/antlr4/tree/Trees.js
+src/antlr4/tree/index.js -> dist/antlr4/tree/index.js
+src/index.js -> dist/index.js
+src/lib/SolidityLexer.js -> dist/lib/SolidityLexer.js
+src/lib/SolidityListener.js -> dist/lib/SolidityListener.js
+src/lib/SolidityParser.js -> dist/lib/SolidityParser.js
+src/tokens.js -> dist/tokens.js
+$ webpack
+Hash: 0bbf425be10cedfef6eb
+Version: webpack 4.42.1
+Time: 3010ms
+Built at: 05/25/2022 11:23:54 PM
+                 Asset      Size  Chunks                          Chunk Names
+    solidity-parser.js   887 KiB       0  [emitted]        [big]  main
+solidity-parser.js.map  1.71 MiB       0  [emitted] [dev]         main
+Entrypoint main [big] = solidity-parser.js solidity-parser.js.map
+ [0] ./src/antlr4/Utils.js 10.2 KiB {0} [built]
+ [1] ./src/antlr4/Token.js 4.63 KiB {0} [built]
+ [2] ./src/antlr4/IntervalSet.js 7.78 KiB {0} [built]
+ [6] ./src/antlr4/PredictionContext.js 22.6 KiB {0} [built]
+[10] ./src/antlr4/index.js 1.16 KiB {0} [built]
+[15] ./src/antlr4/Lexer.js 10.5 KiB {0} [built]
+[18] ./src/antlr4/ParserRuleContext.js 6.6 KiB {0} [built]
+[19] ./src/antlr4/InputStream.js 3.35 KiB {0} [built]
+[27] ./src/antlr4/polyfills/codepointat.js 1.8 KiB {0} [built]
+[31] ./src/index.js 3.37 KiB {0} [built]
+[49] ./src/lib/SolidityLexer.js 72.3 KiB {0} [built]
+[50] ./src/lib/SolidityParser.js 331 KiB {0} [built]
+[52] ./src/ASTBuilder.js 37.2 KiB {0} [built]
+[53] ./src/ErrorListener.js 653 bytes {0} [built]
+[54] ./src/tokens.js + 1 modules 6.38 KiB {0} [built]
+     | ./src/tokens.js 3.62 KiB [built]
+     | ./src/lib/Solidity.tokens 2.76 KiB [built]
+    + 40 hidden modules
+
+WARNING in asset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
+This can impact web performance.
+Assets: 
+  solidity-parser.js (887 KiB)
+
+WARNING in entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
+Entrypoints:
+  main (887 KiB)
+      solidity-parser.js
+
+
+WARNING in webpack performance recommendations: 
+You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.
+For more info visit https://webpack.js.org/guides/code-splitting/
+[3/4] Linking dependencies...
+[4/4] Building fresh packages...
+Building Scenario Runner...
+Compiling Solidity contracts...
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
