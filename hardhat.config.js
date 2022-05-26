@@ -1,67 +1,17 @@
-// import * as dotenv from 'dotenv';
-// dotenv.config();
-// import '@nomiclabs/hardhat-ethers';
-// import '@thenextblock/hardhat-erc20';
-// import '@typechain/hardhat';
 
-// module.exports = {
-//   networks: {
-//     hardhat: {
-//       allowUnlimitedContractSize: true,
-//       forking:{
-//         url: "https://eth-mainnet.alchemyapi.io/v2/<key>",
-//       }
-//     },
-//     cantolocal: { 
-//       url:'http://localhost:8545',
-//       accounts: process.env.LOCAL_NET_PRIVATE_KEY ? [process.env.LOCAL_NET_PRIVATE_KEY] : []
-//     },
-//     acanto: { 
-//       url: 'http://18.234.233.162:8545/',
-//       accounts: process.env.ACANTO_LIVENET_PRIVATE_KEY ? [process.env.ACANTO_LIVENET_PRIVATE_KEY] : [],
-//     },
-//     acantov2: { 
-//       url: 'http://104.131.11.57:8545',
-//       accounts: process.env.ACANTO_V2_LIVENET_PRIVATE_KEY ? [process.env.ACANTO_V2_LIVENET_PRIVATE_KEY] : [],
-//     }
-//   },
-//   typechain: {
-//     outDir: 'typechain',
-//     target: 'ethers-v5',
-//   },
-//   solidity: {
-//     compilers: [
-//       {
-//         version: '0.5.16',
-//         settings: {
-//           optimizer: {
-//             enabled: true,
-//             runs: 200,
-//           },
-//         },
-//       },
-//       {
-//         version: '0.5.16',
-//         settings: {
-//           optimizer: {
-//             enabled: true,
-//             runs: 200,
-//           },
-//         },
-//       },
-//     ],
-//   },
-// };
+require("@nomiclabs/hardhat-waffle");
 
 module.exports = {
   networks: {
     localnet: { 
       url:'http://localhost:8545',
-      accounts: process.env.LOCAL_NET_PRIVATE_KEY ? [process.env.LOCAL_NET_PRIVATE_KEY] : []
+     // accounts: process.env.LOCAL_NET_PRIVATE_KEY ? [process.env.LOCAL_NET_PRIVATE_KEY] : []
+	accounts: ["0b5b01ada0e1388a1666af759ebb1581f0d1404d12e51ecf631086befd56cb6c"]
     },
     livenet: { 
-      url: 'http://104.131.11.57:8545',
-      accounts: process.env.ACANTO_V2_LIVENET_PRIVATE_KEY ? [process.env.ACANTO_V2_LIVENET_PRIVATE_KEY] : [],
+	url: 'http://104.131.11.57:8545',
+	accounts: ["b3553888442265a9e3394073d40b6278b10ea0d487b420ca9c5b209761f92dbc"],
+	gasPrice: 100000000000
     }
   },
   solidity: {

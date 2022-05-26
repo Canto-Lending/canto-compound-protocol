@@ -1,5 +1,5 @@
 pragma solidity ^0.5.16;
-
+import "./EIP20Interface.sol";
 /**
  * @title Reservoir Contract
  * @notice Distributes a token to a different contract at a fixed rate.
@@ -97,4 +97,3 @@ contract Reservoir {
   }
 }
 
-import "./EIP20Interface.sol";
