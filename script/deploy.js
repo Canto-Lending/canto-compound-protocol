@@ -86,7 +86,11 @@ const INTEREST_RATE_MODEL = {
     },
 };
 
+const WEthAddress = "0x14B3F74f86c4DE775112124c08CAf7a439f3083B";
+
 async function main() {
+   
+    
     const [deployer] = await ethers.getSigners();
     
     const comptrollerFactory = await ethers.getContractFactory("Comptroller");
@@ -105,13 +109,13 @@ async function main() {
     
     //deploy a placeholder erc20token contract, this token represents the WrappedCanto interface
 
-    const ERC20TokenFactory = await ethers.getContractFactory("ERC20");
-    const ERC20TokenContract = await ERC20TokenFactory.deploy("Token", "Token", 10000);
+    // const WEthContractFactory = await ethers.getContractFactory("WEth9");
+    // const WEthContract = await WEthContractFactory.deploy("Token", "WEth9");
 
-    console.log("ERC20 sample token deployed: ", ERC20TokenContract.address)
+    // console.log("ERC20 sample token deployed: ", WEthContract.address)
     
     const reservoirFactory = await ethers.getContractFactory("Reservoir");
-    const reservoirContract = await reservoirFactory.deploy(RESERVOIR_DRIP_RATE, ERC20TokenContract.address, unitrollerContract.address);
+    const reservoirContract = await reservoirFactory.deploy(RESERVOIR_DRIP_RATE, WEthAddress, unitrollerContract.address);
     console.log("#5 Reservoir deployed at: ", reservoirContract.address);
 
   // TODO: set reservoir drip target
