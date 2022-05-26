@@ -29,6 +29,23 @@ contract WETH9 is EIP20Interface {
     mapping (address => mapping (address => uint))  public  allowance;
 
 
+    function() external payable {
+        deposit();
+    }
+    function deposit() public payable {
+        balanceOf[msg.sender] += msg.value;
+        emit Deposit(msg.sender, msg.value);
+    }
+
+
+    function withdraw(uint wad) public {
+        require(balanceOf[msg.sender] >= wad);
+        balanceOf[msg.sender] -= wad;
+        msg.sender.transfer(wad);
+        emit Withdrawal(msg.sender, wad);
+    }
+
+
     constructor(string memory _name, string memory _symbol) external {
 	name = _name;
 	symbol = _symbol;
