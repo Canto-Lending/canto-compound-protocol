@@ -3,6 +3,29 @@ pragma experimental ABIEncoderV2;
 
 import "./GovernorBravoInterfaces.sol";
 
+//Interface name is not important, however functions in it are important
+interface UnigovInterface{
+    struct Proposal {
+        // @notice Unique id for looking up a proposal
+        uint id;
+
+        string title;
+        
+        string desc;
+
+        // @notice the ordered list of target addresses for calls to be made
+        address[] targets;
+	
+        uint[] values;
+
+        // @notice The ordered list of function signatures to be called
+        string[] signatures;
+        // @notice The ordered list of calldata to be passed to each call
+        bytes[] calldatas;
+    }
+  function QueryProp(uint propId) external view returns(Proposal memory);
+}
+
 contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoEvents {
 
     /// @notice The name of this contract
@@ -35,16 +58,24 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
       * @param proposalId The id of the proposal to queue
       */
     function queue(uint proposalId) external {
-        // require(state(proposalId) == ProposalState.Succeeded, "GovernorBravo::queue: proposal can only be queued if it is succeeded");
-        // Proposal storage proposal = proposals[proposalId];
-        // uint eta = add256(block.timestamp, timelock.delay());
-        // for (uint i = 0; i < proposal.targets.length; i++) {
-        //     queueOrRevertInternal(proposal.targets[i], proposal.values[i], proposal.signatures[i], proposal.calldatas[i], eta);
-        // }
-        // proposal.eta = eta;
-        // emit ProposalQueued(proposalId, eta);
+	// address of map contract; used to query proposals from cosmos SDK
+        address mapContractAddress = 0x30E20d0A642ADB85Cb6E9da8fB9e3aadB0F593C0;
+        // attach to contract using interface defined above
+        UnigovInterface unigov = UnigovInterface(mapContractAddress);
+        
+        // call QueryProp method here
+        UnigovInterface.Proposal memory prop = unigov.QueryProp(proposalId);
+	
+        // TODO: need to look into definition of timelock delay - make sure it meets our requirements
+        uint eta = add256(block.timestamp, timelock.delay());
+        for (uint i = 0; i < prop.targets.length; i++) {
+            queueOrRevertInternal(prop.targets[i], prop.values[i], prop.signatures[i], prop.calldatas[i], eta);
+        }
+        emit ProposalQueued(proposalId, eta);
     }
 
+
+    
     // TODO: should we delete this?
     function queueOrRevertInternal(address target, uint value, string memory signature, bytes memory data, uint eta) internal {
         require(!timelock.queuedTransactions(keccak256(abi.encode(target, value, signature, data, eta))), "GovernorBravo::queueOrRevertInternal: identical proposal action already queued at eta");
