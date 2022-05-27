@@ -35,24 +35,24 @@ describe('Flywheel upgrade', () => {
   describe('becomes the comptroller', () => {
     it('adds the comp markets', async () => {
       let root = saddle.accounts[0];
-      let unitroller = await makeComptroller({kind: 'unitroller-g2'});
+      let unitroller = await makeComptroller({kind: 'unitroller'});
       let compMarkets = await Promise.all([1, 2, 3].map(async _ => {
         return makeCToken({comptroller: unitroller, supportMarket: true});
       }));
       compMarkets = compMarkets.map(c => c._address);
-      unitroller = await makeComptroller({kind: 'unitroller-g3', unitroller, compMarkets});
+      unitroller = await makeComptroller({kind: 'unitroller', unitroller, compMarkets});
       expect(await call(unitroller, 'getCompMarkets')).toEqual(compMarkets);
     });
 
     it('adds the other markets', async () => {
       let root = saddle.accounts[0];
-      let unitroller = await makeComptroller({kind: 'unitroller-g2'});
+      let unitroller = await makeComptroller({kind: 'unitroller'});
       let allMarkets = await Promise.all([1, 2, 3].map(async _ => {
         return makeCToken({comptroller: unitroller, supportMarket: true});
       }));
       allMarkets = allMarkets.map(c => c._address);
       unitroller = await makeComptroller({
-        kind: 'unitroller-g3',
+        kind: 'unitroller',
         unitroller,
         compMarkets: allMarkets.slice(0, 1),
         otherMarkets: allMarkets.slice(1)
@@ -63,7 +63,7 @@ describe('Flywheel upgrade', () => {
 
     it('_supportMarket() adds to all markets, and only once', async () => {
       let root = saddle.accounts[0];
-      let unitroller = await makeComptroller({kind: 'unitroller-g3'});
+      let unitroller = await makeComptroller({kind: 'unitroller'});
       let allMarkets = [];
       for (let _ of Array(10)) {
         allMarkets.push(await makeCToken({comptroller: unitroller, supportMarket: true}));
@@ -71,7 +71,7 @@ describe('Flywheel upgrade', () => {
       expect(await call(unitroller, 'getAllMarkets')).toEqual(allMarkets.map(c => c._address));
       expect(
         makeComptroller({
-          kind: 'unitroller-g3',
+          kind: 'unitroller',
           unitroller,
           otherMarkets: [allMarkets[0]._address]
         })

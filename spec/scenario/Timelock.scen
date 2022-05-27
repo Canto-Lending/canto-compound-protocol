@@ -183,29 +183,3 @@ Test "Reduce reserves for CEther from Timelock and send reserves to external add
     Trx GasPrice 0 (From Jared (Timelock ExecuteTransaction Jared 1000000000000000000 604900 "" ""))
     Assert Equal (EtherBalance (Timelock Address)) (Exactly 0e18)
 
-Test "Set Pending Comptroller implementation on Unitroller from Timelock"
-    Unitroller Deploy
-    PriceOracle Deploy Simple
-    ComptrollerImpl Deploy Scenario ScenComptrollerG1
-    Unitroller SetPendingImpl ScenComptrollerG1
-    Assert Equal (Unitroller PendingImplementation) (ComptrollerImpl ScenComptrollerG1 Address)
-    PriceOracleProxy Deploy Admin (PriceOracle Address) (Address Zero) (Address Zero) (Address Zero) (Address Zero) (Address Zero) -- if listing cEther use ListedEtherToken to replace proxy
-    ComptrollerImpl ScenComptrollerG1 BecomeG1 (PriceOracleProxy Address) 0.1 20
-    Assert Equal (Unitroller PendingImplementation) (Address Zero)
-    Assert Equal (Unitroller Implementation) (Address ScenComptrollerG1)
-    FreezeTime 90
-    Timelock Deploy Coburn 604800
-    ComptrollerImpl Deploy Scenario ScenComptroller
-    Unitroller SetPendingImpl ScenComptroller
-    Unitroller SetPendingAdmin (Timelock Address)
-    Assert Equal (Unitroller PendingAdmin) (Timelock Address)
-    Assert Equal (Unitroller PendingImplementation) (ComptrollerImpl ScenComptroller Address)
-    From Coburn (Timelock QueueTransaction (Unitroller Address) 0 604900 "_acceptAdmin()" "")
-    From Coburn (Timelock QueueTransaction (ComptrollerImpl ScenComptroller Address) 0 604900 "_become(address)" (Unitroller Address))
-    FreezeTime 604900
-    From Coburn (Timelock ExecuteTransaction (Unitroller Address) 0 604900 "_acceptAdmin()" "")
-    Assert Equal (Unitroller Admin) (Timelock Address)
-    Assert Equal (Unitroller PendingAdmin) (Address Zero)
-    From Coburn (Timelock ExecuteTransaction (ComptrollerImpl ScenComptroller Address) 0 604900 "_become(address)" (Unitroller Address))
-    Assert Equal (Unitroller Implementation) (Address ScenComptroller)
-    Assert Equal (Unitroller PendingImplementation) (Address Zero)

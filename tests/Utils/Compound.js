@@ -15,6 +15,7 @@ async function makeComptroller(opts = {}) {
     root = saddle.account,
     kind = 'unitroller'
   } = opts || {};
+  
 
   if (kind == 'bool') {
     return await deploy('BoolComptroller');
@@ -35,67 +36,67 @@ async function makeComptroller(opts = {}) {
     return Object.assign(comptroller, { priceOracle });
   }
 
-  if (kind == 'unitroller-g2') {
-    const unitroller = opts.unitroller || await deploy('Unitroller');
-    const comptroller = await deploy('ComptrollerScenarioG2');
-    const priceOracle = opts.priceOracle || await makePriceOracle(opts.priceOracleOpts);
-    const closeFactor = etherMantissa(dfn(opts.closeFactor, .051));
-    const maxAssets = etherUnsigned(dfn(opts.maxAssets, 10));
-    const liquidationIncentive = etherMantissa(1);
+  // if (kind == 'unitroller-g2') {
+  //   const unitroller = opts.unitroller || await deploy('Unitroller');
+  //   const comptroller = await deploy('ComptrollerScenarioG2');
+  //   const priceOracle = opts.priceOracle || await makePriceOracle(opts.priceOracleOpts);
+  //   const closeFactor = etherMantissa(dfn(opts.closeFactor, .051));
+  //   const maxAssets = etherUnsigned(dfn(opts.maxAssets, 10));
+  //   const liquidationIncentive = etherMantissa(1);
 
-    await send(unitroller, '_setPendingImplementation', [comptroller._address]);
-    await send(comptroller, '_become', [unitroller._address]);
-    mergeInterface(unitroller, comptroller);
-    await send(unitroller, '_setLiquidationIncentive', [liquidationIncentive]);
-    await send(unitroller, '_setCloseFactor', [closeFactor]);
-    await send(unitroller, '_setMaxAssets', [maxAssets]);
-    await send(unitroller, '_setPriceOracle', [priceOracle._address]);
+  //   await send(unitroller, '_setPendingImplementation', [comptroller._address]);
+  //   await send(comptroller, '_become', [unitroller._address]);
+  //   mergeInterface(unitroller, comptroller);
+  //   await send(unitroller, '_setLiquidationIncentive', [liquidationIncentive]);
+  //   await send(unitroller, '_setCloseFactor', [closeFactor]);
+  //   await send(unitroller, '_setMaxAssets', [maxAssets]);
+  //   await send(unitroller, '_setPriceOracle', [priceOracle._address]);
 
-    return Object.assign(unitroller, { priceOracle });
-  }
+  //   return Object.assign(unitroller, { priceOracle });
+  // }
 
-  if (kind == 'unitroller-g3') {
-    const unitroller = opts.unitroller || await deploy('Unitroller');
-    const comptroller = await deploy('ComptrollerScenarioG3');
-    const priceOracle = opts.priceOracle || await makePriceOracle(opts.priceOracleOpts);
-    const closeFactor = etherMantissa(dfn(opts.closeFactor, .051));
-    const maxAssets = etherUnsigned(dfn(opts.maxAssets, 10));
-    const liquidationIncentive = etherMantissa(1);
-    const compRate = etherUnsigned(dfn(opts.compRate, 1e18));
-    const compMarkets = opts.compMarkets || [];
-    const otherMarkets = opts.otherMarkets || [];
+  // if (kind == 'unitroller-g3') {
+  //   const unitroller = opts.unitroller || await deploy('Unitroller');
+  //   const comptroller = await deploy('ComptrollerScenarioG3');
+  //   const priceOracle = opts.priceOracle || await makePriceOracle(opts.priceOracleOpts);
+  //   const closeFactor = etherMantissa(dfn(opts.closeFactor, .051));
+  //   const maxAssets = etherUnsigned(dfn(opts.maxAssets, 10));
+  //   const liquidationIncentive = etherMantissa(1);
+  //   const compRate = etherUnsigned(dfn(opts.compRate, 1e18));
+  //   const compMarkets = opts.compMarkets || [];
+  //   const otherMarkets = opts.otherMarkets || [];
 
-    await send(unitroller, '_setPendingImplementation', [comptroller._address]);
-    await send(comptroller, '_become', [unitroller._address, compRate, compMarkets, otherMarkets]);
-    mergeInterface(unitroller, comptroller);
-    await send(unitroller, '_setLiquidationIncentive', [liquidationIncentive]);
-    await send(unitroller, '_setCloseFactor', [closeFactor]);
-    await send(unitroller, '_setMaxAssets', [maxAssets]);
-    await send(unitroller, '_setPriceOracle', [priceOracle._address]);
+  //   await send(unitroller, '_setPendingImplementation', [comptroller._address]);
+  //   await send(comptroller, '_become', [unitroller._address, compRate, compMarkets, otherMarkets]);
+  //   mergeInterface(unitroller, comptroller);
+  //   await send(unitroller, '_setLiquidationIncentive', [liquidationIncentive]);
+  //   await send(unitroller, '_setCloseFactor', [closeFactor]);
+  //   await send(unitroller, '_setMaxAssets', [maxAssets]);
+  //   await send(unitroller, '_setPriceOracle', [priceOracle._address]);
 
-    return Object.assign(unitroller, { priceOracle });
-  }
+  //   return Object.assign(unitroller, { priceOracle });
+  // }
 
-  if (kind == 'unitroller-g6') {
-    const unitroller = opts.unitroller || await deploy('Unitroller');
-    const comptroller = await deploy('ComptrollerScenarioG6');
-    const priceOracle = opts.priceOracle || await makePriceOracle(opts.priceOracleOpts);
-    const closeFactor = etherMantissa(dfn(opts.closeFactor, .051));
-    const liquidationIncentive = etherMantissa(1);
-    const comp = opts.comp || await deploy('Comp', [opts.compOwner || root]);
-    const compRate = etherUnsigned(dfn(opts.compRate, 1e18));
+  // if (kind == 'unitroller-g6') {
+  //   const unitroller = opts.unitroller || await deploy('Unitroller');
+  //   const comptroller = await deploy('ComptrollerScenarioG6');
+  //   const priceOracle = opts.priceOracle || await makePriceOracle(opts.priceOracleOpts);
+  //   const closeFactor = etherMantissa(dfn(opts.closeFactor, .051));
+  //   const liquidationIncentive = etherMantissa(1);
+  //   const comp = opts.comp || await deploy('Comp', [opts.compOwner || root]);
+  //   const compRate = etherUnsigned(dfn(opts.compRate, 1e18));
 
-    await send(unitroller, '_setPendingImplementation', [comptroller._address]);
-    await send(comptroller, '_become', [unitroller._address]);
-    mergeInterface(unitroller, comptroller);
-    await send(unitroller, '_setLiquidationIncentive', [liquidationIncentive]);
-    await send(unitroller, '_setCloseFactor', [closeFactor]);
-    await send(unitroller, '_setPriceOracle', [priceOracle._address]);
-    await send(unitroller, '_setCompRate', [compRate]);
-    await send(unitroller, 'setCompAddress', [comp._address]); // harness only
+  //   await send(unitroller, '_setPendingImplementation', [comptroller._address]);
+  //   await send(comptroller, '_become', [unitroller._address]);
+  //   mergeInterface(unitroller, comptroller);
+  //   await send(unitroller, '_setLiquidationIncentive', [liquidationIncentive]);
+  //   await send(unitroller, '_setCloseFactor', [closeFactor]);
+  //   await send(unitroller, '_setPriceOracle', [priceOracle._address]);
+  //   await send(unitroller, '_setCompRate', [compRate]);
+  //   await send(unitroller, 'setCompAddress', [comp._address]); // harness only
 
-    return Object.assign(unitroller, { priceOracle, comp });
-  }
+  //   return Object.assign(unitroller, { priceOracle, comp });
+  // }
 
   if (kind == 'unitroller') {
     const unitroller = opts.unitroller || await deploy('Unitroller');
@@ -103,7 +104,7 @@ async function makeComptroller(opts = {}) {
     const priceOracle = opts.priceOracle || await makePriceOracle(opts.priceOracleOpts);
     const closeFactor = etherMantissa(dfn(opts.closeFactor, .051));
     const liquidationIncentive = etherMantissa(1);
-    const comp = opts.comp || await deploy('Comp', [opts.compOwner || root]);
+    const comp = opts.comp || await deploy('WETH9', [], {from: (opts.compOwner || root)}); //placeholder for WrappedCanto
     const compRate = etherUnsigned(dfn(opts.compRate, 1e18));
 
     await send(unitroller, '_setPendingImplementation', [comptroller._address]);
@@ -114,6 +115,11 @@ async function makeComptroller(opts = {}) {
     await send(unitroller, '_setPriceOracle', [priceOracle._address]);
     await send(unitroller, 'setCompAddress', [comp._address]); // harness only
     await send(unitroller, 'harnessSetCompRate', [compRate]);
+
+    const compMarkets = opts.compMarkets || [];
+    for (let cm of compMarkets) { 
+      await send(unitroller, '_supportMarket', [cm]);
+    }
 
     return Object.assign(unitroller, { priceOracle, comp });
   }
@@ -172,7 +178,7 @@ async function makeCToken(opts = {}) {
       break;
     
     case 'ccomp':
-      underlying = await deploy('Comp', [opts.compHolder || root]);
+      underlying = await deploy('WETH9',[], {from : (root || opts.compOwner)});
       cDelegatee = await deploy('CErc20DelegateHarness');
       cDelegator = await deploy('CErc20Delegator',
         [

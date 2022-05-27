@@ -287,145 +287,145 @@ export function comptrollerImplCommands() {
       },
       { namePos: 1 }
     ),
-    new Command<{
-      unitroller: Unitroller;
-      comptrollerImpl: ComptrollerImpl;
-      priceOracle: AddressV;
-      closeFactor: NumberV;
-      maxAssets: NumberV;
-    }>(
-      `
-        #### BecomeG1
+    // new Command<{
+    //   unitroller: Unitroller;
+    //   comptrollerImpl: ComptrollerImpl;
+    //   priceOracle: AddressV;
+    //   closeFactor: NumberV;
+    //   maxAssets: NumberV;
+    // }>(
+    //   `
+    //     #### BecomeG1
 
-        * "ComptrollerImpl <Impl> BecomeG1 priceOracle:<Number> closeFactor:<Exp> maxAssets:<Number>" - Become the comptroller, if possible.
-          * E.g. "ComptrollerImpl MyImpl BecomeG1
-      `,
-      'BecomeG1',
-      [
-        new Arg('unitroller', getUnitroller, { implicit: true }),
-        new Arg('comptrollerImpl', getComptrollerImpl),
-        new Arg('priceOracle', getAddressV),
-        new Arg('closeFactor', getExpNumberV),
-        new Arg('maxAssets', getNumberV)
-      ],
-      (world, from, { unitroller, comptrollerImpl, priceOracle, closeFactor, maxAssets }) =>
-        becomeG1(
-          world,
-          from,
-          comptrollerImpl,
-          unitroller,
-          priceOracle.val,
-          closeFactor.encode(),
-          maxAssets.encode()
-        ),
-      { namePos: 1 }
-    ),
+    //     * "ComptrollerImpl <Impl> BecomeG1 priceOracle:<Number> closeFactor:<Exp> maxAssets:<Number>" - Become the comptroller, if possible.
+    //       * E.g. "ComptrollerImpl MyImpl BecomeG1
+    //   `,
+    //   'BecomeG1',
+    //   [
+    //     new Arg('unitroller', getUnitroller, { implicit: true }),
+    //     new Arg('comptrollerImpl', getComptrollerImpl),
+    //     new Arg('priceOracle', getAddressV),
+    //     new Arg('closeFactor', getExpNumberV),
+    //     new Arg('maxAssets', getNumberV)
+    //   ],
+    //   (world, from, { unitroller, comptrollerImpl, priceOracle, closeFactor, maxAssets }) =>
+    //     becomeG1(
+    //       world,
+    //       from,
+    //       comptrollerImpl,
+    //       unitroller,
+    //       priceOracle.val,
+    //       closeFactor.encode(),
+    //       maxAssets.encode()
+    //     ),
+    //   { namePos: 1 }
+    // ),
 
-    new Command<{
-      unitroller: Unitroller;
-      comptrollerImpl: ComptrollerImpl;
-    }>(
-      `
-        #### BecomeG2
+    // new Command<{
+    //   unitroller: Unitroller;
+    //   comptrollerImpl: ComptrollerImpl;
+    // }>(
+    //   `
+    //     #### BecomeG2
 
-        * "ComptrollerImpl <Impl> BecomeG2" - Become the comptroller, if possible.
-          * E.g. "ComptrollerImpl MyImpl BecomeG2
-      `,
-      'BecomeG2',
-      [
-        new Arg('unitroller', getUnitroller, { implicit: true }),
-        new Arg('comptrollerImpl', getComptrollerImpl)
-      ],
-      (world, from, { unitroller, comptrollerImpl }) => becomeG2(world, from, comptrollerImpl, unitroller),
-      { namePos: 1 }
-    ),
+    //     * "ComptrollerImpl <Impl> BecomeG2" - Become the comptroller, if possible.
+    //       * E.g. "ComptrollerImpl MyImpl BecomeG2
+    //   `,
+    //   'BecomeG2',
+    //   [
+    //     new Arg('unitroller', getUnitroller, { implicit: true }),
+    //     new Arg('comptrollerImpl', getComptrollerImpl)
+    //   ],
+    //   (world, from, { unitroller, comptrollerImpl }) => becomeG2(world, from, comptrollerImpl, unitroller),
+    //   { namePos: 1 }
+    // ),
 
-    new Command<{
-      unitroller: Unitroller;
-      comptrollerImpl: ComptrollerImpl;
-      compRate: NumberV;
-      compMarkets: ArrayV<AddressV>;
-      otherMarkets: ArrayV<AddressV>;
-    }>(
-      `
-        #### BecomeG3
+    // new Command<{
+    //   unitroller: Unitroller;
+    //   comptrollerImpl: ComptrollerImpl;
+    //   compRate: NumberV;
+    //   compMarkets: ArrayV<AddressV>;
+    //   otherMarkets: ArrayV<AddressV>;
+    // }>(
+    //   `
+    //     #### BecomeG3
 
-        * "ComptrollerImpl <Impl> BecomeG3 <Rate> <CompMarkets> <OtherMarkets>" - Become the comptroller, if possible.
-          * E.g. "ComptrollerImpl MyImpl BecomeG3 0.1e18 [cDAI, cETH, cUSDC]
-      `,
-      'BecomeG3',
-      [
-        new Arg('unitroller', getUnitroller, { implicit: true }),
-        new Arg('comptrollerImpl', getComptrollerImpl),
-        new Arg('compRate', getNumberV, { default: new NumberV(1e18) }),
-        new Arg('compMarkets', getArrayV(getAddressV),  {default: new ArrayV([]) }),
-        new Arg('otherMarkets', getArrayV(getAddressV), { default: new ArrayV([]) })
-      ],
-      (world, from, { unitroller, comptrollerImpl, compRate, compMarkets, otherMarkets }) => {
-        return becomeG3(world, from, comptrollerImpl, unitroller, compRate.encode(), compMarkets.val.map(a => a.val), otherMarkets.val.map(a => a.val))
-      },
-      { namePos: 1 }
-    ),
+    //     * "ComptrollerImpl <Impl> BecomeG3 <Rate> <CompMarkets> <OtherMarkets>" - Become the comptroller, if possible.
+    //       * E.g. "ComptrollerImpl MyImpl BecomeG3 0.1e18 [cDAI, cETH, cUSDC]
+    //   `,
+    //   'BecomeG3',
+    //   [
+    //     new Arg('unitroller', getUnitroller, { implicit: true }),
+    //     new Arg('comptrollerImpl', getComptrollerImpl),
+    //     new Arg('compRate', getNumberV, { default: new NumberV(1e18) }),
+    //     new Arg('compMarkets', getArrayV(getAddressV),  {default: new ArrayV([]) }),
+    //     new Arg('otherMarkets', getArrayV(getAddressV), { default: new ArrayV([]) })
+    //   ],
+    //   (world, from, { unitroller, comptrollerImpl, compRate, compMarkets, otherMarkets }) => {
+    //     return becomeG3(world, from, comptrollerImpl, unitroller, compRate.encode(), compMarkets.val.map(a => a.val), otherMarkets.val.map(a => a.val))
+    //   },
+    //   { namePos: 1 }
+    // ),
   
-    new Command<{
-      unitroller: Unitroller;
-      comptrollerImpl: ComptrollerImpl;
-    }>(
-      `
-        #### BecomeG4
-        * "ComptrollerImpl <Impl> BecomeG4" - Become the comptroller, if possible.
-          * E.g. "ComptrollerImpl MyImpl BecomeG4
-      `,
-      'BecomeG4',
-      [
-        new Arg('unitroller', getUnitroller, { implicit: true }),
-        new Arg('comptrollerImpl', getComptrollerImpl)
-      ],
-      (world, from, { unitroller, comptrollerImpl }) => {
-        return becomeG4(world, from, comptrollerImpl, unitroller)
-      },
-      { namePos: 1 }
-    ),
+    // new Command<{
+    //   unitroller: Unitroller;
+    //   comptrollerImpl: ComptrollerImpl;
+    // }>(
+    //   `
+    //     #### BecomeG4
+    //     * "ComptrollerImpl <Impl> BecomeG4" - Become the comptroller, if possible.
+    //       * E.g. "ComptrollerImpl MyImpl BecomeG4
+    //   `,
+    //   'BecomeG4',
+    //   [
+    //     new Arg('unitroller', getUnitroller, { implicit: true }),
+    //     new Arg('comptrollerImpl', getComptrollerImpl)
+    //   ],
+    //   (world, from, { unitroller, comptrollerImpl }) => {
+    //     return becomeG4(world, from, comptrollerImpl, unitroller)
+    //   },
+    //   { namePos: 1 }
+    // ),
 
-    new Command<{
-      unitroller: Unitroller;
-      comptrollerImpl: ComptrollerImpl;
-    }>(
-      `
-        #### BecomeG5
-        * "ComptrollerImpl <Impl> BecomeG5" - Become the comptroller, if possible.
-          * E.g. "ComptrollerImpl MyImpl BecomeG5
-      `,
-      'BecomeG5',
-      [
-        new Arg('unitroller', getUnitroller, { implicit: true }),
-        new Arg('comptrollerImpl', getComptrollerImpl)
-      ],
-      (world, from, { unitroller, comptrollerImpl }) => {
-        return becomeG5(world, from, comptrollerImpl, unitroller)
-      },
-      { namePos: 1 }
-    ),
+    // new Command<{
+    //   unitroller: Unitroller;
+    //   comptrollerImpl: ComptrollerImpl;
+    // }>(
+    //   `
+    //     #### BecomeG5
+    //     * "ComptrollerImpl <Impl> BecomeG5" - Become the comptroller, if possible.
+    //       * E.g. "ComptrollerImpl MyImpl BecomeG5
+    //   `,
+    //   'BecomeG5',
+    //   [
+    //     new Arg('unitroller', getUnitroller, { implicit: true }),
+    //     new Arg('comptrollerImpl', getComptrollerImpl)
+    //   ],
+    //   (world, from, { unitroller, comptrollerImpl }) => {
+    //     return becomeG5(world, from, comptrollerImpl, unitroller)
+    //   },
+    //   { namePos: 1 }
+    // ),
 
-    new Command<{
-      unitroller: Unitroller;
-      comptrollerImpl: ComptrollerImpl;
-    }>(
-      `
-        #### BecomeG6
-        * "ComptrollerImpl <Impl> BecomeG6" - Become the comptroller, if possible.
-          * E.g. "ComptrollerImpl MyImpl BecomeG6
-      `,
-      'BecomeG6',
-      [
-        new Arg('unitroller', getUnitroller, { implicit: true }),
-        new Arg('comptrollerImpl', getComptrollerImpl)
-      ],
-      (world, from, { unitroller, comptrollerImpl }) => {
-        return becomeG6(world, from, comptrollerImpl, unitroller)
-      },
-      { namePos: 1 }
-    ),
+    // new Command<{
+    //   unitroller: Unitroller;
+    //   comptrollerImpl: ComptrollerImpl;
+    // }>(
+    //   `
+    //     #### BecomeG6
+    //     * "ComptrollerImpl <Impl> BecomeG6" - Become the comptroller, if possible.
+    //       * E.g. "ComptrollerImpl MyImpl BecomeG6
+    //   `,
+    //   'BecomeG6',
+    //   [
+    //     new Arg('unitroller', getUnitroller, { implicit: true }),
+    //     new Arg('comptrollerImpl', getComptrollerImpl)
+    //   ],
+    //   (world, from, { unitroller, comptrollerImpl }) => {
+    //     return becomeG6(world, from, comptrollerImpl, unitroller)
+    //   },
+    //   { namePos: 1 }
+    // ),
 
     new Command<{
       unitroller: Unitroller;

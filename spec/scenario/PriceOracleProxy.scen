@@ -1,20 +1,6 @@
 Macro SetupPriceOracleProxy
     Unitroller Deploy
     PriceOracle Deploy Simple
-    -- Update to G1
-    ComptrollerImpl Deploy Scenario ScenComptrollerG1
-    Unitroller SetPendingImpl ScenComptrollerG1
-    PriceOracleProxy Deploy Admin (PriceOracle Address) (Address Zero) (Address Zero) (Address Zero) (Address Zero) (Address Zero)
-    ComptrollerImpl ScenComptrollerG1 BecomeG1 (PriceOracleProxy Address) 0.1 20
-    -- Update to G2
-    ComptrollerImpl Deploy StandardG2 ComptrollerG2
-    Unitroller SetPendingImpl ComptrollerG2
-    ComptrollerImpl ComptrollerG2 BecomeG2
-    -- Update to G3
-    ComptrollerImpl Deploy StandardG3 ComptrollerG3
-    Unitroller SetPendingImpl ComptrollerG3
-    ComptrollerImpl ComptrollerG3 BecomeG3 1e18 []
-    -- Update to G*
     ComptrollerImpl Deploy Scenario ScenComptroller
     Unitroller SetPendingImpl ScenComptroller
     ComptrollerImpl ScenComptroller Become
