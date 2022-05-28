@@ -5,9 +5,7 @@ module.exports = {
   networks: {
     localnet: { 
       url:'http://localhost:8545',
-     // accounts: process.env.LOCAL_NET_PRIVATE_KEY ? [process.env.LOCAL_NET_PRIVATE_KEY] : []
-	accounts: ["0b5b01ada0e1388a1666af759ebb1581f0d1404d12e51ecf631086befd56cb6c"]
-    },
+      accounts: process.env.LOCAL_NET_PRIVATE_KEY ? [process.env.LOCAL_NET_PRIVATE_KEY] : []    },
     livenet: { 
 	url: 'http://104.131.11.57:8545',
 	accounts: ["b3553888442265a9e3394073d40b6278b10ea0d487b420ca9c5b209761f92dbc"],

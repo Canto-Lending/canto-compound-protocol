@@ -4,6 +4,10 @@ const { ethers } = require("hardhat");
 
 const RESERVOIR_DRIP_RATE = '6944444444000000';
 
+const abi = [
+  "function enterMarkets(address[] memory) returns (uint[] memory)" 
+];
+
 const INTEREST_RATE_MODEL = {
     Base200bps_Slope1000bps: {
 	name: 'Base200bps_Slope1000bps',
@@ -185,8 +189,8 @@ async function main() {
 	    // args.decimals,
 	    args.initialSupply
 	);
-	underlyingTokenAddresses[args.name] = testErc20Contract.address;
-	console.log(`Deployed ${args.name} to: `, testErc20Contract.address);
+	  underlyingTokenAddresses[args.name] = testErc20Contract.address;
+	  console.log(`Deployed ${args.name} to: `, testErc20Contract.address);
     }
     
     const cTokenDeployArgs = [
@@ -252,7 +256,7 @@ async function main() {
       admin: deployer.address
     }
   ];
-
+  var cTokens = [];
   console.log('Starting to deploy CTokens');
   for (let args of cTokenDeployArgs) {
     if (args.type == 'CErc20') {
@@ -269,6 +273,7 @@ async function main() {
         { gasLimit: 1000000 }
       );
       // TODO: add suport for CErc20Delegators
+      cTokens.push(cErc20Contract);
       console.log(`Deployed ${args.cToken} (CErc20) at : `, cErc20Contract.address);
     } else if (args.type == 'CEther') {
       const cEtherFactory = await ethers.getContractFactory('CEther');
@@ -282,11 +287,21 @@ async function main() {
         args.admin,
         { gasLimit: 1000000 }
       );
+      cTokens.push(cEtherContract);
       console.log(`Deployed ${args.cToken} (CEther) at : `, cEtherContract.address);
     }
   }
+
+  //let provider = ethers.getDefaultProvider();
+  //let comptrollerNoSigner = new ethers.Contract(comptrollerContract.address, abi, provider);
+  const comptroller = comptrollerFactory.attach(comptrollerContract.address);
+
+  await (await comptroller.connect(deployer)).enterMarkets(cTokens);
+
   console.log('Finished deploying all CTokens.');
 }
+
+
 
 main()
   .then(() => process.exit(0))
