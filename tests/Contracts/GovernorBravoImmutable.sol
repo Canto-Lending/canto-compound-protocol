@@ -3,13 +3,13 @@ pragma experimental ABIEncoderV2;
 
 import "../../contracts/Governance/GovernorBravoDelegateG2.sol";
 
-contract GovernorBravoImmutable is GovernorBravoDelegateG2 {
+contract GovernorBravoImmutable is GovernorBravoDelegate {
 
      constructor(address timelock_) public {
         admin = msg.sender;
         initialize(timelock_);
 
-        admin = admin_;
+        // admin = admin_;
     }
 
 

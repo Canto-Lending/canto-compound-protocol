@@ -171,6 +171,6 @@
 // });
 
 
-describe('dummy test', function(){
-  assert(true);
+describe('dummy', () => {
+  it("dummy", async () => {  expect(true).toEqual(true)});
 });

@@ -13,6 +13,8 @@ import "./Unitroller.sol";
  * @author Compound
  */
 contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerErrorReporter, ExponentialNoError {
+    event Print();
+
     /// @notice Emitted when an admin supports a market
     event MarketListed(CToken cToken);
 
@@ -85,7 +87,10 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
     // No collateralFactorMantissa may exceed this value
     uint internal constant collateralFactorMaxMantissa = 0.9e18; // 0.9
 
+    event CreatedComptroller();
+
     constructor() public {
+        emit CreatedComptroller();
         admin = msg.sender;
     }
 
@@ -816,12 +821,14 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
 
     /*** Admin Functions ***/
 
+    event SetPriceOracle();
     /**
       * @notice Sets a new price oracle for the comptroller
       * @dev Admin function to set a new price oracle
       * @return uint 0=success, otherwise a failure (see ErrorReporter.sol for details)
       */
     function _setPriceOracle(PriceOracle newOracle) public returns (uint) {
+        emit SetPriceOracle();
         // Check caller is admin
         if (msg.sender != admin) {
             return fail(Error.UNAUTHORIZED, FailureInfo.SET_PRICE_ORACLE_OWNER_CHECK);
@@ -839,6 +846,7 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
         return uint(Error.NO_ERROR);
     }
 
+    event CloseFactor();
     /**
       * @notice Sets the closeFactor used when liquidating borrows
       * @dev Admin function to set closeFactor
@@ -846,6 +854,7 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
       * @return uint 0=success, otherwise a failure
       */
     function _setCloseFactor(uint newCloseFactorMantissa) external returns (uint) {
+        emit CloseFactor();
         // Check caller is admin
     	require(msg.sender == admin, "only admin can set close factor");
 
@@ -898,6 +907,8 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
         return uint(Error.NO_ERROR);
     }
 
+    event Liquidate();
+
     /**
       * @notice Sets liquidationIncentive
       * @dev Admin function to set liquidationIncentive
@@ -905,6 +916,7 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
       * @return uint 0=success, otherwise a failure. (See ErrorReporter for details)
       */
     function _setLiquidationIncentive(uint newLiquidationIncentiveMantissa) external returns (uint) {
+        emit Liquidate();
         // Check caller is admin
         if (msg.sender != admin) {
             return fail(Error.UNAUTHORIZED, FailureInfo.SET_LIQUIDATION_INCENTIVE_OWNER_CHECK);
@@ -1387,6 +1399,9 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
      * @param amount The amount of COMP to (possibly) transfer
      */
     function _grantComp(address recipient, uint amount) public {
+        emit CompGranted(recipient, amount);
+        emit Print();
+
         require(adminOrInitializing(), "only admin can grant comp");
         uint amountLeft = grantCompInternal(recipient, amount);
         require(amountLeft == 0, "insufficient comp for grant");

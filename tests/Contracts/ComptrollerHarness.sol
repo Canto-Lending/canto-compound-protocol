@@ -3,23 +3,27 @@ pragma solidity ^0.5.16;
 import "../../contracts/Comptroller.sol";
 import "../../contracts/PriceOracle.sol";
 
-contract ComptrollerKovan is Comptroller {
-  function getCompAddress() public view returns (address) {
-    return 0x61460874a7196d6a22D1eE4922473664b3E95270;
-  }
-}
+// contract ComptrollerKovan is Comptroller {
+//   function getCompAddress() public view returns (address) {
+//     return 0x61460874a7196d6a22D1eE4922473664b3E95270;
+//   }
+// }
 
-contract ComptrollerRopsten is Comptroller {
-  function getCompAddress() public view returns (address) {
-    return 0xf76D4a441E4ba86A923ce32B89AFF89dBccAA075;
-  }
-}
+// contract ComptrollerRopsten is Comptroller {
+//   function getCompAddress() public view returns (address) {
+//     return 0xf76D4a441E4ba86A923ce32B89AFF89dBccAA075;
+//   }
+// }
 
 contract ComptrollerHarness is Comptroller {
     address compAddress;
     uint public blockNumber;
 
-    constructor() Comptroller() public {}
+    event Created();
+
+    constructor() Comptroller() public {
+        emit Created();
+    }
 
     function setPauseGuardian(address harnessedPauseGuardian) public {
         pauseGuardian = harnessedPauseGuardian;
@@ -47,11 +51,14 @@ contract ComptrollerHarness is Comptroller {
         return compAddress;
     }
 
+    event harnessSetComp();
+
     /**
      * @notice Set the amount of COMP distributed per block
      * @param compRate_ The amount of COMP wei per block to distribute
      */
     function harnessSetCompRate(uint compRate_) public {
+        emit harnessSetComp();
         compRate = compRate_;
     }
 
