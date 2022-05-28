@@ -13,7 +13,7 @@ import "./SafeMath.sol";
 contract NoteRateModel is InterestRateModel {
     using SafeMath for uint;
 
-    event NewInterestParams(uint baseRatePerBlock);
+    event NewInterestParams(uint baseRatePerBlock, uint lastUpdateBlock);
 
     /**
     * @notice Administrator for this contract
@@ -46,12 +46,26 @@ contract NoteRateModel is InterestRateModel {
     uint public updateFrequency; // set by admin, default 24 hours
 
     /**
+     * @notice The variable to keep track of the last update on Note's interest rate
+     */
+    uint public lastUpdateBlock;
+
+    /// @notice Emitted when base rate is changed by admin
+    event NewBaseRate(uint oldBaseRateMantissa, uint newBaseRateMantissa);
+
+    /// @notice Emitted when adjuster coefficient is changed by admin
+    event NewAdjusterCoefficient(uint oldAdjusterCoefficient, uint newAdjusterCoefficient);
+
+    /// @notice Emitted when update frequency is changed by admin
+    event NewUpdateFrequency(uint oldUpdateFrequency, uint newUpdateFrequency);
+
+    /**
      * @notice Construct an interest rate model
      * The `constructor` is executed only once when the contract is created.
      */
     constructor() public {
         admin = msg.sender;
-        uint lastUpdateBlock = block.number;
+        lastUpdateBlock = block.number;
         baseRatePerBlock = baseRatePerYear.div(blocksPerYear);
         emit NewInterestParams(baseRatePerBlock, lastUpdateBlock);
     }
@@ -91,19 +105,18 @@ contract NoteRateModel is InterestRateModel {
     /**
      * @notice Updates the Note's base rate per year at a given interval
      * @notice This function should be called at a given interval (TBD)
-     * @param lastUpdateBlock The frequency of updating Note's base rate
      * @param newBaseRatePerYear The new base rate per year of Note
      */
-    function updateContributorRewards(uint updateFrequency, uint newBaseRatePerYear) public {
+    function updateBaseRate(uint newBaseRatePerYear) public {
         // check the current block number
         uint blockNumber = block.number;
-        uint deltaBlocks = sub(blockNumber, lastUpdateBlock);
+        uint deltaBlocks = blockNumber.sub(lastUpdateBlock);
 
         if (deltaBlocks > updateFrequency) {
             // pass in a base rate per year
             baseRatePerYear = newBaseRatePerYear;
-            emit NewInterestParams(baseRatePerYear);
             lastUpdateBlock = blockNumber;
+            emit NewInterestParams(baseRatePerYear, lastUpdateBlock);
         }
     }
 
@@ -118,8 +131,9 @@ contract NoteRateModel is InterestRateModel {
     function _setBaseRatePerYear(uint newBaseRateMantissa) external {
         // Check caller is admin
         require(msg.sender == admin, "only the admin may set the base rate");
+        uint oldBaseRatePerYear = baseRatePerYear;
         baseRatePerYear = newBaseRateMantissa;
-        emit NewInterestParams(baseRatePerYear);
+        emit NewBaseRate(oldBaseRatePerYear, baseRatePerYear);
     }
 
     /**
@@ -130,8 +144,9 @@ contract NoteRateModel is InterestRateModel {
     function _setAdjusterCoefficient(uint newAdjusterCoefficient) external {
         // Check caller is admin
         require(msg.sender == admin, "only the admin may set the adjuster coefficient");
+        uint oldAdjusterCoefficient = adjusterCoefficient;
         adjusterCoefficient = newAdjusterCoefficient;
-        emit NewInterestParams(adjusterCoefficient);
+        emit NewAdjusterCoefficient(oldAdjusterCoefficient, adjusterCoefficient);
     }
 
     /**
@@ -142,8 +157,9 @@ contract NoteRateModel is InterestRateModel {
     function _setUpdateFrequency(uint newUpdateFrequency) external {
         // Check caller is admin
         require(msg.sender == admin, "only the admin may set the update frequency");
+        uint oldUpdateFrequency = updateFrequency;
         updateFrequency = newUpdateFrequency;
-        emit NewInterestParams(updateFrequency);
+        emit NewUpdateFrequency(oldUpdateFrequency, updateFrequency);
     }
 }
 
