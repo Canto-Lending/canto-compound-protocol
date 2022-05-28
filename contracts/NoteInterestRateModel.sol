@@ -163,7 +163,3 @@ contract NoteRateModel is InterestRateModel {
     }
 }
 
-/**
- * @question the coefficient 0.014 and 0.2 (some stddev for distribution)?
- * @question what is gUSDC versus USDC
- */
