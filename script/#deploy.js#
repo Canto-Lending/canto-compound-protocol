@@ -4,6 +4,10 @@ const { ethers } = require("hardhat");
 
 const RESERVOIR_DRIP_RATE = '6944444444000000';
 
+const abi = [
+  "function enterMarkets(address[] memory) returns (uint[] memory)" 
+];
+
 const INTEREST_RATE_MODEL = {
     Base200bps_Slope1000bps: {
 	name: 'Base200bps_Slope1000bps',
@@ -92,15 +96,14 @@ const UniGovAddr = "0x30E20d0A642ADB85Cb6E9da8fB9e3aadB0F593C0";
 const WEthAddress = "0x14B3F74f86c4DE775112124c08CAf7a439f3083B";
 
 async function main() {
-   
     
     const [deployer] = await ethers.getSigners();
-
+    
     const noteFactory = await ethers.getContractFactory("ERC20");
-    const noteContract = await ethers.noteFactory.deploy("note", "Note", 10000000000000000000000000000000);
-
-    const note = await noteContract.connect(noteContract.signer)._mint(deployer.address, 10000000000000000000000000000000);
-
+    const noteContract = await noteFactory.deploy("note", "Note", 10000000000);
+    
+    const note = await noteContract.connect(noteContract.signer)._mint(deployer.address, 100);
+    
     const TreasuryFactory = await ethers.getContractFactory("Treasury");
     const treasury = await TreasuryFactory.deploy(UniGovAddr, noteContract.address);
     
@@ -119,12 +122,9 @@ async function main() {
     console.log("#4 Accepted Unitroller implementation for: ", comptrollerContract.address);
     
     
-    // const reservoirFactory = await ethers.getContractFactory("Reservoir");
-    // const reservoirContract = await reservoirFactory.deploy(RESERVOIR_DRIP_RATE, WEthAddress, unitrollerContract.address);
-    // console.log("#5 Reservoir deployed at: ", reservoirContract.address);
-
-  // TODO: set reservoir drip target
-
+    
+    // TODO: set reservoir drip target
+    
     const priceOracleFactory = await ethers.getContractFactory("SimplePriceOracle");
     const priceOracleContract = await priceOracleFactory.deploy();
     console.log("#6 Price Oracle deployed at: ", priceOracleContract.address);
@@ -148,18 +148,20 @@ async function main() {
 	    currInterestRateModelAddress = whitePaperInterestRateModelContract.address;
 	} else if (config.type == 'LegacyJumpRateModelV2') {
 	    const legacyJumpRateModelV2Factory = await ethers.getContractFactory("LegacyJumpRateModelV2");
-	    const legacyJumpRateModelV2Contract = await legacyJumpRateModelV2Factory.deploy(config.args.baseRatePerYear, config.args.multiplierPerYear, config.args.jumpMultiplierPerYear, config.args.kink, config.args.owner);
-      currInterestRateModelAddress = legacyJumpRateModelV2Contract.address;
+	    const legacyJumpRateModelV2Contract = await legacyJumpRateModelV2Factory.deploy(config.args.baseRatePerYear, config.args.multiplierPerYear,
+											    config.args.jumpMultiplierPerYear, config.args.kink, config.args.owner);
+	    currInterestRateModelAddress = legacyJumpRateModelV2Contract.address;
 	} else {
 	    const jumpRateModelV2Factory = await ethers.getContractFactory('JumpRateModelV2');
-	    const jumpRateModelV2Contract = await jumpRateModelV2Factory.deploy(config.args.baseRatePerYear, config.args.multiplierPerYear, config.args.jumpMultiplierPerYear, config.args.kink, config.args.owner);
-      currInterestRateModelAddress = jumpRateModelV2Contract.address;
+	    const jumpRateModelV2Contract = await jumpRateModelV2Factory.deploy(config.args.baseRatePerYear, config.args.multiplierPerYear,
+										config.args.jumpMultiplierPerYear, config.args.kink, config.args.owner);
+	    currInterestRateModelAddress = jumpRateModelV2Contract.address;
 	}
 	interestRateModelAddressMapping[config.name] = currInterestRateModelAddress;
 	console.log(`Deployed ${config.name} to: `, currInterestRateModelAddress);
     }
     console.log("Finished deploying all interest rate models. ", interestRateModelAddressMapping);
-
+    
     const tokenArgs = [
 	{
 	    name: "Note",
@@ -176,6 +178,19 @@ async function main() {
     
     var underlyingTokenAddresses = {};
     for (let args of tokenArgs) {
+	if (args.name == "wCanto")  {
+	    const wCantoFactory = await ethers.getContractFactory("WEth9");
+	    const  wCantoContract = await ethers.wCantoFactory.deploy(
+		args.name,
+		args.symbol
+	    );
+	    
+	    
+	    underlyingTokenAddresses[args.name] = testErc20Contract.address;
+	    console.log(`Deployed ${args.name} to: `, testErc20Contract.address);
+	    break;
+	}
+
 	const tokenFactory = await ethers.getContractFactory('ERC20');
 	const tokenContract = await testErc20Factory.deploy(
 	    args.name,
@@ -185,20 +200,8 @@ async function main() {
 	);
 	underlyingTokenAddresses[args.name] = testErc20Contract.address;
 	console.log(`Deployed ${args.name} to: `, testErc20Contract.address);
-
-	if (args.type == "wCanto")  {
-	    const wCantoFactory = await ethers.getContractFactory("WEth9");
-	    cont  wCantoContract = await ethers.wCantoFactory.deploy(
-		"wCanto",
-		"wCANTO"
-	    );
-	}
     }
 
-    
-    const reservoirFactory = await ethers.getContractFactory("Reservoir");
-    const reservoirContract = await reservoirFactory.deploy(RESERVOIR_DRIP_RATE, WEthAddress, unitrollerContract.address);
-    console.log("#5 Reservoir deployed at: ", reservoirContract.address);
     
     const cTokenDeployArgs = [
     {
@@ -214,65 +217,83 @@ async function main() {
             address: interestRateModelAddressMapping['Base200bps_Slope1000bps'],
             baseRatePerYear: '20000000000000000',
             multiplierPerYear: '300000000000000000',
-      },
-      admin: unitrollerContract.address
+	},
+	admin: unitrollerContract.address
     },
-    {
-      cToken: 'cCANTO',
-      symbol: 'cCANTO',
-      type: 'CEther',
-      decimals: 18,
-      underlyingPrice: '35721743800000000000000',
-      collateralFactor: '600000000000000000',
-      initialExchangeRateMantissa: '200000000000000000000000000',
-      interestRateModel: {
-        address: interestRateModelAddressMapping['Base200bps_Slope1000bps'],
-        baseRatePerYear: '20000000000000000',
-        multiplierPerYear: '300000000000000000',
+	{
+	cToken: 'cCANTO',
+	symbol: 'cCANTO',
+	type: 'CEther',
+	decimals: 18,
+	underlyingPrice: '35721743800000000000000',
+	collateralFactor: '600000000000000000',
+	initialExchangeRateMantissa: '200000000000000000000000000',
+	interestRateModel: {
+          address: interestRateModelAddressMapping['Base200bps_Slope1000bps'],
+          baseRatePerYear: '20000000000000000',
+          multiplierPerYear: '300000000000000000',
       },
-      admin: unitrollerContract.address
+	admin: unitrollerContract.address
     }
-  ];
-
+    ];
     var cTokens = [];
+
+    cTokenDelegatorIface = new Interface(abi);
+    
     console.log('Starting to deploy CTokens');
-  for (let args of cTokenDeployArgs) {
-    if (args.type == 'CErc20') {
-      const cErc20Factory = await ethers.getContractFactory('CErc20Immutable');
-      const cErc20Contract = await cErc20Factory.deploy(
-        args.underlying,
-        comptrollerContract.address,
-        args.interestRateModel.address,
-        args.initialExchangeRateMantissa,
-        args.cToken,
-        args.symbol,
-        args.decimals,
-        args.admin,
-        { gasLimit: 1000000 }
-      );
-      // TODO: add suport for CErc20Delegators
-	console.log(`Deployed ${args.cToken} (CErc20) at : `, cErc20Contract.address);
-	cTokens.push(cErc20Contract.address);
-    } else if (args.type == 'CEther') {
-      const cEtherFactory = await ethers.getContractFactory('CEther');
-      const cEtherContract = await cEtherFactory.deploy(
-        comptrollerContract.address,
-        args.interestRateModel.address,
-        args.initialExchangeRateMantissa,
-        args.cToken,
-        args.symbol,
-        args.decimals,
-        args.admin,
-        { gasLimit: 1000000 }
-      );
-	console.log(`Deployed ${args.cToken} (CEther) at : `, cEtherContract.address);
-	cTokens.push(cEtherContract.address);
+    for (let args of cTokenDeployArgs) {
+	if (args.type == 'CErc20') {
+	    const cErc20Factory = await ethers.getContractFactory('CErc20Immutable');
+	    const cErc20Contract = await cErc20Factory.deploy(
+		args.underlying,
+		comptrollerContract.address,
+		args.interestRateModel.address,
+		args.initialExchangeRateMantissa,
+		args.cToken,
+		args.symbol,
+		args.decimals,
+		args.admin,
+		{ gasLimit: 1000000 }
+	    );
+	    // TODO: add suport for CErc20Delegators
+	    console.log(`Deployed ${args.cToken} (CErc20) at : `, cErc20Contract.address);
+	    cTokens.push(cErc20Contract.address);
+	    
+	    cERC20DelegatorFactory = ethers.getContractFactory("CErc20Delegator");
+	    cERC20Delegator = cERC20DelegatorFactory(
+		args.underlying,
+		comptrollerContract,
+		args.interestRateModel.addres ,
+		args.initialExchangeRateMantissa,
+		args.cToken,
+		args.symbol,
+		args.decimals,
+		args.admin,
+		"0"//currently unused
+ 	    );
+	    
+	} else if (args.type == 'CEther') {
+	    const cEtherFactory = await ethers.getContractFactory('CEther');
+	    const cEtherContract = await cEtherFactory.deploy(
+		comptrollerContract.address,
+		args.interestRateModel.address,
+		args.initialExchangeRateMantissa,
+		args.cToken,
+		args.symbol,
+		args.decimals,
+		args.admin,
+		{ gasLimit: 1000000 }
+	    );
+	    console.log(`Deployed ${args.cToken} (CEther) at : `, cEtherContract.address);
+	    cTokens.push(cEtherContract.address);
+	}
     }
-  }
     console.log('Finished deploying all CTokens.');
     
     await (await comptroller.connect(comptroller.signer)).enterMarkets(cTokens);
 }
+
+
 
 main()
   .then(() => process.exit(0))

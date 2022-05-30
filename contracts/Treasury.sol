@@ -1,7 +1,7 @@
-pragma solidity ^0.8.13;
+pragma experimental ABIEncoderV2;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "contracts/IProposal.sol";
+import "contracts/EIP20Interface.sol";
 
 /** 
 * @title    Canto Treasury  - A smart contract that holds the Canto Network's assets
@@ -12,26 +12,26 @@ import "contracts/IProposal.sol";
 contract Treasury {
 
     // Unigov address that is set with constructor at deployment
-    address immutable UNIGOV_ADDRESS;
+    address private UNIGOV_ADDRESS;
 
     // Interfaces
-    IERC20 public note;
+    EIP20Interface public note;
     IProposal public unigov;
 
     // Constructor that takes in 2 variables:
     //      - unigovContractAddress:    the address of the map contract which stores proposals passed by Cosmos SDK
     //      - noteAddressERC20:         the address of the ERC20 contract for nxote
-    constructor(address unigovContractAddress, address noteAddressERC20) {
+    constructor(address unigovContractAddress, address noteAddressERC20) public {
 
         UNIGOV_ADDRESS = unigovContractAddress;
         unigov = IProposal(UNIGOV_ADDRESS);
         
-        note = IERC20(noteAddressERC20);
+        note = EIP20Interface(noteAddressERC20);
         require(note.totalSupply() > 0, "Sanity check to make sure address is valid");
     }
 
     // Receive payable allows contract to receive CANTO
-    receive() external payable {}
+    function() external payable {}
 
     // External function to query balance of Canto
     function queryCantoBalance() external view returns (uint) {
@@ -93,7 +93,7 @@ contract Treasury {
 
     // Internal function to send funds to recipient address
     function sendFund(address recipient, uint amount, string memory denom) internal {
-        address payable to = payable(recipient);
+        address payable to = address(uint160(recipient));
 
         // sending CANTO
         if (keccak256(bytes(denom)) == keccak256(bytes("CANTO"))) {
