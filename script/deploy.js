@@ -1,5 +1,4 @@
 const { ethers } = require("hardhat");
-
 // TODO: remove FIJI, EVIAN, and AQUA tokens after testing
 
 const RESERVOIR_DRIP_RATE = '6944444444000000';
@@ -93,23 +92,13 @@ const INTEREST_RATE_MODEL = {
 
 
 const UniGovAddr = "0x30E20d0A642ADB85Cb6E9da8fB9e3aadB0F593C0";
-const WEthAddress = "0x14B3F74f86c4DE775112124c08CAf7a439f3083B";
+//const WEthAddress = "0x14B3F74f86c4DE775112124c08CAf7a439f3083B";
 
 async function main() {
-    
     const [deployer] = await ethers.getSigners();
-    console.log("hello");
-    
-    const noteFactory = await ethers.getContractFactory("ERC20");
-    const noteContract = await noteFactory.deploy("note", "Note", 10000000000);
-    
-    const note = await noteContract.connect(noteContract.signer)._mint(deployer.address, 100);
-    
-    const TreasuryFactory = await ethers.getContractFactory("Treasury");
-    const treasury = await TreasuryFactory.deploy(UniGovAddr, noteContract.address);
-    
+
     const comptrollerFactory = await ethers.getContractFactory("Comptroller");
-    const comptrollerContract = await comptrollerFactory.deploy();
+    const comptrollerContract = await comptrollerFactory.deploy({gasLimit: 1000000});
     console.log('#1 Comptroller Deployed at: ', comptrollerContract.address);
 
     const unitrollerFactory = await ethers.getContractFactory("Unitroller");
@@ -292,6 +281,21 @@ async function main() {
     console.log('Finished deploying all CTokens.');
     
     await (await comptroller.connect(comptroller.signer)).enterMarkets(cTokens);
+
+    const noteFactory = await ethers.getContractFactory("Note");
+    const noteContract = await noteFactory.deploy("note", "Note", 10000000000, deployer.address, {gasLimit: 200000});
+
+    console.log("Note deployed to: ", noteContract.address);
+    
+    
+    const TreasuryFactory = await ethers.getContractFactory("Treasury");
+    const treasury = await TreasuryFactory.deploy(UniGovAddr, noteContract.address, {gasLimit: 200000});
+
+    console.log("treasury deployed to: ", treasury.address);
+    
+    const note = await noteContract._mint_to_Treasury();
+    
+    console.log("Note sent to: ", deployer.address);
 }
 
 
