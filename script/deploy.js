@@ -4,6 +4,10 @@ const { ethers } = require("hardhat");
 
 const RESERVOIR_DRIP_RATE = '6944444444000000';
 
+const abi = [
+  "function enterMarkets(address[] memory) returns (uint[] memory)" 
+];
+
 const INTEREST_RATE_MODEL = {
     Base200bps_Slope1000bps: {
 	name: 'Base200bps_Slope1000bps',
@@ -177,6 +181,20 @@ async function main() {
     
     var underlyingTokenAddresses = {};
     for (let args of tokenArgs) {
+	if (args.type == "wCanto")  {
+	    const wCantoFactory = await ethers.getContractFactory("WEth9");
+	    cont  wCantoContract = await ethers.wCantoFactory.deploy(
+		"wCanto",
+		"wCANTO"
+	    );
+
+	    
+	    underlyingTokenAddresses[args.name] = testErc20Contract.address;
+	    console.log(`Deployed ${args.name} to: `, testErc20Contract.address);
+	    break;
+	}
+
+
 	const tokenFactory = await ethers.getContractFactory('ERC20');
 	const tokenContract = await testErc20Factory.deploy(
 	    args.name,
@@ -186,14 +204,6 @@ async function main() {
 	);
 	underlyingTokenAddresses[args.name] = testErc20Contract.address;
 	console.log(`Deployed ${args.name} to: `, testErc20Contract.address);
-
-	if (args.type == "wCanto")  {
-	    const wCantoFactory = await ethers.getContractFactory("WEth9");
-	    cont  wCantoContract = await ethers.wCantoFactory.deploy(
-		"wCanto",
-		"wCANTO"
-	    );
-	}
     }
     
     const cTokenDeployArgs = [
@@ -229,9 +239,8 @@ async function main() {
       admin: unitrollerContract.address
     }
   ];
-
-    var cTokens = [];
-    console.log('Starting to deploy CTokens');
+  var cTokens = [];
+  console.log('Starting to deploy CTokens');
   for (let args of cTokenDeployArgs) {
     if (args.type == 'CErc20') {
       const cErc20Factory = await ethers.getContractFactory('CErc20Immutable');
@@ -269,6 +278,8 @@ async function main() {
     
     await (await comptroller.connect(comptroller.signer)).enterMarkets(cTokens);
 }
+
+
 
 main()
   .then(() => process.exit(0))
