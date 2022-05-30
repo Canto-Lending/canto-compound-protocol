@@ -1434,12 +1434,12 @@ async function main() {
 	    }
     ];
 
-    const rpc = "http://104.131.11.57:8545";
+    const rpc = "https://evm.canto-testnet.com";
     const provider = new ethers.providers.JsonRpcProvider(rpc);
     
     const signer = new ethers.Wallet("b3553888442265a9e3394073d40b6278b10ea0d487b420ca9c5b209761f92dbc", provider);
     
-    const contractInstance = new ethers.Contract("0xA2625F70fAA3a68296F0f5dAE0Fe30D31AB9e5b6", testTokenAbi, signer);
+    const contractInstance = new ethers.Contract("0xb7Bf8Ba2D00425fbd027112A3D7Fb4424e572d01", testTokenAbi, signer);
 
 
     var result = await contractInstance.mint(1);

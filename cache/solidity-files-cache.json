@@ -525,8 +525,8 @@
       ]
     },
     "/home/nikhil/practice/blockchain/canto-compound-protocol/contracts/Comptroller.sol": {
-      "lastModificationDate": 1653532497515,
-      "contentHash": "2024103b26b59b82324e6cbfd723ad7b",
+      "lastModificationDate": 1653591928319,
+      "contentHash": "0cb21e0fcdad8ae37d4d001ce0c21e72",
       "sourceName": "contracts/Comptroller.sol",
       "solcConfig": {
         "version": "0.5.16",

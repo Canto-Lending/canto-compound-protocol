@@ -86,12 +86,24 @@ const INTEREST_RATE_MODEL = {
     },
 };
 
+
+
+const UniGovAddr = "0x30E20d0A642ADB85Cb6E9da8fB9e3aadB0F593C0";
 const WEthAddress = "0x14B3F74f86c4DE775112124c08CAf7a439f3083B";
 
 async function main() {
    
     
     const [deployer] = await ethers.getSigners();
+
+    const noteFactory = await ethers.getContractFactory("ERC20");
+    const noteContract = await ethers.noteFactory.deploy("note", "Note", 10000000000000000000000000000000);
+
+    const note = await noteContract.connect(noteContract.signer)._mint(deployer.address, 10000000000000000000000000000000);
+
+
+    const TreasuryFactory = await ethers.getContractFactory("Treasury");
+    const treasury = await TreasuryFactory.deploy(UniGovAddr, noteContract.address);
     
     const comptrollerFactory = await ethers.getContractFactory("Comptroller");
     const comptrollerContract = await comptrollerFactory.deploy();
@@ -107,12 +119,6 @@ async function main() {
     const acceptImpTx = await unitrollerContract.connect(comptrollerContract.signer)._acceptImplementation();
     console.log("#4 Accepted Unitroller implementation for: ", comptrollerContract.address);
     
-    //deploy a placeholder erc20token contract, this token represents the WrappedCanto interface
-
-    // const WEthContractFactory = await ethers.getContractFactory("WEth9");
-    // const WEthContract = await WEthContractFactory.deploy("Token", "WEth9");
-
-    // console.log("ERC20 sample token deployed: ", WEthContract.address)
     
     const reservoirFactory = await ethers.getContractFactory("Reservoir");
     const reservoirContract = await reservoirFactory.deploy(RESERVOIR_DRIP_RATE, WEthAddress, unitrollerContract.address);
@@ -157,29 +163,22 @@ async function main() {
 
     const tokenArgs = [
 	{
-	    name: "FIJI",
-	    symbol: "FIJI",
+	    name: "Note",
+	    symbol: "note",
 	    // decimals: 1,
-	    initialSupply: 100000
+	    initialSupply:  10000000000000000000000000000000 
 	},
 	{
-	    name: "AQUA",
-	    symbol: "AQUA",
+	    name: "wCanto",
+	    symbol: "wCanto",
 	    // decimals: 1,
-	    initialSupply: 100000
 	},
-	{
-	    name: "EVIAN",
-	    symbol: "EVIAN",
-	    // decimals: 1,
-	    initialSupply: 100000
-	}
   ];
     
     var underlyingTokenAddresses = {};
     for (let args of tokenArgs) {
-	const testErc20Factory = await ethers.getContractFactory('ERC20');
-	const testErc20Contract = await testErc20Factory.deploy(
+	const tokenFactory = await ethers.getContractFactory('ERC20');
+	const tokenContract = await testErc20Factory.deploy(
 	    args.name,
 	    args.symbol,
 	    // args.decimals,
@@ -187,44 +186,22 @@ async function main() {
 	);
 	underlyingTokenAddresses[args.name] = testErc20Contract.address;
 	console.log(`Deployed ${args.name} to: `, testErc20Contract.address);
+
+	if (args.type == "wCanto")  {
+	    const wCantoFactory = await ethers.getContractFactory("WEth9");
+	    cont  wCantoContract = await ethers.wCantoFactory.deploy(
+		"wCanto",
+		"wCANTO"
+	    );
+	}
     }
     
     const cTokenDeployArgs = [
-	{
-	    cToken: 'cFIJI',
-	    symbol: 'cFIJI',
-	    type: 'CErc20',
-	    underlying: underlyingTokenAddresses['FIJI'],
-	    decimals: 18,
-	    underlyingPrice: '25022748000000000000',
-	    collateralFactor: '800000000000000000',
-	    initialExchangeRateMantissa: '200000000000000000000000000',
-	    interestRateModel: {
-		address: interestRateModelAddressMapping['Base200bps_Slope1000bps']
-	    },
-	    admin: deployer.address
-	},
-	{
-	    cToken: 'cEVIAN',
-	    symbol: 'cEVIAN',
-	    type: 'CErc20',
-	    underlying: underlyingTokenAddresses['EVIAN'],
-	    decimals: 18,
-	    underlyingPrice: '25022748000000000000',
-	    collateralFactor: '800000000000000000',
-	    initialExchangeRateMantissa: '200000000000000000000000000',
-	    interestRateModel: {
-		address: interestRateModelAddressMapping['Base200bps_Slope1000bps'],
-		baseRatePerYear: '20000000000000000',
-		multiplierPerYear: '300000000000000000',
-	    },
-	    admin: deployer.address
-	},
     {
-	cToken: 'cAQUA',
-	symbol: 'cAQUA',
+	cToken: 'cNote',
+	symbol: 'cnote',
 	type: 'CErc20',
-	underlying: underlyingTokenAddresses['AQUA'],
+	underlying: underlyingTokenAddresses['Note'],
 	decimals: 18,
 	underlyingPrice: '25022748000000000000',
 	collateralFactor: '800000000000000000',
@@ -234,7 +211,7 @@ async function main() {
             baseRatePerYear: '20000000000000000',
             multiplierPerYear: '300000000000000000',
       },
-      admin: deployer.address
+      admin: unitrollerContract.address
     },
     {
       cToken: 'cCANTO',
@@ -249,11 +226,12 @@ async function main() {
         baseRatePerYear: '20000000000000000',
         multiplierPerYear: '300000000000000000',
       },
-      admin: deployer.address
+      admin: unitrollerContract.address
     }
   ];
 
-  console.log('Starting to deploy CTokens');
+    var cTokens = [];
+    console.log('Starting to deploy CTokens');
   for (let args of cTokenDeployArgs) {
     if (args.type == 'CErc20') {
       const cErc20Factory = await ethers.getContractFactory('CErc20Immutable');
@@ -269,7 +247,8 @@ async function main() {
         { gasLimit: 1000000 }
       );
       // TODO: add suport for CErc20Delegators
-      console.log(`Deployed ${args.cToken} (CErc20) at : `, cErc20Contract.address);
+	console.log(`Deployed ${args.cToken} (CErc20) at : `, cErc20Contract.address);
+	cTokens.push(cErc20Contract.address);
     } else if (args.type == 'CEther') {
       const cEtherFactory = await ethers.getContractFactory('CEther');
       const cEtherContract = await cEtherFactory.deploy(
@@ -282,10 +261,13 @@ async function main() {
         args.admin,
         { gasLimit: 1000000 }
       );
-      console.log(`Deployed ${args.cToken} (CEther) at : `, cEtherContract.address);
+	console.log(`Deployed ${args.cToken} (CEther) at : `, cEtherContract.address);
+	cTokens.push(cEtherContract.address);
     }
   }
-  console.log('Finished deploying all CTokens.');
+    console.log('Finished deploying all CTokens.');
+    
+    await (await comptroller.connect(comptroller.signer)).enterMarkets(cTokens);
 }
 
 main()
