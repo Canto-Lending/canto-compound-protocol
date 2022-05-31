@@ -16,7 +16,7 @@ contract Note is ERC20 {
 	_;
     }
     
-    function _mint_to_Treasury() public {
+    function _mint_to_Treasury() TreasuryOnly public {
 	super._mint(Treasury, super.totalSupply()); 
     }
 

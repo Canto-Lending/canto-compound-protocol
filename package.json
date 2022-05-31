@@ -20,7 +20,9 @@
   "author": "Compound Finance",
   "license": "UNLICENSED",
   "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.6",
     "bignumber.js": "9.0.0",
+    "ethers": "^5.6.8",
     "hardhat": "^2.9.6",
     "jest-diff": "^26.4.2",
     "jest-junit": "^11.1.0",

@@ -821,7 +821,7 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
       * @dev Admin function to set a new price oracle
       * @return uint 0=success, otherwise a failure (see ErrorReporter.sol for details)
       */
-    function _setPriceOracle(PriceOracle newOracle) public returns (uint) {
+    function _setPriceOracle(address newOracle) public returns (uint) {
         // Check caller is admin
         if (msg.sender != admin) {
             return fail(Error.UNAUTHORIZED, FailureInfo.SET_PRICE_ORACLE_OWNER_CHECK);
@@ -831,10 +831,10 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
         PriceOracle oldOracle = oracle;
 
         // Set comptroller's oracle to newOracle
-        oracle = newOracle;
+        oracle = PriceOracle(uint160(newOracle));
 
         // Emit NewPriceOracle(oldOracle, newOracle)
-        emit NewPriceOracle(oldOracle, newOracle);
+        emit NewPriceOracle(oldOracle, oracle);
 
         return uint(Error.NO_ERROR);
     }

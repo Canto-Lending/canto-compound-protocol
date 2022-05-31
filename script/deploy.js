@@ -3,8 +3,15 @@ const { ethers } = require("hardhat");
 
 const RESERVOIR_DRIP_RATE = '6944444444000000';
 
-const abi = [
-  "function enterMarkets(address[] memory) returns (uint[] memory)" 
+const ComptrollerAbi = [
+    "function enterMarkets(address[] memory) returns (uint[] memory)", 
+    "function _setPriceOracle(address) public returns(uint)"
+];
+
+
+const NoteAbi = [
+    "function _setTreasuryAddress(address) external",
+    "function _mint_to_Treasury() TreasuryOnly public"
 ];
 
 const INTEREST_RATE_MODEL = {
@@ -96,7 +103,7 @@ const UniGovAddr = "0x30E20d0A642ADB85Cb6E9da8fB9e3aadB0F593C0";
 
 async function main() {
     const [deployer] = await ethers.getSigners();
-
+    
     const comptrollerFactory = await ethers.getContractFactory("Comptroller");
     const comptrollerContract = await comptrollerFactory.deploy({gasLimit: 1000000});
     console.log('#1 Comptroller Deployed at: ', comptrollerContract.address);
@@ -107,8 +114,9 @@ async function main() {
     
     const setPendingImpTx = await unitrollerContract._setPendingImplementation(comptrollerContract.address);
     console.log("#3 Set unitroller implementation to :", comptrollerContract.address);
+
     
-    const acceptImpTx = await unitrollerContract._acceptImplementation();
+    const acceptImpTx = await unitrollerContract.connect(comptrollerContract.signer)._acceptImplementation();
     console.log("#4 Accepted Unitroller implementation for: ", comptrollerContract.address);
     
     // TODO: set reservoir drip target
@@ -117,9 +125,10 @@ async function main() {
     const priceOracleContract = await priceOracleFactory.deploy();
     console.log("#6 Price Oracle deployed at: ", priceOracleContract.address);
     
-    // await comptrollerContract._setPriceOracle(priceOracleContract.address);
-    // console.log('#7 Set price oracle for comptroller to: ', priceOracleContract.address);
-
+    const SetPrice = await (await ethers.getContractAt(ComptrollerAbi, comptrollerContract.address, deployer))._setPriceOracle(priceOracleContract.address);
+    
+    console.log("#7 Set price oracle for comptroller to: ", priceOracleContract.address);
+    
     console.log("Starting to deploy interest rate models.");
     
     var interestRateModelAddressMapping = {};
@@ -185,15 +194,7 @@ async function main() {
 		{gasLimit: 200000}
 	    );
 	    console.log("Note deployed to: ", noteContract.address);
-
-
 	    
-	    const TreasuryFactory = await ethers.getContractFactory("Treasury");
-	    const treasury = await TreasuryFactory.deploy(UniGovAddr, noteContract.address, {gasLimit: 200000});
-
-	    console.log("treasury deployed to: ", treasury.address);
-	    
-	    //const setTreas = await noteContract._setTreasuryAddress(treasury.address, {gasLimit: 200000});
 	    
 	    underlyingTokens[args.name] = noteContract;
 	} else {
@@ -209,12 +210,12 @@ async function main() {
 	}
     }
     
-    // const TreasuryFactory = await ethers.getContractFactory("Treasury");
-    // const treasury = await TreasuryFactory.deploy(UniGovAddr, underlyingTokens["Note"].address, {gasLimit: 200000});
-
-    // console.log("treasury deployed to: ", treasury.address);
-
-    // const setTreas = await underlyingTokens["Note"]._setTreasuryAddress(treasury.address, {gasLimit: 200000});
+    const TreasuryFactory = await ethers.getContractFactory("Treasury");
+    const treasury = await TreasuryFactory.deploy(UniGovAddr, underlyingTokens["Note"].address, {gasLimit: 200000});
+    
+    console.log("treasury deployed to: ", treasury.address);
+    
+    await (await ethers.getContractAt(NoteAbi, underlyingTokens["Note"].address, deployer))._setTreasuryAddress(treasury.address, {gasLimit: 200000});
     
     console.log("Treasury and Note Contracts linked: ");
     
@@ -306,16 +307,19 @@ async function main() {
 	    cTokens.push(cEtherContract.address);
 	}
     }
-    console.log('Finished deploying all CTokens.');
+    console.log("Finished deploying all CTokens.");
     
-    // await comptrollerContract.enterMarkets([underlyingTokens["Note"].address]);
     
-    // console.log("Entered markets"); 
+    const MarketsEntered = await (await ethers.getContractAt(ComptrollerAbi, comptrollerContract.address, deployer)).enterMarkets(cTokens);
+    console.log("Entered markets: ", MarketsEntered); 
 
 
-    // console.log(underlyingTokens["Note"].address);
+    const ComptrollerLensFactory = await ethers.getContractFactory("CompoundLens");
+    const CompoundLens = await ComptrollerLensFactory.deploy();
+
+    console.log("Comptroller Lens deployed: ", CompoundLens.address);
     
-    // const minted = await underlyingTokens["Note"]._mint_to_Treasury();
+    await (await ethers.getContractAt(NoteAbi, underlyingTokens["Note"].address, deployer))._mint_to_Treasury();
     
     // console.log("Note sent to: ", deployer.address);
 }
