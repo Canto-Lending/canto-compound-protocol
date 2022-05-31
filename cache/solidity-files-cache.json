@@ -1026,10 +1026,10 @@
         "GovernorBravoInterface"
       ]
     },
-    "/home/nikhil/practice/blockchain/ether/canto-compound-protocol/contracts/WEth.sol": {
-      "lastModificationDate": 1653696379613,
-      "contentHash": "4db661bcef2111e6edc63a68478facf7",
-      "sourceName": "contracts/WEth.sol",
+    "/home/nikhil/practice/blockchain/ether/canto-compound-protocol/contracts/WCanto.sol": {
+      "lastModificationDate": 1653934859610,
+      "contentHash": "55e2473b7818761297feb43fe1c276f2",
+      "sourceName": "contracts/WCanto.sol",
       "solcConfig": {
         "version": "0.5.16",
         "settings": {
@@ -1060,7 +1060,7 @@
         "^0.5.16"
       ],
       "artifacts": [
-        "WEth9"
+        "WCanto"
       ]
     },
     "/home/nikhil/practice/blockchain/ether/canto-compound-protocol/contracts/Treasury.sol": {
@@ -1171,6 +1171,43 @@
       ],
       "artifacts": [
         "ERC20"
+      ]
+    },
+    "/home/nikhil/practice/blockchain/ether/canto-compound-protocol/contracts/Note.sol": {
+      "lastModificationDate": 1653948355096,
+      "contentHash": "71e55e019e7b5877be143876e031c658",
+      "sourceName": "contracts/Note.sol",
+      "solcConfig": {
+        "version": "0.5.16",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./ERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.5.16"
+      ],
+      "artifacts": [
+        "Note"
       ]
     },
     "/home/nikhil/practice/blockchain/ether/canto-compound-protocol/contracts/CEther.sol": {
@@ -1508,43 +1545,6 @@
       "versionPragmas": [],
       "artifacts": [
         "IProposal"
-      ]
-    },
-    "/home/nikhil/practice/blockchain/ether/canto-compound-protocol/contracts/Note.sol": {
-      "lastModificationDate": 1653890397287,
-      "contentHash": "9232e8ceab44e17c4a5b8ca981ce8325",
-      "sourceName": "contracts/Note.sol",
-      "solcConfig": {
-        "version": "0.5.16",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./ERC20.sol"
-      ],
-      "versionPragmas": [
-        "^0.5.16"
-      ],
-      "artifacts": [
-        "Note"
       ]
     }
   }

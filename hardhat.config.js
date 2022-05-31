@@ -5,7 +5,7 @@ module.exports = {
 	localnet: { 
 	    url:'http://localhost:8545',
 	    //accounts: process.env.LOCAL_NET_PRIVATE_KEY ? [process.env.LOCAL_NET_PRIVATE_KEY] : []
-	    accounts: ["8e6a8df6d6fcd7bbfdd429c3daea317e0139701d5a41e8ce35d27aeb35e3ef23"]
+	    accounts: ["659c833f86d13e90f02b8ee30a673aa757ad112f8506cec82e243edce9709c0d"]
 	},
 	livenet: { 
 	    url: 'https://evm.canto-testnet.com',

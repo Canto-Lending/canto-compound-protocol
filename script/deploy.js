@@ -108,10 +108,8 @@ async function main() {
     const setPendingImpTx = await unitrollerContract._setPendingImplementation(comptrollerContract.address);
     console.log("#3 Set unitroller implementation to :", comptrollerContract.address);
     
-    const acceptImpTx = await unitrollerContract.connect(comptrollerContract.signer)._acceptImplementation();
+    const acceptImpTx = await unitrollerContract._acceptImplementation();
     console.log("#4 Accepted Unitroller implementation for: ", comptrollerContract.address);
-    
-    
     
     // TODO: set reservoir drip target
     
@@ -119,8 +117,8 @@ async function main() {
     const priceOracleContract = await priceOracleFactory.deploy();
     console.log("#6 Price Oracle deployed at: ", priceOracleContract.address);
     
-    await comptrollerContract._setPriceOracle(priceOracleContract.address);
-    console.log('#7 Set price oracle for comptroller to: ', priceOracleContract.address);
+    // await comptrollerContract._setPriceOracle(priceOracleContract.address);
+    // console.log('#7 Set price oracle for comptroller to: ', priceOracleContract.address);
 
     console.log("Starting to deploy interest rate models.");
     
@@ -164,71 +162,98 @@ async function main() {
 	    symbol: "wCanto",
 	    // decimals: 1,
 	},
-  ];
-    
-    var underlyingTokenAddresses = {};
+    ];
+
+    //deploying Tokens, 
+    var underlyingTokens = {};
     for (let args of tokenArgs) {
 	if (args.name == "wCanto")  {
-	    const wCantoFactory = await ethers.getContractFactory("WEth9");
-	    const  wCantoContract = await ethers.wCantoFactory.deploy(
+	    const wCantoFactory = await ethers.getContractFactory("WCanto");
+	    const  wCantoContract = await wCantoFactory.deploy(
 		args.name,
 		args.symbol
 	    );
 	    
+	    underlyingTokens[args.name] = wCantoContract;
+	    console.log(`Deployed ${args.name} to: `, wCantoContract.address);
+	} else if (args.name == "Note") {
+	    const noteFactory = await ethers.getContractFactory("Note");
+	    const noteContract = await noteFactory.deploy(
+		"note",
+		"Note",
+		10000000000,
+		{gasLimit: 200000}
+	    );
+	    console.log("Note deployed to: ", noteContract.address);
+
+
 	    
-	    underlyingTokenAddresses[args.name] = testErc20Contract.address;
+	    const TreasuryFactory = await ethers.getContractFactory("Treasury");
+	    const treasury = await TreasuryFactory.deploy(UniGovAddr, noteContract.address, {gasLimit: 200000});
+
+	    console.log("treasury deployed to: ", treasury.address);
+	    
+	    //const setTreas = await noteContract._setTreasuryAddress(treasury.address, {gasLimit: 200000});
+	    
+	    underlyingTokens[args.name] = noteContract;
+	} else {
+	    const tokenFactory = await ethers.getContractFactory('ERC20');
+	    const tokenContract = await testErc20Factory.deploy(
+		args.name,
+		args.symbol,
+		// args.decimals,
+		args.initialSupply
+	    );
+	    underlyingTokens[args.name] = testErc20Contract;
 	    console.log(`Deployed ${args.name} to: `, testErc20Contract.address);
-	    break;
 	}
-
-	const tokenFactory = await ethers.getContractFactory('ERC20');
-	const tokenContract = await testErc20Factory.deploy(
-	    args.name,
-	    args.symbol,
-	    // args.decimals,
-	    args.initialSupply
-	);
-	underlyingTokenAddresses[args.name] = testErc20Contract.address;
-	console.log(`Deployed ${args.name} to: `, testErc20Contract.address);
     }
+    
+    // const TreasuryFactory = await ethers.getContractFactory("Treasury");
+    // const treasury = await TreasuryFactory.deploy(UniGovAddr, underlyingTokens["Note"].address, {gasLimit: 200000});
 
+    // console.log("treasury deployed to: ", treasury.address);
+
+    // const setTreas = await underlyingTokens["Note"]._setTreasuryAddress(treasury.address, {gasLimit: 200000});
+    
+    console.log("Treasury and Note Contracts linked: ");
     
     const cTokenDeployArgs = [
-    {
-	cToken: 'cNote',
-	symbol: 'cnote',
-	type: 'CErc20',
-	underlying: underlyingTokenAddresses['Note'],
-	decimals: 18,
-	underlyingPrice: '25022748000000000000',
-	collateralFactor: '800000000000000000',
-	initialExchangeRateMantissa: '200000000000000000000000000',
-	interestRateModel: {
-            address: interestRateModelAddressMapping['Base200bps_Slope1000bps'],
-            baseRatePerYear: '20000000000000000',
-            multiplierPerYear: '300000000000000000',
-	},
-	admin: unitrollerContract.address
-    },
 	{
-	cToken: 'cCANTO',
-	symbol: 'cCANTO',
-	type: 'CEther',
-	decimals: 18,
-	underlyingPrice: '35721743800000000000000',
-	collateralFactor: '600000000000000000',
-	initialExchangeRateMantissa: '200000000000000000000000000',
-	interestRateModel: {
-          address: interestRateModelAddressMapping['Base200bps_Slope1000bps'],
-          baseRatePerYear: '20000000000000000',
-          multiplierPerYear: '300000000000000000',
-      },
-	admin: unitrollerContract.address
-    }
+	    cToken: 'cNote',
+	    symbol: 'cnote',
+	    type: 'CErc20',
+	    underlying: underlyingTokens['Note'].address,
+	    decimals: 18,
+	    underlyingPrice: '25022748000000000000',
+	    collateralFactor: '800000000000000000',
+	    initialExchangeRateMantissa: '200000000000000000000000000',
+	    interestRateModel: {
+		address: interestRateModelAddressMapping['Base200bps_Slope1000bps'],
+		baseRatePerYear: '20000000000000000',
+		multiplierPerYear: '300000000000000000',
+	    },
+	    admin: unitrollerContract.address
+	},
+	{
+	    cToken: 'cCANTO',
+	    symbol: 'cCANTO',
+	    type: 'CEther',
+	    decimals: 18,
+	    underlyingPrice: '35721743800000000000000',
+	    collateralFactor: '600000000000000000',
+	    initialExchangeRateMantissa: '200000000000000000000000000',
+	    interestRateModel: {
+		address: interestRateModelAddressMapping['Base200bps_Slope1000bps'],
+		baseRatePerYear: '20000000000000000',
+		multiplierPerYear: '300000000000000000',
+	    },
+	    admin: unitrollerContract.address
+	}
     ];
     var cTokens = [];
-
-    cTokenDelegatorIface = new Interface(abi);
+    
+    //cTokenDelegatorIface = new Interface(abi);
     
     console.log('Starting to deploy CTokens');
     for (let args of cTokenDeployArgs) {
@@ -249,18 +274,21 @@ async function main() {
 	    console.log(`Deployed ${args.cToken} (CErc20) at : `, cErc20Contract.address);
 	    cTokens.push(cErc20Contract.address);
 	    
-	    cERC20DelegatorFactory = ethers.getContractFactory("CErc20Delegator");
-	    cERC20Delegator = cERC20DelegatorFactory(
+	    const cERC20DelegatorFactory = await ethers.getContractFactory("CErc20Delegator");
+	    const cERC20DelegatorContract = await cERC20DelegatorFactory.deploy(
 		args.underlying,
-		comptrollerContract,
-		args.interestRateModel.addres ,
+		comptrollerContract.address,
+		args.interestRateModel.address,
 		args.initialExchangeRateMantissa,
 		args.cToken,
 		args.symbol,
 		args.decimals,
 		args.admin,
-		"0"//currently unused
+		cErc20Contract.address,
+		[],//currently unused
+		{gasLimit: 400000}
  	    );
+	    console.log("cErc20Delegator deployed: ", cERC20DelegatorContract.address);
 	    
 	} else if (args.type == 'CEther') {
 	    const cEtherFactory = await ethers.getContractFactory('CEther');
@@ -280,22 +308,16 @@ async function main() {
     }
     console.log('Finished deploying all CTokens.');
     
-    await (await comptroller.connect(comptroller.signer)).enterMarkets(cTokens);
+    // await comptrollerContract.enterMarkets([underlyingTokens["Note"].address]);
+    
+    // console.log("Entered markets"); 
 
-    const noteFactory = await ethers.getContractFactory("Note");
-    const noteContract = await noteFactory.deploy("note", "Note", 10000000000, deployer.address, {gasLimit: 200000});
 
-    console.log("Note deployed to: ", noteContract.address);
+    // console.log(underlyingTokens["Note"].address);
     
+    // const minted = await underlyingTokens["Note"]._mint_to_Treasury();
     
-    const TreasuryFactory = await ethers.getContractFactory("Treasury");
-    const treasury = await TreasuryFactory.deploy(UniGovAddr, noteContract.address, {gasLimit: 200000});
-
-    console.log("treasury deployed to: ", treasury.address);
-    
-    const note = await noteContract._mint_to_Treasury();
-    
-    console.log("Note sent to: ", deployer.address);
+    // console.log("Note sent to: ", deployer.address);
 }
 
 
