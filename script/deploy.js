@@ -255,7 +255,7 @@ async function main() {
     var cTokens = [];
     
     //cTokenDelegatorIface = new Interface(abi);
-    
+    const cNoteDelegator;
     console.log('Starting to deploy CTokens');
     for (let args of cTokenDeployArgs) {
 	if (args.type == 'CErc20') {
@@ -289,6 +289,10 @@ async function main() {
 		[],//currently unused
 		{gasLimit: 400000}
  	    );
+	    if (args.name == "cNote") {
+		cNoteDelegator = cERC20DelegatorContract.address; 
+	    }
+	    
 	    console.log("cErc20Delegator deployed: ", cERC20DelegatorContract.address);
 	    
 	} else if (args.type == 'CEther') {
@@ -322,6 +326,15 @@ async function main() {
     await (await ethers.getContractAt(NoteAbi, underlyingTokens["Note"].address, deployer))._mint_to_Treasury();
     
     // console.log("Note sent to: ", deployer.address);
+
+    const TreasuryFactory = await ethers.getContractFactory("Treasury");
+    const treasury = await TreasuryFactory.deploy(UniGovAddr, underlyingTokens["Note"].address, cNoteDelegator, CompoundLens.address, {gasLimit: 200000});
+    
+    console.log("treasury deployed to: ", treasury.address);
+    
+    await (await ethers.getContractAt(NoteAbi, underlyingTokens["Note"].address, deployer))._setTreasuryAddress(treasury.address, {gasLimit: 200000});
+    
+    console.log("Treasury and Note Contracts linked: ");
 }
 
 
