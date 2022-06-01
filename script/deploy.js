@@ -185,18 +185,6 @@ async function main() {
 	    
 	    underlyingTokens[args.name] = wCantoContract;
 	    console.log(`Deployed ${args.name} to: `, wCantoContract.address);
-	} else if (args.name == "Note") {
-	    const noteFactory = await ethers.getContractFactory("Note");
-	    const noteContract = await noteFactory.deploy(
-		"note",
-		"Note",
-		10000000000,
-		{gasLimit: 200000}
-	    );
-	    console.log("Note deployed to: ", noteContract.address);
-	    
-	    
-	    underlyingTokens[args.name] = noteContract;
 	} else {
 	    const tokenFactory = await ethers.getContractFactory('ERC20');
 	    const tokenContract = await testErc20Factory.deploy(
@@ -210,14 +198,6 @@ async function main() {
 	}
     }
     
-    const TreasuryFactory = await ethers.getContractFactory("Treasury");
-    const treasury = await TreasuryFactory.deploy(UniGovAddr, underlyingTokens["Note"].address, {gasLimit: 200000});
-    
-    console.log("treasury deployed to: ", treasury.address);
-    
-    await (await ethers.getContractAt(NoteAbi, underlyingTokens["Note"].address, deployer))._setTreasuryAddress(treasury.address, {gasLimit: 200000});
-    
-    console.log("Treasury and Note Contracts linked: ");
     
     const cTokenDeployArgs = [
 	{
@@ -323,18 +303,18 @@ async function main() {
 
     console.log("Comptroller Lens deployed: ", CompoundLens.address);
     
-    await (await ethers.getContractAt(NoteAbi, underlyingTokens["Note"].address, deployer))._mint_to_Treasury();
+    // await (await ethers.getContractAt(NoteAbi, underlyingTokens["Note"].address, deployer))._mint_to_Treasury();
     
-    // console.log("Note sent to: ", deployer.address);
+    // // console.log("Note sent to: ", deployer.address);
 
-    const TreasuryFactory = await ethers.getContractFactory("Treasury");
-    const treasury = await TreasuryFactory.deploy(UniGovAddr, underlyingTokens["Note"].address, cNoteDelegator, CompoundLens.address, {gasLimit: 200000});
+    // const TreasuryFactory = await ethers.getContractFactory("Treasury");
+    // const treasury = await TreasuryFactory.deploy(UniGovAddr, underlyingTokens["Note"].address, cNoteDelegator, CompoundLens.address, {gasLimit: 200000});
     
-    console.log("treasury deployed to: ", treasury.address);
+    // console.log("treasury deployed to: ", treasury.address);
     
-    await (await ethers.getContractAt(NoteAbi, underlyingTokens["Note"].address, deployer))._setTreasuryAddress(treasury.address, {gasLimit: 200000});
+    // await (await ethers.getContractAt(NoteAbi, underlyingTokens["Note"].address, deployer))._setTreasuryAddress(treasury.address, {gasLimit: 200000});
     
-    console.log("Treasury and Note Contracts linked: ");
+    // console.log("Treasury and Note Contracts linked: ");
 }
 
 
