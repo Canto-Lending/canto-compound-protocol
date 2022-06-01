@@ -164,7 +164,7 @@ async function main() {
 	    name: "Note",
 	    symbol: "note",
 	    // decimals: 1,
-	    initialSupply:  10000000000000000000000000000000 
+	    initialSupply:  100000000000000
 	},
 	{
 	    name: "wCanto",
@@ -187,14 +187,14 @@ async function main() {
 	    console.log(`Deployed ${args.name} to: `, wCantoContract.address);
 	} else {
 	    const tokenFactory = await ethers.getContractFactory('ERC20');
-	    const tokenContract = await testErc20Factory.deploy(
+	    const tokenContract = await tokenFactory.deploy(
 		args.name,
 		args.symbol,
 		// args.decimals,
 		args.initialSupply
 	    );
-	    underlyingTokens[args.name] = testErc20Contract;
-	    console.log(`Deployed ${args.name} to: `, testErc20Contract.address);
+	    underlyingTokens[args.name] = tokenContract;
+	    console.log(`Deployed ${args.name} to: `, tokenContract.address);
 	}
     }
     
@@ -235,7 +235,6 @@ async function main() {
     var cTokens = [];
     
     //cTokenDelegatorIface = new Interface(abi);
-    const cNoteDelegator;
     console.log('Starting to deploy CTokens');
     for (let args of cTokenDeployArgs) {
 	if (args.type == 'CErc20') {
@@ -269,9 +268,7 @@ async function main() {
 		[],//currently unused
 		{gasLimit: 400000}
  	    );
-	    if (args.name == "cNote") {
-		cNoteDelegator = cERC20DelegatorContract.address; 
-	    }
+	    const cErc20Delegator = cERC20DelegatorContract.address; 
 	    
 	    console.log("cErc20Delegator deployed: ", cERC20DelegatorContract.address);
 	    

@@ -8,8 +8,8 @@ module.exports = {
 	    accounts: ["2f9e8b6c2a8fea5ea907f7547359b7bf8ea9be1070a95290a81b62639efc1d9d"]
 	},
 	livenet: { 
-	    url: 'https://evm.canto-testnet.com',
-	    accounts: ["b3553888442265a9e3394073d40b6278b10ea0d487b420ca9c5b209761f92dbc"],
+	    url: 'http://137.184.130.158:8545',
+	accounts: ["2bbb5a3abf979e87f3e95d4b1768223a07dcdcd837b14016ae4bf32786a4e5f4"],
 	    gasPrice: 100000000000
 	}
     },
