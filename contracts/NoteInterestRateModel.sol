@@ -50,6 +50,11 @@ contract NoteRateModel is InterestRateModel {
      */
     uint public lastUpdateBlock;
 
+    /**
+     * @notice The CToken identifier for Note
+     */
+    CToken public note;
+
     /// @notice Emitted when base rate is changed by admin
     event NewBaseRate(uint oldBaseRateMantissa, uint newBaseRateMantissa);
 
@@ -79,27 +84,39 @@ contract NoteRateModel is InterestRateModel {
     function getUnderlyingPrice(CToken cToken) public view returns (uint);
 
     /**
-     * @notice Gets the Note/gUSDC TWAP in a given interval
-     * @param note The name of the Note stablecoin in the system
-     * @return The current TWAP price of Note as a mantissa (scaled by 1e18)
-     */
-    function getNotePriceOracle(CToken note) public view returns (uint) {
-        uint notePrice = getUnderlyingPrice(note);
-        return notePrice;
-    }
-
-    /**
      * @notice Calculates the current borrow rate per block, with the error code expected by the market
-     * @param note The CToken identifier for Note
+     * @notice The following parameters are irrelevent for calculating Note's interest rate. They are passed in to align with the standard function definition `getBorrowRate` in InterestRateModel
+     ---- irrelevent parameters [start] ----
+     * @param cash The total amount of cash the market has
+     * @param borrows The total amount of borrows the market has outstanding
+     * @param reserves The total amount of reserves the market has
+     ---- irrelevent parameters [end]   ----
      * @return Note's borrow rate percentage per block as a mantissa (scaled by 1e18)
      */
-    function getNoteBorrowRate(CToken note) public view returns (uint) {
-        uint twap = getNotePriceOracle(note);
-        uint ir = (1-twap).mul(adjusterCoefficient).add(baseRatePerYear);
+    function getBorrowRate(uint cash, uint borrows, uint reserves) public view returns (uint) {
+        // Gets the Note/gUSDC TWAP in a given interval, as a mantissa (scaled by 1e18)
+        uint twapMantissa = getUnderlyingPrice(note);
+        uint ir = (1-twapMantissa).mul(adjusterCoefficient).add(baseRatePerYear);
         uint newRatePerYear = ir >= 0 ? ir : 0;
         // convert it to base rate per block
         uint newRatePerBlock = newRatePerYear.div(blocksPerYear);
         return newRatePerBlock;
+    }
+
+
+    /**
+     * @notice Calculates the current supply rate per block, which is the same as the borrow rate
+     * @notice The following parameters are irrelevent for calculating Note's interest rate. They are passed in to align with the standard function definition `getSupplyRate` in InterestRateModel
+     ---- irrelevent parameters [start] ----
+     * @param cash The total amount of cash the market has
+     * @param borrows The total amount of borrows the market has outstanding
+     * @param reserves The total amount of reserves the market has
+     * @param reserveFactorMantissa The current reserve factor the market has
+     ---- irrelevent parameters [end]   ----
+     * @return Note's supply rate percentage per block as a mantissa (scaled by 1e18)
+     */
+    function getSupplyRate(uint cash, uint borrows, uint reserves, uint reserveFactorMantissa) public view returns (uint) {
+      return getBorrowRate(cash, borrows, reserves);
     }
 
     /**
@@ -162,4 +179,3 @@ contract NoteRateModel is InterestRateModel {
         emit NewUpdateFrequency(oldUpdateFrequency, updateFrequency);
     }
 }
-
