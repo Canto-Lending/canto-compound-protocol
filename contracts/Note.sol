@@ -2,31 +2,33 @@ pragma solidity ^0.5.16;
 
 import "./ERC20.sol";
 
-
 contract Note is ERC20 {
-    address private Admin;
-    address private Treasury;
+    address private accountant;
+    address private admin;
+
+    constructor(string memory name_, string memory symbol_, uint totalSupply_, address admin_) ERC20(name_, symbol_, totalSupply_) public {
+	admin = admin_;
+    }
     
-    constructor(string memory name_, string memory symbol, uint256 totalSupply_) ERC20(name_, symbol, totalSupply_) public {
-        Admin =  msg.sender;
+    modifier AdminOnly {
+	require(msg.sender == admin);
+	_;
     }
 
-    modifier TreasuryOnly {
-	require(msg.sender == Treasury);
+    modifier AccountantOnly {
+	require(msg.sender == accountant);
 	_;
     }
     
-    function _mint_to_Treasury() TreasuryOnly public {
-	super._mint(Treasury, super.totalSupply()); 
+    function _mint_to_Accounting() AccountantOnly public {
+	super._mint(accountant, super.totalSupply()); 
     }
 
-    function RetTreasury() public returns(address) {
-	return Treasury;
+    function RetAccountant() public view returns(address) {
+	return accountant;
     }
     
-    function _setTreasuryAddress(address pendingTreasuryAddr) external {
-	if (msg.sender == Admin) {
-	    Treasury = pendingTreasuryAddr; 
-	}
+    function _setAccoutantAddress(address accountant_) AdminOnly external {
+	accountant = accountant_;
     }
 }

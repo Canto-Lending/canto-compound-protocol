@@ -814,6 +814,9 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
         return (uint(Error.NO_ERROR), seizeTokens);
     }
 
+
+    //USING VELODROME/UNISWAP PRICE ORACLE
+    
     /*** Admin Functions ***/
 
     /**
@@ -839,6 +842,8 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
         return uint(Error.NO_ERROR);
     }
 
+    //
+    
     /**
       * @notice Sets the closeFactor used when liquidating borrows
       * @dev Admin function to set closeFactor

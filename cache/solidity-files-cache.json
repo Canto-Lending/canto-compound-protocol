@@ -332,46 +332,6 @@
         "JumpRateModel"
       ]
     },
-    "/home/nikhil/practice/blockchain/ether/canto-compound-protocol/contracts/DAIInterestRateModelV3.sol": {
-      "lastModificationDate": 1652460481475,
-      "contentHash": "13011b3dd016670a9a096b8650325def",
-      "sourceName": "contracts/DAIInterestRateModelV3.sol",
-      "solcConfig": {
-        "version": "0.5.16",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./JumpRateModelV2.sol",
-        "./SafeMath.sol"
-      ],
-      "versionPragmas": [
-        "^0.5.16"
-      ],
-      "artifacts": [
-        "DAIInterestRateModelV3",
-        "JugLike",
-        "PotLike"
-      ]
-    },
     "/home/nikhil/practice/blockchain/ether/canto-compound-protocol/contracts/CTokenInterfaces.sol": {
       "lastModificationDate": 1652460481471,
       "contentHash": "a336f1646986c603180e60b50ffb60ea",
@@ -525,8 +485,8 @@
       ]
     },
     "/home/nikhil/practice/blockchain/ether/canto-compound-protocol/contracts/Comptroller.sol": {
-      "lastModificationDate": 1653970143482,
-      "contentHash": "9f9729628df6f0d922ada38699dacb3b",
+      "lastModificationDate": 1654139193515,
+      "contentHash": "b5dce01fc2e771f67171e914f2ae1c52",
       "sourceName": "contracts/Comptroller.sol",
       "solcConfig": {
         "version": "0.5.16",
@@ -1064,8 +1024,8 @@
       ]
     },
     "/home/nikhil/practice/blockchain/ether/canto-compound-protocol/contracts/Treasury.sol": {
-      "lastModificationDate": 1653878165376,
-      "contentHash": "7612a91aa2e08d7759cc87d2d161aca9",
+      "lastModificationDate": 1654144767472,
+      "contentHash": "00bb1cb6b701781d38ef77a8f3dc82d3",
       "sourceName": "contracts/Treasury.sol",
       "solcConfig": {
         "version": "0.5.16",
@@ -1092,7 +1052,9 @@
       },
       "imports": [
         "contracts/IProposal.sol",
-        "contracts/EIP20Interface.sol"
+        "contracts/EIP20Interface.sol",
+        "contracts/Lens/CompoundLens.sol",
+        "contracts/Comptroller.sol"
       ],
       "versionPragmas": [],
       "artifacts": [
@@ -1174,8 +1136,8 @@
       ]
     },
     "/home/nikhil/practice/blockchain/ether/canto-compound-protocol/contracts/Note.sol": {
-      "lastModificationDate": 1653966796047,
-      "contentHash": "8ee80f1a53476e84239a38898094ce01",
+      "lastModificationDate": 1654192174999,
+      "contentHash": "a3fa53f4bf59a3906f5842bd71cdd6d9",
       "sourceName": "contracts/Note.sol",
       "solcConfig": {
         "version": "0.5.16",
@@ -1358,47 +1320,6 @@
         "CErc20Delegate"
       ]
     },
-    "/home/nikhil/practice/blockchain/ether/canto-compound-protocol/contracts/CDaiDelegate.sol": {
-      "lastModificationDate": 1652460481471,
-      "contentHash": "b0cc054b06bb0680192c6ba2692402a9",
-      "sourceName": "contracts/CDaiDelegate.sol",
-      "solcConfig": {
-        "version": "0.5.16",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "./CErc20Delegate.sol"
-      ],
-      "versionPragmas": [
-        "^0.5.16"
-      ],
-      "artifacts": [
-        "CDaiDelegate",
-        "DaiJoinLike",
-        "GemLike",
-        "PotLike",
-        "VatLike"
-      ]
-    },
     "/home/nikhil/practice/blockchain/ether/canto-compound-protocol/contracts/Governance/GovernorBravoDelegateG2.sol": {
       "lastModificationDate": 1653696379609,
       "contentHash": "d360f76afbc315da3e788709edc8722d",
@@ -1545,6 +1466,90 @@
       "versionPragmas": [],
       "artifacts": [
         "IProposal"
+      ]
+    },
+    "/home/nikhil/practice/blockchain/ether/canto-compound-protocol/contracts/Accounting.sol": {
+      "lastModificationDate": 1654196367892,
+      "contentHash": "3df3a06187ffd7de7b1ba96fab6e2994",
+      "sourceName": "contracts/Accounting.sol",
+      "solcConfig": {
+        "version": "0.5.16",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Note.sol",
+        "./CToken.sol",
+        "./cNote.sol",
+        "./ComptrollerInterface.sol",
+        "./Treasury.sol",
+        "./Exponential.sol",
+        "./ErrorReporter.sol"
+      ],
+      "versionPragmas": [
+        "^0.5.16"
+      ],
+      "artifacts": [
+        "Accountant"
+      ]
+    },
+    "/home/nikhil/practice/blockchain/ether/canto-compound-protocol/contracts/cNote.sol": {
+      "lastModificationDate": 1654196392200,
+      "contentHash": "7aea48de2a39dbc04986fc89b5993da0",
+      "sourceName": "contracts/cNote.sol",
+      "solcConfig": {
+        "version": "0.5.16",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./CToken.sol",
+        "./CErc20.sol",
+        "./Accounting.sol",
+        "./Treasury.sol",
+        "./ErrorReporter.sol"
+      ],
+      "versionPragmas": [
+        "^0.5.16"
+      ],
+      "artifacts": [
+        "cNote"
       ]
     }
   }

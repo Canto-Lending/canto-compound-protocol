@@ -32,7 +32,7 @@
   "dependencies": {
     "@nomiclabs/hardhat-waffle": "^2.0.3",
     "esbuild": "^0.14.39",
-    "eth-saddle": "^0.1.21",
+    "eth-saddle": "^0.1.25",
     "nvm": "^0.0.4"
   },
   "resolutions": {

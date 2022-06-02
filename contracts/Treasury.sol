@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 import "contracts/IProposal.sol";
 import "contracts/EIP20Interface.sol";
 import "contracts/Lens/CompoundLens.sol";
-
+import "contracts/Comptroller.sol";
 
 /** 
 * @title    Canto Treasury  - A smart contract that holds the Canto Network's assets
@@ -13,23 +13,20 @@ import "contracts/Lens/CompoundLens.sol";
 */
 contract Treasury {
 
-    
-    
+    //boolean to determine whether or not the Treasury has entered into the cNote Market
+    bool private NoteMarketEntered = false;
     // Unigov address that is set with constructor at deployment
     address private UNIGOV_ADDRESS;
-    address private LendingMarket;
     // Interfaces
     EIP20Interface public note;
     IProposal public unigov;
-    CompoundLens public clens;
     // Constructor that takes in 2 variables:
     //      - unigovContractAddress:    the address of the map contract which stores proposals passed by Cosmos SDK
     //      - noteAddressERC20:         the address of the ERC20 contract for nxote
-    constructor(address unigovContractAddress, address noteAddressERC20, address LendingMarket_, address CompoundLens) public {
+    constructor(address unigovContractAddress, address noteAddressERC20) public {
 
         UNIGOV_ADDRESS = unigovContractAddress;
         unigov = IProposal(UNIGOV_ADDRESS);
-	LendingMarket = LendingMarket_;
 	
         note = EIP20Interface(noteAddressERC20);
         require(note.totalSupply() > 0, "Sanity check to make sure address is valid");
@@ -70,6 +67,7 @@ contract Treasury {
             sendFund(recipient, amount, denom);
         }
     }
+    
 
     function queryProposal(uint proposalID) internal view returns (IProposal.Proposal memory){
 
@@ -108,14 +106,5 @@ contract Treasury {
         else if (keccak256(bytes(denom)) == keccak256(bytes("NOTE"))) {
             note.transfer(recipient, amount);
         }   
-    }
-
-    function SweepInterest() public returns(uint) {
-	CompoundLens.cTokenMetadata = clens.cTokenMetadata(LendingMarket);
-	//save interest rates
-	
-	if (queryNoteBalance() != 0) {
-	    sendFund(LendingMarket, queryNoteBalance(), "NOTE");
-	}
     }
 }
