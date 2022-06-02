@@ -23,7 +23,10 @@ interface UnigovInterface{
         // @notice The ordered list of calldata to be passed to each call
         bytes[] calldatas;
     }
-  function QueryProp(uint propId) external view returns(Proposal memory);
+
+    // QueryProp returns a Proposal struct, which holds the proposal data from proposals
+    // that were passed in the cosmos SDK unigov module
+    function QueryProp(uint propId) external view returns(Proposal memory);
 }
 
 contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoEvents {
@@ -58,15 +61,17 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
       * @param proposalId The id of the proposal to queue
       */
     function queue(uint proposalId) external {
-	// address of map contract; used to query proposals from cosmos SDK
+
+	    // map contract address:
+        // the map contract is where proposals that pass from the cosmos sdk unigov module are stored
         address mapContractAddress = 0x30E20d0A642ADB85Cb6E9da8fB9e3aadB0F593C0;
+
         // attach to contract using interface defined above
         UnigovInterface unigov = UnigovInterface(mapContractAddress);
         
-        // call QueryProp method here
+        // call QueryProp using the proposalId
         UnigovInterface.Proposal memory prop = unigov.QueryProp(proposalId);
-	
-        // TODO: need to look into definition of timelock delay - make sure it meets our requirements
+
         uint eta = add256(block.timestamp, timelock.delay());
         for (uint i = 0; i < prop.targets.length; i++) {
             queueOrRevertInternal(prop.targets[i], prop.values[i], prop.signatures[i], prop.calldatas[i], eta);
@@ -74,9 +79,6 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
         emit ProposalQueued(proposalId, eta);
     }
 
-
-    
-    // TODO: should we delete this?
     function queueOrRevertInternal(address target, uint value, string memory signature, bytes memory data, uint eta) internal {
         require(!timelock.queuedTransactions(keccak256(abi.encode(target, value, signature, data, eta))), "GovernorBravo::queueOrRevertInternal: identical proposal action already queued at eta");
         timelock.queueTransaction(target, value, signature, data, eta);
@@ -94,35 +96,6 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
             timelock.executeTransaction.value(proposal.values[i])(proposal.targets[i], proposal.values[i], proposal.signatures[i], proposal.calldatas[i], proposal.eta);
         }
         emit ProposalExecuted(proposalId);
-    }
-
-    /**
-      * @notice Cancels a proposal only if sender is the proposer, or proposer delegates dropped below proposal threshold
-      * @param proposalId The id of the proposal to cancel
-      */
-    function cancel(uint proposalId) external {
-        require(state(proposalId) != ProposalState.Executed, "GovernorBravo::cancel: cannot cancel executed proposal");
-        require(msg.sender == admin, "GovernorBravo::cancel: only admin can cancel proposal");
-        Proposal storage proposal = proposals[proposalId];
-        
-        // TODO: we don't need this right?
-        // // Proposer can cancel
-        // if(msg.sender != proposal.proposer) {
-        //     // Whitelisted proposers can't be canceled for falling below proposal threshold
-        //     if(isWhitelisted(proposal.proposer)) {
-        //         require((comp.getPriorVotes(proposal.proposer, sub256(block.number, 1)) < proposalThreshold) && msg.sender == whitelistGuardian, "GovernorBravo::cancel: whitelisted proposer");
-        //     }
-        //     else {
-        //         require((comp.getPriorVotes(proposal.proposer, sub256(block.number, 1)) < proposalThreshold), "GovernorBravo::cancel: proposer above threshold");
-        //     }
-        // }
-        
-        proposal.canceled = true;
-        for (uint i = 0; i < proposal.targets.length; i++) {
-            timelock.cancelTransaction(proposal.targets[i], proposal.values[i], proposal.signatures[i], proposal.calldatas[i], proposal.eta);
-        }
-
-        emit ProposalCanceled(proposalId);
     }
 
     /**
