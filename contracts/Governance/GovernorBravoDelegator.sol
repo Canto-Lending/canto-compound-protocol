@@ -7,7 +7,7 @@ contract GovernorBravoDelegator is GovernorBravoDelegatorStorage, GovernorBravoE
 	constructor(
 			address timelock_,
 			address admin_,
-	        address implementation_,
+	        address implementation_
             ) public {
 
         // Admin set to msg.sender for initialization
