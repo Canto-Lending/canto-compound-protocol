@@ -1362,11 +1362,12 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
     }
 
     /**
-     * @notice Transfer COMP to the user
-     * @dev Note: If there is not enough COMP, we do not perform the transfer all.
-     * @param user The address of the user to transfer COMP to
-     * @param amount The amount of COMP to (possibly) transfer
-     * @return The amount of COMP which was NOT transferred to the user
+     * @notice Transfer wrappedCanto to the user
+     * @dev Note: If there is not enough wrappedCanto, we do not perform the transfer all.
+     * @param user The address of the user to transfer wrappedCanto to
+     * @param amount The amount of wrappedCanto to (possibly) transfer
+     * @return The amount of wrappedCanto which was NOT transferred to the user
+     * @note Comp Interface was switched to EIP20Interface here 
      */
     function grantCompInternal(address user, uint amount) internal returns (uint) {
         EIP20Interface wrappedCanto = EIP20Interface(getCompAddress());
