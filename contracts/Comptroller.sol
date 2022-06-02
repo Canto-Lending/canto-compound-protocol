@@ -1460,8 +1460,8 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
 
     // TODO: change this to Wrapped Canto Address
     /**
-     * @notice Return the address of the COMP token
-     * @return The address of COMP
+     * @notice Return the address of the wrappedCanto token
+     * @return The address of wrappedCanto
      */
     function getCompAddress() public view returns (address) {
         return 0x14B3F74f86c4DE775112124c08CAf7a439f3083B;
