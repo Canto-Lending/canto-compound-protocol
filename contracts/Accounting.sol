@@ -38,6 +38,8 @@ contract Accountant is Exponential, TokenErrorReporter{
 	_note.approve(LendingMarketAddr, uint(-1));
     }
 
+
+    //ensure that only the cNote Lending Market has the ability to redeem and supply the Note Lending Market
     modifier OnlyLM {
 	require(msg.sender == address(_LendingMarket));
 	_;
@@ -54,16 +56,20 @@ contract Accountant is Exponential, TokenErrorReporter{
 	uint err =  _LendingMarket.mint(amount);
 	return err;
      }
+
+    //redeem amount of Note in cNote, must determint how much cNote for amount Note at exchange rate, #cNote = Note * expRate
     
     function redeemMarket(uint amount, address   minter) external OnlyLM returns(uint) {
+	//
 	borrowBalances[minter] -= amount;
+
 	Exp memory exp_rate = Exp({mantissa: _LendingMarket.exchangeRateStored()});
-	(MathError err, Exp memory amtToRedeem) = divScalar(exp_rate, amount);
-	
+	(MathError err, Exp memory amtToRedeem) = mulScalar(exp_rate, amount);
+	//fail gracefully if there is an error
         if (err != MathError.NO_ERROR) {
             return failOpaque(Error.MATH_ERROR, FailureInfo.BORROW_NEW_ACCOUNT_BORROW_BALANCE_CALCULATION_FAILED, uint(err));
         }
-   
+	//redeem the amount of Note calculated via current cNote -> Note exchange rate
 	return _LendingMarket.redeem(amtToRedeem.mantissa);
     }
 

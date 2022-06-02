@@ -24,7 +24,6 @@ contract Treasury {
     //      - unigovContractAddress:    the address of the map contract which stores proposals passed by Cosmos SDK
     //      - noteAddressERC20:         the address of the ERC20 contract for nxote
     constructor(address unigovContractAddress, address noteAddressERC20) public {
-
         UNIGOV_ADDRESS = unigovContractAddress;
         unigov = IProposal(UNIGOV_ADDRESS);
 	

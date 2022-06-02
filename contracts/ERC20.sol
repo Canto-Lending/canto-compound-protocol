@@ -26,7 +26,7 @@ contract ERC20 is EIP20Interface {
      * All two of these values are immutable: they can only be set once during
      * construction.
      */
-    constructor(string memory name_, string memory symbol_, uint256 totalSupply_) public {
+    onstructor(string memory name_, string memory symbol_, uint256 totalSupply_) public {
         _name = name_;
         _symbol = symbol_;
 	_initialSupply = totalSupply_;
