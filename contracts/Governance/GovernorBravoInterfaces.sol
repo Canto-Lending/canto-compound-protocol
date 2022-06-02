@@ -3,11 +3,6 @@ pragma experimental ABIEncoderV2;
 
 
 contract GovernorBravoEvents {
-    /// @notice An event emitted when a new proposal is created
-    event ProposalCreated(uint id, address proposer, address[] targets, uint[] values, string[] signatures, bytes[] calldatas, uint startBlock, uint endBlock, string description);
-
-    /// @notice An event emitted when a proposal has been canceled
-    event ProposalCanceled(uint id);
 
     /// @notice An event emitted when a proposal has been queued in the Timelock
     event ProposalQueued(uint id, uint eta);
@@ -18,20 +13,12 @@ contract GovernorBravoEvents {
     /// @notice Emitted when implementation is changed
     event NewImplementation(address oldImplementation, address newImplementation);
 
-    /// @notice Emitted when proposal threshold is set
-    event ProposalThresholdSet(uint oldProposalThreshold, uint newProposalThreshold);
-
     /// @notice Emitted when pendingAdmin is changed
     event NewPendingAdmin(address oldPendingAdmin, address newPendingAdmin);
 
     /// @notice Emitted when pendingAdmin is accepted, which means admin is updated
     event NewAdmin(address oldAdmin, address newAdmin);
 
-    /// @notice Emitted when whitelist account expiration is set
-    event WhitelistAccountExpirationSet(address account, uint expiration);
-
-    /// @notice Emitted when the whitelistGuardian is set
-    event WhitelistGuardianSet(address oldGuardian, address newGuardian);
 }
 
 contract GovernorBravoDelegatorStorage {
@@ -101,7 +88,6 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
 
     /// @notice Possible states that a proposal may be in
     enum ProposalState {
-        Canceled,
         Queued,
         Expired,
         Executed
@@ -109,11 +95,6 @@ contract GovernorBravoDelegateStorageV1 is GovernorBravoDelegatorStorage {
 }
 
 contract GovernorBravoDelegateStorageV2 is GovernorBravoDelegateStorageV1 {
-    /// @notice Stores the expiration of account whitelist status as a timestamp
-    mapping (address => uint) public whitelistAccountExpirations;
-
-    /// @notice Address which manages whitelisted proposals and whitelist accounts
-    address public whitelistGuardian;
 }
 
 interface TimelockInterface {
