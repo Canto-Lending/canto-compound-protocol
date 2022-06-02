@@ -4,6 +4,8 @@ pragma experimental ABIEncoderV2;
 import "./GovernorBravoInterfaces.sol";
 
 //Interface name is not important, however functions in it are important
+//Contains proposal struct for unigov proposal type 
+//Contains queryProp function to read in the proposal from the proposalMap Contract 
 interface UnigovInterface{
     struct Proposal {
         // @notice Unique id for looking up a proposal
@@ -26,6 +28,7 @@ interface UnigovInterface{
   function QueryProp(uint propId) external view returns(Proposal memory);
 }
 
+//Removed: variables used for voting on proposals 
 contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoEvents {
 
     /// @notice The name of this contract
@@ -52,11 +55,11 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
         timelock = TimelockInterface(timelock_);
     }
 
-    // TODO: need to rewrite queue function
     /**
       * @notice Queues a proposal of state succeeded
       * @param proposalId The id of the proposal to queue
       */
+      // Using the proposalID, we call QueryProp to retrieve the proposal and call queueOrRevertInternal to queue the proposal 
     function queue(uint proposalId) external {
 	// address of map contract; used to query proposals from cosmos SDK
         address mapContractAddress = 0x30E20d0A642ADB85Cb6E9da8fB9e3aadB0F593C0;
@@ -76,7 +79,6 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
 
 
     
-    // TODO: should we delete this?
     function queueOrRevertInternal(address target, uint value, string memory signature, bytes memory data, uint eta) internal {
         require(!timelock.queuedTransactions(keccak256(abi.encode(target, value, signature, data, eta))), "GovernorBravo::queueOrRevertInternal: identical proposal action already queued at eta");
         timelock.queueTransaction(target, value, signature, data, eta);
@@ -95,7 +97,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
         }
         emit ProposalExecuted(proposalId);
     }
-
+    //Removed: Cancel Proposal 
 
 
     /**
@@ -113,6 +115,7 @@ contract GovernorBravoDelegate is GovernorBravoDelegateStorageV2, GovernorBravoE
       * @param proposalId The id of the proposal
       * @return Proposal state
       */
+      //Removed Cancelled, Succeeded, Failed states 
     function state(uint proposalId) public view returns (ProposalState) {
         require(proposalCount >= proposalId && proposalId > initialProposalId, "GovernorBravo::state: invalid proposal id");
         Proposal storage proposal = proposals[proposalId];
