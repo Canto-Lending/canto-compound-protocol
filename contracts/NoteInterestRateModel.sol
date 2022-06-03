@@ -11,14 +11,15 @@ import "./SafeMath.sol";
 
 
 contract NoteRateModel is InterestRateModel {
+
     using SafeMath for uint;
 
-    event NewInterestParams(uint baseRatePerBlock, uint lastUpdateBlock);
+    event NewInterestParams(uint baseRatePerBlock);
 
     /**
     * @notice Administrator for this contract
     */
-    address public admin;
+    address public admin = msg.sender;
 
     /**
      * @notice The approximate number of blocks per year that is assumed by the interest rate model
@@ -26,9 +27,14 @@ contract NoteRateModel is InterestRateModel {
     uint public constant blocksPerYear = 2102400;
 
     /**
-     * @notice baseRatePerYear The approximate target base APR, as a mantissa (scaled by 1e18)
+     * @notice The variable to keep track of the last update on Note's interest rate, initialized at the current block number
      */
-    uint public baseRatePerYear; // set by admin, default 2%
+    uint public lastUpdateBlock = block.number;
+
+    /**
+     * @notice baseRatePerYear The per year interest rate, as a mantissa (scaled by 1e18)
+     */
+    uint public baseRatePerYear;
 
     /**
      * @notice baseRatePerBlock The per block interest rate, as a mantissa (scaled by 1e18)
@@ -45,10 +51,6 @@ contract NoteRateModel is InterestRateModel {
      */
     uint public updateFrequency; // set by admin, default 24 hours
 
-    /**
-     * @notice The variable to keep track of the last update on Note's interest rate
-     */
-    uint public lastUpdateBlock;
 
     /**
      * @notice The CToken identifier for Note
@@ -66,13 +68,11 @@ contract NoteRateModel is InterestRateModel {
 
     /**
      * @notice Construct an interest rate model
-     * The `constructor` is executed only once when the contract is created.
+     * @param baseRatePerYear The approximate target base APR, as a mantissa (scaled by 1e18), set by admin, default 2%
      */
-    constructor() public {
-        admin = msg.sender;
-        lastUpdateBlock = block.number;
+    constructor(uint baseRatePerYear) public {
         baseRatePerBlock = baseRatePerYear.div(blocksPerYear);
-        emit NewInterestParams(baseRatePerBlock, lastUpdateBlock);
+        emit NewInterestParams(baseRatePerBlock);
     }
 
     /**
@@ -81,7 +81,7 @@ contract NoteRateModel is InterestRateModel {
       * @return The underlying asset price mantissa (scaled by 1e18).
       *  Zero means the price is unavailable.
       */
-    function getUnderlyingPrice(CToken cToken) public view returns (uint);
+    // function getUnderlyingPrice(CToken cToken);
 
     /**
      * @notice Calculates the current borrow rate per block, with the error code expected by the market
@@ -95,7 +95,8 @@ contract NoteRateModel is InterestRateModel {
      */
     function getBorrowRate(uint cash, uint borrows, uint reserves) public view returns (uint) {
         // Gets the Note/gUSDC TWAP in a given interval, as a mantissa (scaled by 1e18)
-        uint twapMantissa = getUnderlyingPrice(note);
+        // uint twapMantissa = getUnderlyingPrice(note);
+        uint twapMantissa = 1;
         uint ir = (1-twapMantissa).mul(adjusterCoefficient).add(baseRatePerYear);
         uint newRatePerYear = ir >= 0 ? ir : 0;
         // convert it to base rate per block
@@ -133,7 +134,7 @@ contract NoteRateModel is InterestRateModel {
             // pass in a base rate per year
             baseRatePerYear = newBaseRatePerYear;
             lastUpdateBlock = blockNumber;
-            emit NewInterestParams(baseRatePerYear, lastUpdateBlock);
+            emit NewInterestParams(baseRatePerYear);
         }
     }
 
