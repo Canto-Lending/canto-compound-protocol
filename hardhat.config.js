@@ -5,11 +5,11 @@ module.exports = {
 	localnet: { 
 	    url:'http://localhost:8545',
 	    //accounts: process.env.LOCAL_NET_PRIVATE_KEY ? [process.env.LOCAL_NET_PRIVATE_KEY] : []
-	    accounts: ["2f9e8b6c2a8fea5ea907f7547359b7bf8ea9be1070a95290a81b62639efc1d9d"]
+	    accounts: ["74ab7f9825dd7384ea09dade219d2ddaed023930d93240646bbdcb19806cf674"]
 	},
 	livenet: { 
-	    url: 'https://evm.canto-testnet.com',
-	    accounts: ["b3553888442265a9e3394073d40b6278b10ea0d487b420ca9c5b209761f92dbc"],
+	    url: 'http://137.184.130.158:8545',
+	    accounts: ["c541c56156089559a21c95bbdbca48b6846b8dc006d3241daddd00f1154b495e"],
 	    gasPrice: 100000000000
 	}
     },

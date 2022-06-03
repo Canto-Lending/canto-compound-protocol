@@ -1,14 +1,27 @@
 pragma solidity ^0.5.16;
 
 import "./CToken.sol";
-import "./CErc20.sol";
+import "./CErc20Immutable.sol";
 import "./Accounting.sol";
 import "./Treasury.sol";
 import "./ErrorReporter.sol";
 
-contract cNote is CErc20 {
+contract cNote is CErc20Immutable {
     Accountant private _accountant = Accountant(address(0));
     Treasury private _treasury = Treasury(address(0)); 
+
+    
+    constructor(address underlying_,
+                ComptrollerInterface comptroller_,
+                InterestRateModel interestRateModel_,
+                uint initialExchangeRateMantissa_,
+                string memory name_,
+                string memory symbol_,
+                uint8 decimals_,
+                address payable admin_) CErc20Immutable(underlying, comptroller, interestRateModel_, initialExchangeRateMantissa_, name_,
+							symbol_, decimals_, admin_) public {
+    }
+
     
     event AccountantSet(address accountant, address accountantPrior);
 

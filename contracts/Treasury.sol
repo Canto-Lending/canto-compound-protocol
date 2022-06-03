@@ -14,7 +14,6 @@ import "contracts/Comptroller.sol";
 contract Treasury {
 
     //boolean to determine whether or not the Treasury has entered into the cNote Market
-    bool private NoteMarketEntered = false;
     // Unigov address that is set with constructor at deployment
     address private UNIGOV_ADDRESS;
     // Interfaces
@@ -57,7 +56,7 @@ contract Treasury {
         // query the proposal using the proposalID
         IProposal.Proposal memory proposal = unigov.QueryProp(proposalID);
 
-        for (uint i=0; i<proposal.targets.length; i++) {
+        for (uint i=0; i<proposal.targets.length; ++i) {
             address recipient = proposal.targets[i];
             uint amount = proposal.values[i];
             string memory denom = proposal.signatures[i];
@@ -77,7 +76,7 @@ contract Treasury {
         require(proposal.targets.length == proposal.values.length);
         require(proposal.targets.length == proposal.signatures.length);
 
-        for (uint i=0; i<proposal.targets.length; i++) {
+        for (uint i=0; i<proposal.targets.length; ++i) {
 
             uint amount = proposal.values[i];
             string memory denom = proposal.signatures[i];

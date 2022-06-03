@@ -3,7 +3,7 @@ pragma solidity ^0.5.16;
 import "./ERC20.sol";
 
 contract Note is ERC20 {
-    address private accountant;
+    address private accountant = address(0);
     address private admin;
 
     constructor(string memory name_, string memory symbol_, uint totalSupply_, address admin_) ERC20(name_, symbol_, totalSupply_) public {

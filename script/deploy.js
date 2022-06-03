@@ -10,8 +10,8 @@ const ComptrollerAbi = [
 
 
 const NoteAbi = [
-    "function _setTreasuryAddress(address) external",
-    "function _mint_to_Treasury() TreasuryOnly public"
+    "function _setAccountantAddress(address) external",
+    "function _mint_to_Accounting() public"
 ];
 
 const INTEREST_RATE_MODEL = {
@@ -106,10 +106,8 @@ async function main() {
 
 
     //DEPLOYING GOVERNORBR
-
-    
     const comptrollerFactory = await ethers.getContractFactory("Comptroller");
-    const comptrollerContract = await comptrollerFactory.deploy({gasLimit: 1000000});
+    const comptrollerContract = await comptrollerFactory.deploy({gasLimit : 800000});
     console.log('#1 Comptroller Deployed at: ', comptrollerContract.address);
 
     const unitrollerFactory = await ethers.getContractFactory("Unitroller");
@@ -195,7 +193,7 @@ async function main() {
 		"note",
 		"Note",
 		10000000000,
-		{gasLimit: 200000}
+		deployer.address,
 	    );
 	    console.log("Note deployed to: ", noteContract.address);
 	    
@@ -214,14 +212,10 @@ async function main() {
 	}
     }
     
-    // const TreasuryFactory = await ethers.getContractFactory("Treasury");
-    // const treasury = await TreasuryFactory.deploy(UniGovAddr, underlyingTokens["Note"].address, {gasLimit: 200000});
+    const TreasuryFactory = await ethers.getContractFactory("Treasury");
+    const treasury = await TreasuryFactory.deploy(UniGovAddr, underlyingTokens["Note"].address, {gasLimit: 200000000});
     
-    // console.log("treasury deployed to: ", treasury.address);
-    
-    // await (await ethers.getContractAt(NoteAbi, underlyingTokens["Note"].address, deployer))._setTreasuryAddress(treasury.address, {gasLimit: 200000});
-    
-    // console.log("Treasury and Note Contracts linked: ");
+    console.log("treasury deployed to: ", treasury.address);
     
     const cTokenDeployArgs = [
 	{
@@ -258,12 +252,16 @@ async function main() {
     ];
     var cTokens = [];
     
-    //cTokenDelegatorIface = new Interface(abi);
-    const cNoteDelegator;
     console.log('Starting to deploy CTokens');
     for (let args of cTokenDeployArgs) {
 	if (args.type == 'CErc20') {
-	    const cErc20Factory = await ethers.getContractFactory('CErc20Immutable');
+	    let cErc20Factory;
+	    if (args.cToken == 'cNote') {
+		cErc20Factory = await ethers.getContractFactory('cNote');
+	    } else {
+		 cErc20Factory = await ethers.getContractFactory('CErc20Immutable');
+	    }
+
 	    const cErc20Contract = await cErc20Factory.deploy(
 		args.underlying,
 		comptrollerContract.address,
@@ -272,7 +270,7 @@ async function main() {
 		args.cToken,
 		args.symbol,
 		args.decimals,
-		args.admin,
+		args.admin
 		{ gasLimit: 1000000 }
 	    );
 	    // TODO: add suport for CErc20Delegators
@@ -291,24 +289,21 @@ async function main() {
 		args.admin,
 		cErc20Contract.address,
 		[],//currently unused
-		{gasLimit: 400000}
+		{gasLimit: 4000000}
  	    );
-	    if (args.name == "cNote") {
-		cNoteDelegator = cERC20DelegatorContract.address; 
-	    }
 	    
-	    console.log("cErc20Delegator deployed: ", cERC20DelegatorContract.address);
+	    Console.log("cErc20Delegator deployed: ", cERC20DelegatorContract.address);
 	    
 	} else if (args.type == 'CEther') {
 	    const cEtherFactory = await ethers.getContractFactory('CEther');
 	    const cEtherContract = await cEtherFactory.deploy(
 		comptrollerContract.address,
 		args.interestRateModel.address,
-		args.initialExch++++angeRateMantissa,
+		args.initialExchangeRateMantissa,
 		args.cToken,
 		args.symbol,
 		args.decimals,
-		args.admin,
+		args.admin
 		{ gasLimit: 1000000 }
 	    );
 	    console.log(`Deployed ${args.cToken} (CEther) at : `, cEtherContract.address);
@@ -316,29 +311,25 @@ async function main() {
 	}
     }
     console.log("Finished deploying all CTokens.");
-    
-    
-    const MarketsEntered = await (await ethers.getContractAt(ComptrollerAbi, comptrollerContract.address, deployer)).enterMarkets(cTokens);
-    console.log("Entered markets: ", MarketsEntered); 
 
+    const AccountantFactory = await ethers.getContractFactory("Accountant");
+    const AccountantContract = await AccountantFactory.deploy(
+	underlyingTokens["Note"].address,
+	cTokens[0],
+	treasury.address,
+	{gasLimit: 200000}
+    );
+    
+    const AccountantSet  = await (await ethers.getContractAt(NoteAbi,
+							     underlyingTokens["Note"].address,
+							     deployer))._setAccountantAddress(AccountantContract.address);
 
-    const ComptrollerLensFactory = await ethers.getContractFactory("CompoundLens");
-    const CompoundLens = await ComptrollerLensFactory.deploy();
+    console.log("Accountant deployed: ", AccountantContract.address );
+    
+    // const ComptrollerLensFactory = await ethers.getContractFactory("CompoundLens");
+    // const CompoundLens = await ComptrollerLensFactory.deploy();
 
-    console.log("Comptroller Lens deployed: ", CompoundLens.address);
-    
-    // await (await ethers.getContractAt(NoteAbi, underlyingTokens["Note"].address, deployer))._mint_to_Treasury();
-    
-    // console.log("Note sent to: ", deployer.address);
-
-    // const TreasuryFactory = await ethers.getContractFactory("Treasury");
-    // const treasury = await TreasuryFactory.deploy(UniGovAddr, underlyingTokens["Note"].address, cNoteDelegator, CompoundLens.address, {gasLimit: 200000});
-    
-    // console.log("treasury deployed to: ", treasury.address);
-    
-    // await (await ethers.getContractAt(NoteAbi, underlyingTokens["Note"].address, deployer))._setTreasuryAddress(treasury.address, {gasLimit: 200000});
-    
-    // console.log("Treasury and Note Contracts linked: ");
+    // console.log("Comptroller Lens deployed: ", CompoundLens.address);
 }
 
 main()

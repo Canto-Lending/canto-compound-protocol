@@ -6,7 +6,7 @@ import "./CErc20.sol";
  * @title Compound's CErc20Immutable Contract
  * @notice CTokens which wrap an EIP-20 underlying and are immutable
  * @author Compound
- */
+*/
 contract CErc20Immutable is CErc20 {
     /**
      * @notice Construct a new money market
