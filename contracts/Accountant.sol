@@ -79,7 +79,7 @@ contract Accountant is Exponential, TokenErrorReporter{
 	uint cNoteBalance = _LendingMarket.balanceOfUnderlying(address(this));
 	Exp memory exp_rate = Exp({mantissa: _LendingMarket.exchangeRateStored()});
 	
-	(mathErr, cNoteBalance) = mulUInt(exp_rate, cNoteBalance);
+	(mathErr, cNoteBalance) = divUInt(exp_rate, cNoteBalance);
 	if (mathErr != MathError.NO_ERROR) {
             return failOpaque(Error.MATH_ERROR, FailureInfo.BORROW_NEW_ACCOUNT_BORROW_BALANCE_CALCULATION_FAILED, uint(mathErr));
 	}
