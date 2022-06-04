@@ -2,7 +2,7 @@ pragma solidity ^0.5.16;
 
 import "./CToken.sol";
 import "./CErc20Immutable.sol";
-import "./Accounting.sol";
+import "./Accountant.sol";
 import "./Treasury.sol";
 import "./ErrorReporter.sol";
 
