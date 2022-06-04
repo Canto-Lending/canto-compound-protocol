@@ -4,22 +4,29 @@ const NoteAbi = [
     "function RetAccountant() public view returns(addres)"
 ];
 
+const ComptrollerAbi = [
+    "function enterMarkets(address[] memory) returns (uint[] memory)", 
+    "function _setPriceOracle(address) public returns(uint)"
+];
+
+
 async function main() {
     const [deployer] = await ethers.getSigners();
-
-    const comptrollerFactory = await ethers.getContractFactory("Comptroller");
-    const comptrollerContract = await comptrollerFactory.deploy({gasLimit: 700000});
-    console.log('#1 Comptroller Deployed at: ', comptrollerContract.address);
-
-    //console.log(await deployer.provider.getCode("0x80062071a06c8a4bb8e5619668EA82DF36754bCc"));
+    
     // const noteFactory = await ethers.getContractFactory("Note");
     // const noteContract = await noteFactory.deploy(
     // 	"note",
     // 	"Note",
     // 	10000000000,
-    // 	deployer.address,
     // );
-    // console.log("Note deployed to: ", noteContract.address);
+    // console.log(noteContract.address);
+
+    //await noteContract.deployTransaction.wait();
+    console.log(await deployer.provider.getCode("0x8A9BB36391daF14e23DAdc309Be570dD519cBfc5"));
+    
+    // const comptrollerContract = await comptrollerFactory.deploy();
+    // console.log(await comptrollerContract.deployTransaction);
+
 
 }
 

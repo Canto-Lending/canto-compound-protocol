@@ -106,13 +106,16 @@ async function main() {
 
 
     //DEPLOYING GOVERNORBR
-    const comptrollerFactory = await ethers.getContractFactory("Comptroller");
-    const comptrollerContract = await comptrollerFactory.deploy({gasLimit : 800000});
-    console.log('#1 Comptroller Deployed at: ', comptrollerContract.address);
 
     const unitrollerFactory = await ethers.getContractFactory("Unitroller");
     const unitrollerContract = await unitrollerFactory.deploy();
     console.log('#2 Unitroller Deployed at: ', unitrollerContract.address);
+    
+    const comptrollerFactory = await ethers.getContractFactory("Comptroller");
+    const comptrollerContract = await comptrollerFactory.deploy();
+    console.log("Comptroller deployed: ", comptrollerContract.address);
+
+    //console.log(await comptrollerContract.deployTransaction.wait());
     
     const setPendingImpTx = await unitrollerContract._setPendingImplementation(comptrollerContract.address);
     console.log("#3 Set unitroller implementation to :", comptrollerContract.address);
@@ -175,41 +178,44 @@ async function main() {
 	},
     ];
 
+    let Contract;
     //deploying Tokens, 
     var underlyingTokens = {};
     for (let args of tokenArgs) {
 	if (args.name == "wCanto")  {
 	    const wCantoFactory = await ethers.getContractFactory("WCanto");
-	    const  wCantoContract = await wCantoFactory.deploy(
+	    const  Contract = await wCantoFactory.deploy(
 		args.name,
 		args.symbol
 	    );
-	    
-	    underlyingTokens[args.name] = wCantoContract;
-	    console.log(`Deployed ${args.name} to: `, wCantoContract.address);
+
+	    await Contract.deployTransaction.wait();
+	    console.log(`Deployed ${args.name} to: `, Contract.address);
 	} else if (args.name == "Note") {
 	    const noteFactory = await ethers.getContractFactory("Note");
-	    const noteContract = await noteFactory.deploy(
+	    const Contract = await noteFactory.deploy(
 		"note",
 		"Note",
 		10000000000,
-		deployer.address,
 	    );
-	    console.log("Note deployed to: ", noteContract.address);
 	    
+	    await Contract.deployTransaction.wait();
+	    console.log("Note deployed to: ", Contract.address);
 	    
-	    underlyingTokens[args.name] = noteContract;
 	} else {
 	    const tokenFactory = await ethers.getContractFactory('ERC20');
-	    const tokenContract = await testErc20Factory.deploy(
+	    const Contract = await tokenFactory.deploy(
 		args.name,
 		args.symbol,
 		// args.decimals,
 		args.initialSupply
 	    );
-	    underlyingTokens[args.name] = testErc20Contract;
-	    console.log(`Deployed ${args.name} to: `, testErc20Contract.address);
+	    
+	    await Contract.deployTransaction.wait();
+	    console.log(`Deployed ${args.name} to: `, Contract.address);
 	}
+
+	underlyingTokens[args.name] = Contract;
     }
     
     const TreasuryFactory = await ethers.getContractFactory("Treasury");
@@ -262,7 +268,7 @@ async function main() {
 		 cErc20Factory = await ethers.getContractFactory('CErc20Immutable');
 	    }
 
-	    const cErc20Contract = await cErc20Factory.deploy(
+	    const Contract = await cErc20Factory.deploy(
 		args.underlying,
 		comptrollerContract.address,
 		args.interestRateModel.address,
@@ -270,12 +276,13 @@ async function main() {
 		args.cToken,
 		args.symbol,
 		args.decimals,
-		args.admin
+		args.admin,
 		{ gasLimit: 1000000 }
 	    );
 	    // TODO: add suport for CErc20Delegators
-	    console.log(`Deployed ${args.cToken} (CErc20) at : `, cErc20Contract.address);
-	    cTokens.push(cErc20Contract.address);
+	    console.log(`Deployed ${args.cToken} (CErc20) at : `, Contract.address);
+
+	    await Contract.deployTransaction.wait(); 
 	    
 	    const cERC20DelegatorFactory = await ethers.getContractFactory("CErc20Delegator");
 	    const cERC20DelegatorContract = await cERC20DelegatorFactory.deploy(
@@ -287,7 +294,7 @@ async function main() {
 		args.symbol,
 		args.decimals,
 		args.admin,
-		cErc20Contract.address,
+		Contract.address,
 		[],//currently unused
 		{gasLimit: 4000000}
  	    );
@@ -296,19 +303,22 @@ async function main() {
 	    
 	} else if (args.type == 'CEther') {
 	    const cEtherFactory = await ethers.getContractFactory('CEther');
-	    const cEtherContract = await cEtherFactory.deploy(
+	    const Contract = await cEtherFactory.deploy(
 		comptrollerContract.address,
 		args.interestRateModel.address,
 		args.initialExchangeRateMantissa,
 		args.cToken,
 		args.symbol,
 		args.decimals,
-		args.admin
+		args.admin,
 		{ gasLimit: 1000000 }
 	    );
-	    console.log(`Deployed ${args.cToken} (CEther) at : `, cEtherContract.address);
-	    cTokens.push(cEtherContract.address);
+	    console.log(`Deployed ${args.cToken} (CEther) at : `, Contract.address);
 	}
+
+
+	await Contract.deployTransaction.wait();
+	cTokens.push(Contract.address);
     }
     console.log("Finished deploying all CTokens.");
 
@@ -319,7 +329,9 @@ async function main() {
 	treasury.address,
 	{gasLimit: 200000}
     );
-    
+
+
+    await AccountantContract.deployTransaction.wait();
     const AccountantSet  = await (await ethers.getContractAt(NoteAbi,
 							     underlyingTokens["Note"].address,
 							     deployer))._setAccountantAddress(AccountantContract.address);
@@ -333,8 +345,8 @@ async function main() {
 }
 
 main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+    .then(() => process.exit(0))
+    .catch((error) => {
+	console.error(error);
+	process.exit(1);
+    });

@@ -4,6 +4,7 @@
   "sourceName": "contracts/IProposal.sol",
   "abi": [
     {
+      "constant": true,
       "inputs": [
         {
           "internalType": "uint256",
@@ -56,6 +57,7 @@
           "type": "tuple"
         }
       ],
+      "payable": false,
       "stateMutability": "view",
       "type": "function"
     }
