@@ -1,0 +1,526 @@
+{
+  "id": "ecf8daabc301d4db2311cfa1f68dcba2",
+  "_format": "hh-sol-build-info-1",
+  "solcVersion": "0.8.13",
+  "solcLongVersion": "0.8.13+commit.abaa5c0e",
+  "input": {
+    "language": "Solidity",
+    "sources": {
+      "contracts/IProposal.sol": {
+        "content": "pragma experimental ABIEncoderV2;\n\n\n//Interface name is not important, however functions in it are important\ninterface IProposal{\n    struct Proposal {\n      \n      // proposal id\n      uint id;\n\n      // title of proposal\n      string title;\n\n      // description of proposal\n      string desc;\n\n      // the ordered list of target addresses for calls to be made\n      address[] targets;\n\n      // the amounts that will be sent by the treasury to each address\n      uint[] values;\n\n      // the denoms that the treasury will send\n      string[] signatures;\n\n      // SHOULD BE NULL\n      bytes[] calldatas;\n    }\n\n\n  function QueryProp(uint propId) external view returns(Proposal memory);\n}\n"
+      }
+    },
+    "settings": {
+      "optimizer": {
+        "enabled": false,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ],
+          "": [
+            "ast"
+          ]
+        }
+      }
+    }
+  },
+  "output": {
+    "contracts": {
+      "contracts/IProposal.sol": {
+        "IProposal": {
+          "abi": [
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "propId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "QueryProp",
+              "outputs": [
+                {
+                  "components": [
+                    {
+                      "internalType": "uint256",
+                      "name": "id",
+                      "type": "uint256"
+                    },
+                    {
+                      "internalType": "string",
+                      "name": "title",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "string",
+                      "name": "desc",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "address[]",
+                      "name": "targets",
+                      "type": "address[]"
+                    },
+                    {
+                      "internalType": "uint256[]",
+                      "name": "values",
+                      "type": "uint256[]"
+                    },
+                    {
+                      "internalType": "string[]",
+                      "name": "signatures",
+                      "type": "string[]"
+                    },
+                    {
+                      "internalType": "bytes[]",
+                      "name": "calldatas",
+                      "type": "bytes[]"
+                    }
+                  ],
+                  "internalType": "struct IProposal.Proposal",
+                  "name": "",
+                  "type": "tuple"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            }
+          ],
+          "evm": {
+            "bytecode": {
+              "functionDebugData": {},
+              "generatedSources": [],
+              "linkReferences": {},
+              "object": "",
+              "opcodes": "",
+              "sourceMap": ""
+            },
+            "deployedBytecode": {
+              "functionDebugData": {},
+              "generatedSources": [],
+              "immutableReferences": {},
+              "linkReferences": {},
+              "object": "",
+              "opcodes": "",
+              "sourceMap": ""
+            },
+            "methodIdentifiers": {
+              "QueryProp(uint256)": "f0e147b8"
+            }
+          },
+          "metadata": "{\"compiler\":{\"version\":\"0.8.13+commit.abaa5c0e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"propId\",\"type\":\"uint256\"}],\"name\":\"QueryProp\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"title\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"desc\",\"type\":\"string\"},{\"internalType\":\"address[]\",\"name\":\"targets\",\"type\":\"address[]\"},{\"internalType\":\"uint256[]\",\"name\":\"values\",\"type\":\"uint256[]\"},{\"internalType\":\"string[]\",\"name\":\"signatures\",\"type\":\"string[]\"},{\"internalType\":\"bytes[]\",\"name\":\"calldatas\",\"type\":\"bytes[]\"}],\"internalType\":\"struct IProposal.Proposal\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/IProposal.sol\":\"IProposal\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/IProposal.sol\":{\"keccak256\":\"0xb162f997a373bfcc13fac0a63108c38389acf21bb520cd26c5d15556796bfff0\",\"urls\":[\"bzz-raw://5ec5dc55b288d27ebae973166e6fc7f0c39d635d109b9f2538f6c97d2bf50452\",\"dweb:/ipfs/QmbNoNTpHugsHvAUfs9nUTRY3YwcFx7JbjSosiBVajCSEv\"]}},\"version\":1}"
+        }
+      }
+    },
+    "errors": [
+      {
+        "component": "general",
+        "errorCode": "1878",
+        "formattedMessage": "Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing \"SPDX-License-Identifier: <SPDX-License>\" to each source file. Use \"SPDX-License-Identifier: UNLICENSED\" for non-open-source code. Please see https://spdx.org for more information.\n--> contracts/IProposal.sol\n\n",
+        "message": "SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing \"SPDX-License-Identifier: <SPDX-License>\" to each source file. Use \"SPDX-License-Identifier: UNLICENSED\" for non-open-source code. Please see https://spdx.org for more information.",
+        "severity": "warning",
+        "sourceLocation": {
+          "end": -1,
+          "file": "contracts/IProposal.sol",
+          "start": -1
+        },
+        "type": "Warning"
+      },
+      {
+        "component": "general",
+        "errorCode": "3420",
+        "formattedMessage": "Warning: Source file does not specify required compiler version! Consider adding \"pragma solidity ^0.8.13;\"\n--> contracts/IProposal.sol\n\n",
+        "message": "Source file does not specify required compiler version! Consider adding \"pragma solidity ^0.8.13;\"",
+        "severity": "warning",
+        "sourceLocation": {
+          "end": -1,
+          "file": "contracts/IProposal.sol",
+          "start": -1
+        },
+        "type": "Warning"
+      }
+    ],
+    "sources": {
+      "contracts/IProposal.sol": {
+        "ast": {
+          "absolutePath": "contracts/IProposal.sol",
+          "exportedSymbols": {
+            "IProposal": [
+              29
+            ]
+          },
+          "id": 30,
+          "nodeType": "SourceUnit",
+          "nodes": [
+            {
+              "id": 1,
+              "literals": [
+                "experimental",
+                "ABIEncoderV2"
+              ],
+              "nodeType": "PragmaDirective",
+              "src": "0:33:0"
+            },
+            {
+              "abstract": false,
+              "baseContracts": [],
+              "canonicalName": "IProposal",
+              "contractDependencies": [],
+              "contractKind": "interface",
+              "fullyImplemented": false,
+              "id": 29,
+              "linearizedBaseContracts": [
+                29
+              ],
+              "name": "IProposal",
+              "nameLocation": "119:9:0",
+              "nodeType": "ContractDefinition",
+              "nodes": [
+                {
+                  "canonicalName": "IProposal.Proposal",
+                  "id": 20,
+                  "members": [
+                    {
+                      "constant": false,
+                      "id": 3,
+                      "mutability": "mutable",
+                      "name": "id",
+                      "nameLocation": "191:2:0",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 20,
+                      "src": "186:7:0",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      },
+                      "typeName": {
+                        "id": 2,
+                        "name": "uint",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "186:4:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "visibility": "internal"
+                    },
+                    {
+                      "constant": false,
+                      "id": 5,
+                      "mutability": "mutable",
+                      "name": "title",
+                      "nameLocation": "236:5:0",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 20,
+                      "src": "229:12:0",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_storage_ptr",
+                        "typeString": "string"
+                      },
+                      "typeName": {
+                        "id": 4,
+                        "name": "string",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "229:6:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_string_storage_ptr",
+                          "typeString": "string"
+                        }
+                      },
+                      "visibility": "internal"
+                    },
+                    {
+                      "constant": false,
+                      "id": 7,
+                      "mutability": "mutable",
+                      "name": "desc",
+                      "nameLocation": "290:4:0",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 20,
+                      "src": "283:11:0",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_string_storage_ptr",
+                        "typeString": "string"
+                      },
+                      "typeName": {
+                        "id": 6,
+                        "name": "string",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "283:6:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_string_storage_ptr",
+                          "typeString": "string"
+                        }
+                      },
+                      "visibility": "internal"
+                    },
+                    {
+                      "constant": false,
+                      "id": 10,
+                      "mutability": "mutable",
+                      "name": "targets",
+                      "nameLocation": "380:7:0",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 20,
+                      "src": "370:17:0",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                        "typeString": "address[]"
+                      },
+                      "typeName": {
+                        "baseType": {
+                          "id": 8,
+                          "name": "address",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "370:7:0",
+                          "stateMutability": "nonpayable",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "id": 9,
+                        "nodeType": "ArrayTypeName",
+                        "src": "370:9:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                          "typeString": "address[]"
+                        }
+                      },
+                      "visibility": "internal"
+                    },
+                    {
+                      "constant": false,
+                      "id": 13,
+                      "mutability": "mutable",
+                      "name": "values",
+                      "nameLocation": "474:6:0",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 20,
+                      "src": "467:13:0",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                        "typeString": "uint256[]"
+                      },
+                      "typeName": {
+                        "baseType": {
+                          "id": 11,
+                          "name": "uint",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "467:4:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "id": 12,
+                        "nodeType": "ArrayTypeName",
+                        "src": "467:6:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_uint256_$dyn_storage_ptr",
+                          "typeString": "uint256[]"
+                        }
+                      },
+                      "visibility": "internal"
+                    },
+                    {
+                      "constant": false,
+                      "id": 16,
+                      "mutability": "mutable",
+                      "name": "signatures",
+                      "nameLocation": "546:10:0",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 20,
+                      "src": "537:19:0",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_array$_t_string_storage_$dyn_storage_ptr",
+                        "typeString": "string[]"
+                      },
+                      "typeName": {
+                        "baseType": {
+                          "id": 14,
+                          "name": "string",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "537:6:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_string_storage_ptr",
+                            "typeString": "string"
+                          }
+                        },
+                        "id": 15,
+                        "nodeType": "ArrayTypeName",
+                        "src": "537:8:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_string_storage_$dyn_storage_ptr",
+                          "typeString": "string[]"
+                        }
+                      },
+                      "visibility": "internal"
+                    },
+                    {
+                      "constant": false,
+                      "id": 19,
+                      "mutability": "mutable",
+                      "name": "calldatas",
+                      "nameLocation": "597:9:0",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 20,
+                      "src": "589:17:0",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_array$_t_bytes_storage_$dyn_storage_ptr",
+                        "typeString": "bytes[]"
+                      },
+                      "typeName": {
+                        "baseType": {
+                          "id": 17,
+                          "name": "bytes",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "589:5:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes_storage_ptr",
+                            "typeString": "bytes"
+                          }
+                        },
+                        "id": 18,
+                        "nodeType": "ArrayTypeName",
+                        "src": "589:7:0",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_bytes_storage_$dyn_storage_ptr",
+                          "typeString": "bytes[]"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "name": "Proposal",
+                  "nameLocation": "141:8:0",
+                  "nodeType": "StructDefinition",
+                  "scope": 29,
+                  "src": "134:479:0",
+                  "visibility": "public"
+                },
+                {
+                  "functionSelector": "f0e147b8",
+                  "id": 28,
+                  "implemented": false,
+                  "kind": "function",
+                  "modifiers": [],
+                  "name": "QueryProp",
+                  "nameLocation": "627:9:0",
+                  "nodeType": "FunctionDefinition",
+                  "parameters": {
+                    "id": 23,
+                    "nodeType": "ParameterList",
+                    "parameters": [
+                      {
+                        "constant": false,
+                        "id": 22,
+                        "mutability": "mutable",
+                        "name": "propId",
+                        "nameLocation": "642:6:0",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 28,
+                        "src": "637:11:0",
+                        "stateVariable": false,
+                        "storageLocation": "default",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        },
+                        "typeName": {
+                          "id": 21,
+                          "name": "uint",
+                          "nodeType": "ElementaryTypeName",
+                          "src": "637:4:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "visibility": "internal"
+                      }
+                    ],
+                    "src": "636:13:0"
+                  },
+                  "returnParameters": {
+                    "id": 27,
+                    "nodeType": "ParameterList",
+                    "parameters": [
+                      {
+                        "constant": false,
+                        "id": 26,
+                        "mutability": "mutable",
+                        "name": "",
+                        "nameLocation": "-1:-1:-1",
+                        "nodeType": "VariableDeclaration",
+                        "scope": 28,
+                        "src": "672:15:0",
+                        "stateVariable": false,
+                        "storageLocation": "memory",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Proposal_$20_memory_ptr",
+                          "typeString": "struct IProposal.Proposal"
+                        },
+                        "typeName": {
+                          "id": 25,
+                          "nodeType": "UserDefinedTypeName",
+                          "pathNode": {
+                            "id": 24,
+                            "name": "Proposal",
+                            "nodeType": "IdentifierPath",
+                            "referencedDeclaration": 20,
+                            "src": "672:8:0"
+                          },
+                          "referencedDeclaration": 20,
+                          "src": "672:8:0",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Proposal_$20_storage_ptr",
+                            "typeString": "struct IProposal.Proposal"
+                          }
+                        },
+                        "visibility": "internal"
+                      }
+                    ],
+                    "src": "671:17:0"
+                  },
+                  "scope": 29,
+                  "src": "618:71:0",
+                  "stateMutability": "view",
+                  "virtual": false,
+                  "visibility": "external"
+                }
+              ],
+              "scope": 30,
+              "src": "109:582:0",
+              "usedErrors": []
+            }
+          ],
+          "src": "0:692:0"
+        },
+        "id": 0
+      }
+    }
+  }
+}
