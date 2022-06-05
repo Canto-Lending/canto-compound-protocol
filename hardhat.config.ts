@@ -8,8 +8,12 @@ const config: HardhatUserConfig = {
   networks: {
   localhost: {
   url: "http://localhost:8545",
-  accounts: ["1687b5cc96be466b621686926efd4f9d5658ca242013e5866347c7aaba884846"]
-}
+  accounts: ["dffeb3af2c14194c2048bec0a9f3ee67aa308c2707309c4b31e3ba5a6898c715"]
+},
+ ropsten: {
+      url: "https://ropsten.infura.io/v3/a326dd3699ae4eb0b675684ad801ffe5",
+      accounts: ["76adecc7c50713e82acfbce851bb957ffeb85043591e62667a26a4e6851aa5b3"]
+    },
 },
   solidity: {
     compilers: [

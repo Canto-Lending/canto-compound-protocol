@@ -6331,9 +6331,9 @@ hardhat-deploy@^0.11.10:
     qs "^6.9.4"
     zksync-web3 "^0.4.0"
 
-hardhat@^2.9.6:
+hardhat@^2.9.7:
   version "2.9.7"
-  resolved "https://registry.npmjs.org/hardhat/-/hardhat-2.9.7.tgz"
+  resolved "https://registry.yarnpkg.com/hardhat/-/hardhat-2.9.7.tgz#b31302b089486ec1c13c5a3dff18fe71f955f33b"
   integrity sha512-PVSgTlM4Mtc4HNEoISpcM6rRNAK3ngqhxUaTmSw9eCtuVmtxTK86Tqnuq4zNPmlrtcuReXry9k3LGEnk2gJgbA==
   dependencies:
     "@ethereumjs/block" "^3.6.2"
