@@ -145,8 +145,8 @@
       ]
     },
     "/home/nikhil/practice/blockchain/ether/canto-compound-protocol/contracts/cNote.sol": {
-      "lastModificationDate": 1654375366699,
-      "contentHash": "48ea207840c6015d41cc9b60f519c549",
+      "lastModificationDate": 1654454455978,
+      "contentHash": "6bf92709d165a1b33de67e93bba65d7d",
       "sourceName": "contracts/cNote.sol",
       "solcConfig": {
         "version": "0.5.16",
@@ -235,8 +235,8 @@
       ]
     },
     "/home/nikhil/practice/blockchain/ether/canto-compound-protocol/contracts/Treasury.sol": {
-      "lastModificationDate": 1654203047919,
-      "contentHash": "3aabce5866ce3b21208914271001e4cd",
+      "lastModificationDate": 1654454291884,
+      "contentHash": "441ca662a30ab4cf55eae0ec60975799",
       "sourceName": "contracts/Treasury.sol",
       "solcConfig": {
         "version": "0.5.16",
@@ -368,8 +368,8 @@
       ]
     },
     "/home/nikhil/practice/blockchain/ether/canto-compound-protocol/contracts/ERC20.sol": {
-      "lastModificationDate": 1654203955252,
-      "contentHash": "fee0d95e8745c79264823b0d5fb7b8d7",
+      "lastModificationDate": 1654454046055,
+      "contentHash": "222cba8324cd809724e352eebaba87bd",
       "sourceName": "contracts/ERC20.sol",
       "solcConfig": {
         "version": "0.5.16",

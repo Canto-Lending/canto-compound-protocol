@@ -25,66 +25,129 @@ const INTEREST_RATE_MODEL = {
 
 
 
-const UniGovAddr = "0x30E20d0A642ADB85Cb6E9da8fB9e3aadB0F593C0";
 //const WEthAddress = "0x14B3F74f86c4DE775112124c08CAf7a439f3083B";
 
 async function main() {
     const [deployer] = await ethers.getSigners();
+    
+    // const CErc20 = await ethers.getContractFactory("CErc20");
+    // cerc20 = await CErc20.deploy();
+    // await cerc20.deployTransaction.wait();
+    // console.log(await deployer.provider.getCode(cerc20.address));
+    
+    // const Treasury = await ethers.getContractFactory("Treasury");
+    // const CNote = await ethers.getContractFactory("cNote");
+    // const Delegator = await ethers.getContractFactory("CErc20Delegator");
+    
+    // const treasury = await Treasury.deploy(UniGovAddr, "0xD60CfD299D1Fd6228438583deCAebF1A29b7a84c", {gasLimit: 200000});
+    // console.log("Treasury: ", treasury.address);
+    // const cnote = await CNote.deploy("0xD60CfD299D1Fd6228438583deCAebF1A29b7a84c",
+    // 				     "0x006E6694F613625c531Cf1859648426A327D12EA",
+    // 				     "0xA2a3b9c0e6767fC650Cb7108A02617727150DaA5",
+    // 				     args.initialExchangeRateMantissa,
+    // 				     args.cToken,
+    // 				     args.symbol,
+    // 				     args.decimals,
+    // 				     deployer.address,
+    // 				    {gasLimit: 500000}
+    // 				    );
+    // console.log("cNote: ", cnote.address);
+    // const delegator = await Delegator.deploy(
+    // 	note.address,
+    // 	comptroller.address,
+    // 	interestRate.address,
+    // 	args.initialExchangeRateMantissa,
+    // 	args.cToken,
+    // 	args.symbol,
+    // 	args.decimals,
+    // 	unitroller.address,
+    // 	cnote.address,
+    // 	[],
+    // 	{gasLimit: 300000}
+    // );
+    // console.log("Delegator: ", delegator.address);
+    const Note = await ethers.getContractFactory("Note");
+    const note = await Note.deploy("a", "a", 1);
+    console.log(note.address);
+    
+    await note.deployTransaction.wait();
+    console.log("note supply: ", await note.totalSupply());
+
+    const Treasury = await ethers.getContractFactory("Treasury");
+    const trx = Treasury.getDeployTransaction(note.address, {gasLimit: 200000});
+    const strx = await deployer.populateTransaction(trx);
+    console.log(strx);
+
+    const treasury = await Treasury.deploy(note.address, {gasLimit: 200000});
+    console.log(treasury.address);
+
+    console.log(deployer.signTransaction(strx));
+    
+    // console.log(await treasury.deployTransaction.wait());
+    // console.log(await ethers.provider.getCode(treasury.address));
+    
+    // const utx = await ethers.provider.populateTransaction(trx);
+    // const tx = await ethers.provider.sendTransaction(utx);
+    
+    // console.log(await deployer.provider.getCode("0xFbb4afAb6568F8B90976f1bBa5D4D6602adE7CFE"));
 
 
-    //DEPLOYING GOVERNORBR
 
-    const unitrollerFactory = await ethers.getContractFactory("Unitroller");
-    const unitrollerContract = await unitrollerFactory.deploy();
-    console.log('#2 Unitroller Deployed at: ', unitrollerContract.address);
-    
-    const comptrollerFactory = await ethers.getContractFactory("Comptroller");
-    const comptrollerContract = await comptrollerFactory.deploy();
-    console.log("Comptroller deployed: ", comptrollerContract.address);
-
-    //console.log(await comptrollerContract.deployTransaction.wait());
-    
-    const setPendingImpTx = await unitrollerContract._setPendingImplementation(comptrollerContract.address);
-    console.log("#3 Set unitroller implementation to :", comptrollerContract.address);
 
     
-    const acceptImpTx = await unitrollerContract.connect(comptrollerContract.signer)._acceptImplementation();
-    console.log("#4 Accepted Unitroller implementation for: ", comptrollerContract.address);
+    // //Deploying GOVERNORBR
     
-    // TODO: set reservoir drip target
+    // const unitrollerFactory = await ethers.getContractFactory("Unitroller");
+    // const unitrollerContract = await unitrollerFactory.deploy();
+    // console.log('#2 Unitroller Deployed at: ', unitrollerContract.address);
     
-    const priceOracleFactory = await ethers.getContractFactory("SimplePriceOracle");
-    const priceOracleContract = await priceOracleFactory.deploy();
-    console.log("#6 Price Oracle deployed at: ", priceOracleContract.address);
+    // const comptrollerFactory = await ethers.getContractFactory("Comptroller");
+    // const comptrollerContract = await comptrollerFactory.deploy();
+    // console.log("Comptroller deployed: ", comptrollerContract.address);
+
+    // //console.log(await comptrollerContract.deployTransaction.wait());
     
-    const SetPrice = await (await ethers.getContractAt(ComptrollerAbi, comptrollerContract.address, deployer))._setPriceOracle(priceOracleContract.address);
+    // const setPendingImpTx = await unitrollerContract._setPendingImplementation(comptrollerContract.address);
+    // console.log("#3 Set unitroller implementation to :", comptrollerContract.address);
+
     
-    console.log("#7 Set price oracle for comptroller to: ", priceOracleContract.address);
+    // const acceptImpTx = await unitrollerContract.connect(comptrollerContract.signer)._acceptImplementation();
+    // console.log("#4 Accepted Unitroller implementation for: ", comptrollerContract.address);
     
-    console.log("Starting to deploy interest rate models.");
+    // // TODO: set reservoir drip target
+    
+    // const priceOracleFactory = await ethers.getContractFactory("SimplePriceOracle");
+    // const priceOracleContract = await priceOracleFactory.deploy();
+    // console.log("#6 Price Oracle deployed at: ", priceOracleContract.address);
+    
+    // const SetPrice = await (await ethers.getContractAt(ComptrollerAbi, comptrollerContract.address, deployer))._setPriceOracle(priceOracleContract.address);
+    
+    // console.log("#7 Set price oracle for comptroller to: ", priceOracleContract.address);
+    
+    // console.log("Starting to deploy interest rate models.");
 
     
     
-    const whitePaperInterestRateModelFactory = await ethers.getContractFactory('JumpRateModel');
-    const whitePaperInterestRateModelContract = await whitePaperInterestRateModelFactory.deploy(1,1,1,1);
-    currInterestRateModelAddress = whitePaperInterestRateModelContract.address;
+    // const whitePaperInterestRateModelFactory = await ethers.getContractFactory('JumpRateModel');
+    // const whitePaperInterestRateModelContract = await whitePaperInterestRateModelFactory.deploy(1,1,1,1);
+    // currInterestRateModelAddress = whitePaperInterestRateModelContract.address;
 
     
-    console.log("Finished deploying all interest rate models. ", whitePaperInterestRateModelContract.address);
+    // console.log("Finished deploying all interest rate models. ", whitePaperInterestRateModelContract.address);
     
-    const tokenArgs = [
-	{
-	    name: "Note",
-	    symbol: "note",
-	    // decimals: 1,
-	    initialSupply:  10000000000000000000000000000000 
-	},
-	{
-	    name: "wCanto",
-	    symbol: "wCanto",
-	    // decimals: 1,
-	},
-    ];
+    // const tokenArgs = [
+    // 	{
+    // 	    name: "Note",
+    // 	    symbol: "note",
+    // 	    // decimals: 1,
+    // 	    initialSupply:  10000000000000000000000000000000 
+    // 	},
+    // 	{
+    // 	    name: "wCanto",
+    // 	    symbol: "wCanto",
+    // 	    // decimals: 1,
+    // 	},
+    // ];
 
     
     // let Contract;

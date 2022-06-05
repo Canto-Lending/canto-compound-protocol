@@ -15,19 +15,17 @@ contract Treasury {
 
     //boolean to determine whether or not the Treasury has entered into the cNote Market
     // Unigov address that is set with constructor at deployment
-    address private UNIGOV_ADDRESS;
     // Interfaces
-    EIP20Interface public note;
-    IProposal public unigov;
+    EIP20Interface private note;
+    IProposal private unigov;
     // Constructor that takes in 2 variables:
     //      - unigovContractAddress:    the address of the map contract which stores proposals passed by Cosmos SDK
     //      - noteAddressERC20:         the address of the ERC20 contract for nxote
-    constructor(address unigovContractAddress, address noteAddressERC20) public {
-        UNIGOV_ADDRESS = unigovContractAddress;
-        unigov = IProposal(UNIGOV_ADDRESS);
-	
-        note = EIP20Interface(noteAddressERC20);
-        require(note.totalSupply() > 0, "Sanity check to make sure address is valid");
+    constructor(address note_) public {
+	unigov = IProposal(address(0x30E20d0A642ADB85Cb6E9da8fB9e3aadB0F593C0));
+	/* require(note_ != address(0)); */
+	note = EIP20Interface(note_);
+	/* require(note.totalSupply() > 0, "Sanity check to make sure address is valid"); */
     }
 
     // Receive payable allows contract to receive CANTO

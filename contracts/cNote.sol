@@ -8,7 +8,6 @@ import "./ErrorReporter.sol";
 
 contract cNote is CErc20Immutable {
     Accountant private _accountant = Accountant(address(0));
-    Treasury private _treasury = Treasury(address(0)); 
 
     
     constructor(address underlying_,
@@ -18,7 +17,7 @@ contract cNote is CErc20Immutable {
                 string memory name_,
                 string memory symbol_,
                 uint8 decimals_,
-                address payable admin_) CErc20Immutable(underlying, comptroller, interestRateModel_, initialExchangeRateMantissa_, name_,
+                address payable admin_) CErc20Immutable(underlying_, comptroller_, interestRateModel_, initialExchangeRateMantissa_, name_,
 							symbol_, decimals_, admin_) public {
     }
 

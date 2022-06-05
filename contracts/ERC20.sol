@@ -30,6 +30,7 @@ contract ERC20 is EIP20Interface {
         _name = name_;
         _symbol = symbol_;
 	_initialSupply = totalSupply_;
+	_totalSupply = totalSupply_;
     }
 
     /**
