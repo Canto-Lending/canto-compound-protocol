@@ -6,29 +6,21 @@ contract Note is ERC20 {
     address private accountant = address(0);
     address private admin;
 
-    constructor(string memory name_, string memory symbol_, uint totalSupply_) ERC20(name_, symbol_, totalSupply_) public {
-	admin = msg.sender;
-    }
-    
-    modifier AdminOnly {
-	require(msg.sender == admin);
-	_;
+    constructor() ERC20("Note", "NOTE", 1000000000) public {
+	    admin = msg.sender;
     }
 
-    modifier AccountantOnly {
-	require(msg.sender == accountant);
-	_;
-    }
-    
-    function _mint_to_Accounting() AccountantOnly public {
-	super._mint(accountant, super.totalSupply()); 
+    function _mint_to_Accounting() public {
+        require(msg.sender == admin);
+	    _mint(accountant, 1000); 
     }
 
     function RetAccountant() public view returns(address) {
-	return accountant;
+	    return accountant;
     }
     
-    function _setAccoutantAddress(address accountant_) AdminOnly external {
-	accountant = accountant_;
+    function _setAccoutantAddress(address accountant_) external {
+        require(msg.sender == admin);
+	    accountant = accountant_;
     }
 }

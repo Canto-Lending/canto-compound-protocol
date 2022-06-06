@@ -29,7 +29,10 @@ const INTEREST_RATE_MODEL = {
 
 async function main() {
     const [deployer] = await ethers.getSigners();
+    const UniGovAddr = "0x30E20d0A642ADB85Cb6E9da8fB9e3aadB0F593C0";
     
+    //console.log(deployer); 
+
     // const CErc20 = await ethers.getContractFactory("CErc20");
     // cerc20 = await CErc20.deploy();
     // await cerc20.deployTransaction.wait();
@@ -44,7 +47,6 @@ async function main() {
     // const cnote = await CNote.deploy("0xD60CfD299D1Fd6228438583deCAebF1A29b7a84c",
     // 				     "0x006E6694F613625c531Cf1859648426A327D12EA",
     // 				     "0xA2a3b9c0e6767fC650Cb7108A02617727150DaA5",
-    // 				     args.initialExchangeRateMantissa,
     // 				     args.cToken,
     // 				     args.symbol,
     // 				     args.decimals,
@@ -66,33 +68,79 @@ async function main() {
     // 	{gasLimit: 300000}
     // );
     // console.log("Delegator: ", delegator.address);
+
     const Note = await ethers.getContractFactory("Note");
-    const note = await Note.deploy("a", "a", 1);
-    console.log(note.address);
-    
+    const note = await Note.deploy();
     await note.deployTransaction.wait();
-    console.log("note supply: ", await note.totalSupply());
-
+    console.log("Note: ", note.address);
+    // const acctSet = await note._setAccoutantAddress(deployer.address);
+    // //await acctSet.wait();
+    // console.log("accountant address: ", await note.RetAccountant());
+    // console.log("Deployer note balance: ", await note.balanceOf(deployer.address));
+    
     const Treasury = await ethers.getContractFactory("Treasury");
-    const trx = Treasury.getDeployTransaction(note.address, {gasLimit: 200000});
-    const strx = await deployer.populateTransaction(trx);
-    console.log(strx);
+    const treasury = await Treasury.deploy(note.address, {gasLimit: 4000000});
+    await treasury.deployTransaction.wait();
+    console.log("Treasury: ", treasury.address);
+    // console.log(await deployer.provider.getCode(treasury.address));
 
-    const treasury = await Treasury.deploy(note.address, {gasLimit: 200000});
-    console.log(treasury.address);
+    // //deploy Comptroller 
+    // const Comptroller = await ethers.getContractFactory("Comptroller");
+    // const comp = await Comptroller.deploy();
+    // await comp.deployTransaction.wait();
+    // console.log("Comptroller: ", comp.address);
 
-    console.log(deployer.signTransaction(strx));
+    // console.log(await deployer.provider.getCode(comp.address));
+
+    //deploy Unitroller
+    const Unitroller = await ethers.getContractFactory("Unitroller");
+    const unitroller = await Unitroller.deploy();
+    await unitroller.deployTransaction.wait();
+    console.log("Unitroller: ", unitroller.address); 
+
+    const implementation = await unitroller._setPendingImplementation("0xAE0BF95577b6dACE994CE41Bb0b8F02A3F73415b");
+    await implementation.wait();
+    await unitroller._acceptImplementation();
+
+    //deploy JumpRateModel
+    const JumpRate = await ethers.getContractFactory("JumpRateModel");
+    const jumprate = await JumpRate.deploy(1,1,1,1);
+    await jumprate.deployTransaction.wait();
+    console.log("JumpRate: ", jumprate.address);
+
+    //cNote deployed
+    // const CNote = await ethers.getContractFactory("cNote");
+    // const cnote = await CNote.deploy(note.resolvedAddress, 
+    //     "0xAE0BF95577b6dACE994CE41Bb0b8F02A3F73415b", 
+    //     jumprate.resolvedAddress, 
+    //     unitroller.resolvedAddress
+    //     );
+    // await cnote.deployTransaction.wait();
+    // console.log("CNote: ", cnote.address);
+    //console.log(await deployer.provider.getCode(cnote.resolvedAddress));
+
+  
+
+    //Accountant deployed
+    const Acct = await ethers.getContractFactory("Accountant"); 
+    const acct = await Acct.deploy(
+        '0x52c890964ED5a318Ef6a05Af8D4b4f7C2829c4fa', 
+        '0xD8A0080AE5d3EfdB4ea886FaB4142224501FA55A', 
+        treasury.resolvedAddress,
+       // {gasLimit: 500000}
+        );        
+    await acct.deployTransaction.wait();
+    console.log("Accountant: ", acct.address);
+    console.log(await deployer.provider.getCode(acct.resolvedAddress));
     
-    // console.log(await treasury.deployTransaction.wait());
-    // console.log(await ethers.provider.getCode(treasury.address));
-    
-    // const utx = await ethers.provider.populateTransaction(trx);
-    // const tx = await ethers.provider.sendTransaction(utx);
-    
-    // console.log(await deployer.provider.getCode("0xFbb4afAb6568F8B90976f1bBa5D4D6602adE7CFE"));
+    const AcctInit = await acct.initialize();
 
+    await AcctInit.wait();
 
+    await note._setAccountantAddress(acct.address);
 
+    const ComptrollerLensFactory = await ethers.getContractFactory("CompoundLens");
+    const CompoundLens = await ComptrollerLensFactory.deploy();
 
     
     // //Deploying GOVERNORBR

@@ -29,8 +29,8 @@ contract ERC20 is EIP20Interface {
     constructor(string memory name_, string memory symbol_, uint256 totalSupply_) public {
         _name = name_;
         _symbol = symbol_;
-	_initialSupply = totalSupply_;
-	_totalSupply = totalSupply_;
+	    _initialSupply = totalSupply_;
+	    _totalSupply = totalSupply_;
     }
 
     /**

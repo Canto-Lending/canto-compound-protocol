@@ -41,7 +41,7 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
     event ActionPaused(string action, bool pauseState);
 
     /// @notice Emitted when an action is paused on a market
-    event ActionPaused(CToken cToken, string action, bool pauseState);
+    event ActionPausedMarket(CToken cToken, string action, bool pauseState);
 
     /// @notice Emitted when a new borrow-side COMP speed is calculated for a market
     event CompBorrowSpeedUpdated(CToken indexed cToken, uint newSpeed);
@@ -1053,7 +1053,7 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
         require(msg.sender == admin || state == true, "only admin can unpause");
 
         mintGuardianPaused[address(cToken)] = state;
-        emit ActionPaused(cToken, "Mint", state);
+        emit ActionPausedMarket(cToken, "Mint", state);
         return state;
     }
 
@@ -1063,7 +1063,7 @@ contract Comptroller is ComptrollerV7Storage, ComptrollerInterface, ComptrollerE
         require(msg.sender == admin || state == true, "only admin can unpause");
 
         borrowGuardianPaused[address(cToken)] = state;
-        emit ActionPaused(cToken, "Borrow", state);
+        emit ActionPausedMarket(cToken, "Borrow", state);
         return state;
     }
 

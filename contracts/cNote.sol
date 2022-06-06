@@ -7,30 +7,32 @@ import "./Treasury.sol";
 import "./ErrorReporter.sol";
 
 contract cNote is CErc20Immutable {
-    Accountant private _accountant = Accountant(address(0));
-
+    //Accountant private _accountant = Accountant(address(0));
+    Accountant private _accountant;
     
     constructor(address underlying_,
                 ComptrollerInterface comptroller_,
                 InterestRateModel interestRateModel_,
-                uint initialExchangeRateMantissa_,
-                string memory name_,
-                string memory symbol_,
-                uint8 decimals_,
-                address payable admin_) CErc20Immutable(underlying_, comptroller_, interestRateModel_, initialExchangeRateMantissa_, name_,
-							symbol_, decimals_, admin_) public {
+                // uint initialExchangeRateMantissa_,
+                // string memory name_,
+                // string memory symbol_,
+                // uint8 decimals_,
+                address payable admin_) CErc20Immutable(underlying_, comptroller_, interestRateModel_, 1, "cNote",
+							"CNOTE", 18, admin_) public {
     }
 
     
     event AccountantSet(address accountant, address accountantPrior);
 
-    modifier OnlyAdmin {
-	require(msg.sender == admin);
-	_;
-    }
+    // modifier OnlyAdmin {
+	// require(msg.sender == admin);
+	// _;
+    // }
     
-    function _setAccountantContract(address payable accountant_) OnlyAdmin external {
-	_accountant = Accountant(accountant_);
+    function _setAccountantContract(address payable accountant_) public {
+        require(msg.sender == admin, "error::Not admin");
+        emit AccountantSet(accountant_, _accountant);
+	    _accountant = Accountant(accountant_);
     }
     
     /**

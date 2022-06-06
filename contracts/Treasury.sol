@@ -22,10 +22,10 @@ contract Treasury {
     //      - unigovContractAddress:    the address of the map contract which stores proposals passed by Cosmos SDK
     //      - noteAddressERC20:         the address of the ERC20 contract for nxote
     constructor(address note_) public {
-	unigov = IProposal(address(0x30E20d0A642ADB85Cb6E9da8fB9e3aadB0F593C0));
-	/* require(note_ != address(0)); */
-	note = EIP20Interface(note_);
-	/* require(note.totalSupply() > 0, "Sanity check to make sure address is valid"); */
+        unigov = IProposal(address(0x30E20d0A642ADB85Cb6E9da8fB9e3aadB0F593C0));
+	    require(note_ != address(0));
+	    note = EIP20Interface(note_);
+	    require(note.totalSupply() > 0, "Sanity check to make sure address is valid");
     }
 
     // Receive payable allows contract to receive CANTO
@@ -37,7 +37,7 @@ contract Treasury {
         return treasuryCantoBalance;
     }
 
-    // External function to query balance of Note
+    // // External function to query balance of Note
     function queryNoteBalance() external view returns (uint) {
         uint treasuryNoteBalance = note.balanceOf(address(this));
         return treasuryNoteBalance;
